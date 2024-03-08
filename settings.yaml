@@ -1,0 +1,10 @@
+root:
+  version: 2.0.0
+  default_start_model: ["Qwen-1.8B-Chat"]
+  log_level: INFO
+  log_verbose: true
+  cross_domain: true
+  langchain_verbose: true
+
+test-aa:
+  key-bb: 888522
