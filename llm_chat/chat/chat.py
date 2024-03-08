@@ -17,6 +17,9 @@ from llm_chat.config import default_temperature, get_prompt_template
 DEFAULT_LLM = "Qwen-1.8B-Chat"
 TEMPERATURE = default_temperature()
 
+message_id_curr = {"id":0}
+
+
 async def chat(query: str = Body(..., description="用户输入", examples=["恼羞成怒"]),
                conversation_id: str = Body("", description="对话框ID"),
                history_len: int = Body(-1, description="从数据库中取历史消息的数量"),
@@ -43,7 +46,8 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
         memory = None
 
         # 负责保存llm response到message db
-        message_id = 0  # add_message_to_db(chat_type="llm_chat", query=query, conversation_id=conversation_id)
+        message_id_curr["id"] = message_id_curr["id"] + 1
+        message_id = message_id_curr["id"]  # add_message_to_db(chat_type="llm_chat", query=query, conversation_id=conversation_id)
         # conversation_callback = ConversationCallbackHandler(conversation_id=conversation_id, message_id=message_id,
         #                                                     chat_type="llm_chat",
         #                                                     query=query)
@@ -86,7 +90,7 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
 
         chain = LLMChain(prompt=chat_prompt, llm=model, memory=memory)
 
-        #task = asyncio.create_task(chain.acall({"input": query}))
+        # task = asyncio.create_task(chain.acall({"input": query}))
 
         # Begin a task that runs in the background.
         task = asyncio.create_task(wrap_done(
