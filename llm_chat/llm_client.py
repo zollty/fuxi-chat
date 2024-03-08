@@ -25,7 +25,7 @@ def list_running_models(
             r = client.post(controller_address + "/list_models")
             models = r.json()["models"]
             # data = {m: get_model_config(m).data for m in models} TODO
-            data = {m: "12XX_CHANGE_ME" for m in models}
+            data = {m: {} for m in models}
             return BaseResponse(data=data)
     except Exception as e:
         logger.error(f'{e.__class__.__name__}: {e}',
