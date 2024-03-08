@@ -52,6 +52,7 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
         #                                                     chat_type="llm_chat",
         #                                                     query=query)
         # callbacks.append(conversation_callback)
+        print(f"-------------------------message_id: {message_id}")
 
         if isinstance(max_tokens, int) and max_tokens <= 0:
             max_tokens = None
