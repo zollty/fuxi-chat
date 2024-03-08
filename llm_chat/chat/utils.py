@@ -58,7 +58,7 @@ class History(BaseModel):
 
 from langchain.chat_models import ChatOpenAI
 from llm_chat.chat.minx_chat_openai import MinxChatOpenAI
-from llm_model import config
+from llm_chat import config
 
 def get_ChatOpenAI(
         model_name: str,
