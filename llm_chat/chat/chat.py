@@ -86,13 +86,13 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
 
         chain = LLMChain(prompt=chat_prompt, llm=model, memory=memory)
 
-        task = asyncio.create_task(chain.acall({"input": query}))
+        #task = asyncio.create_task(chain.acall({"input": query}))
 
         # Begin a task that runs in the background.
-        # task = asyncio.create_task(wrap_done(
-        #     chain.acall({"input": query}),
-        #     callback.done),
-        # )
+        task = asyncio.create_task(wrap_done(
+            chain.acall({"input": query}),
+            callback.done),
+        )
 
         if stream:
             async for token in callback.aiter():
