@@ -22,13 +22,13 @@ def list_llm_models(
     return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", {}))
 
 
-def list_embedding_models() -> Dict:
+def list_embed_models() -> Dict:
     """
     从本地获取configs中配置的embedding模型列表
     """
-    print("start to list_embedding_models ---------------------------------")
+    print("start to list_embed_models ---------------------------------")
     response = api.post(
-        "/list_embedding_models",
+        "/list_embed_models",
     )
     return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", {}))
 
@@ -47,7 +47,7 @@ def list_online_embed_models() -> Dict:
 def init_server_config():
     import embeddings.config as embeddings_config
     import llm_chat.config as llm_chat_config
-    embeddings_config.config_embed_models = list_embedding_models()
+    embeddings_config.config_embed_models = list_embed_models()
     llm_chat_config.config_llm_models = list_llm_models()
     embeddings_config.online_embed_models = list_online_embed_models()
     print(f"init config_embed_models--------: {embeddings_config.config_embed_models}")
