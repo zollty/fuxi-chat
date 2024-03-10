@@ -1,27 +1,21 @@
-from configs import (LLM_MODELS, TEMPERATURE)
-from fastapi.responses import StreamingResponse
-from fastapi.concurrency import run_in_threadpool
-from server.utils import wrap_done, get_ChatOpenAI
-from server.utils import BaseResponse, get_prompt_template
-from server.chat.utils import History
-from langchain.chains import LLMChain
 from langchain.callbacks import AsyncIteratorCallbackHandler
 from typing import AsyncIterable
 import asyncio
-from langchain.prompts.chat import ChatPromptTemplate
 from langchain.prompts import PromptTemplate
 from typing import List, Optional, Dict
 import json
 from langchain.docstore.document import Document
 from langchain.chains.summarize import load_summarize_chain
 
+from llm_chat.config import get_prompt_template, TEMPERATURE, file_chat_summary_model, summary_max_length
+from llm_chat.chat.utils import get_ChatOpenAI, wrap_done
 
-MAX_LENGTH = 30000
+MAX_LENGTH = summary_max_length()
+
 
 async def doc_chat_iterator(doc: str,
-                            query: str = None,
                             stream: bool = False,
-                            model_name: str = LLM_MODELS[0],
+                            model_name: str = file_chat_summary_model,
                             max_tokens: int = 0,
                             temperature: float = TEMPERATURE,
                             prompt_name: str = "summary1",
@@ -61,5 +55,5 @@ async def doc_chat_iterator(doc: str,
         async for token in callback.aiter():
             answer += token
         yield json.dumps({"answer": answer, "src_info": src_info}, ensure_ascii=False)
-    
+
     await task

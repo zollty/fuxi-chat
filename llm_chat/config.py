@@ -25,6 +25,9 @@ def file_chat_relate_qa_model():
 def file_chat_summary_model():
     return LONG_CONTEXT_MODEL
 
+def summary_max_length():
+    return 30000
+
 def fschat_openai_api_cfg():
     # if host == "0.0.0.0":
     #     host = "127.0.0.1"

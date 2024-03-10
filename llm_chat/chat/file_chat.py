@@ -11,7 +11,7 @@ from common.api_base import (BaseResponse, ListResponse)
 from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
 from llm_chat.chat.doc_summary5 import doc_chat_iterator
 from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_relate_qa_model, file_chat_summary_model, \
-    file_chat_default_temperature
+    file_chat_default_temperature, summary_max_length
 from tools.file_upload_parse import parse_files_in_thread
 
 from langchain.docstore.document import Document
@@ -21,7 +21,7 @@ from tools.text_splitter_helper import do_split_docs
 from vectorstores.mem_cache.faiss_cache import memo_cache_faiss_pool
 from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
 
-MAX_LENGTH = 30000
+MAX_LENGTH = summary_max_length()
 STATIC_DOCUMENTS = dict()
 
 
