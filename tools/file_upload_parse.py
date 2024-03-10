@@ -33,15 +33,18 @@ def parse_files_in_thread(
             with open(file_path, "wb") as f:
                 f.write(file_content)
 
+            print(f"do load_file_docs--------------------------file_path: {file_path}")
             docs = load_file_docs(
                 file_path,
                 filename=filename,
                 start_length=start_length
             )
+            print(f"load_file_docs--------------------------ret: {docs}")
 
             split_docs = None
             if split_docs_fn:
                 split_docs = split_docs_fn(docs)
+            print(f"split_docs--------------------------ret: {split_docs}")
             return True, filename, f"成功上传文件 {filename}", docs, split_docs
         except Exception as e:
             msg = f"{filename} 文件上传失败，报错信息为: {e}"

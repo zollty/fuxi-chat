@@ -91,9 +91,9 @@ def load_file_docs(
         start_length: int = -1,
         loader_kwargs: Dict = {},
 ):
-    '''
+    """
     对应知识库目录中的文件，必须是磁盘上存在的才能进行向量化等操作。
-    '''
+    """
     filename = str(Path(filename).as_posix())
     ext = os.path.splitext(filename)[-1].lower()
     if ext not in SUPPORTED_EXTS:

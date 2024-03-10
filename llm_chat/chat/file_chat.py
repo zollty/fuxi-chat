@@ -75,10 +75,10 @@ def upload_temp_docs(
             file_names.append(file)
             STATIC_DOCUMENTS[tmp_knowledge_id + file] = org_docs
             do_clear(tmp_knowledge_id + file)
-            print(f"{file}--------------------------update file success: ")
+            print(f"{file}--------------------------update file success: {tmp_knowledge_id}")
         else:
             failed_files.append({file: msg})
-            print(f"{file}--------------------------update file failed: ")
+            print(f"{file}--------------------------update file failed: {tmp_knowledge_id}")
             print(msg)
 
     if documents:
