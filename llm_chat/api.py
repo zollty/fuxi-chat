@@ -89,7 +89,8 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
     # mount_filename_summary_routes(app)
 
     # LLM模型相关接口
-    app.post("/llm_model/list_running_models",
+    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    app.post("/llm_model/list_running_models11",
              tags=["LLM Model Management"],
              summary="列出当前已加载的模型",
              )(list_running_models)
@@ -104,12 +105,14 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
     #          summary="获取模型配置（合并后）",
     #          )(get_model_config)
 
-    app.post("/llm_model/stop",
+    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    app.post("/llm_model/stop11",
              tags=["LLM Model Management"],
              summary="停止指定的LLM模型（Model Worker)",
              )(stop_llm_model)
 
-    app.post("/llm_model/change",
+    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    app.post("/llm_model/change11",
              tags=["LLM Model Management"],
              summary="切换指定的LLM模型（Model Worker)",
              )(change_llm_model)

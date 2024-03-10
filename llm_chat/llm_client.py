@@ -11,6 +11,7 @@ from llm_chat.config import fschat_controller_address
 DEFAULT_LLM = "Qwen-1.8B-Chat"
 
 
+# Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def list_running_models(
         controller_address: str = Body(None, description="Fastchat controller服务器地址",
                                        examples=[fschat_controller_address()]),
@@ -35,7 +36,7 @@ def list_running_models(
             data={},
             msg=f"failed to get available models from controller: {controller_address}。错误信息是： {e}")
 
-
+# Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 def stop_llm_model(
         model_name: str = Body(..., description="要停止的LLM模型名称", examples=[DEFAULT_LLM]),
         controller_address: str = Body(None, description="Fastchat controller服务器地址",

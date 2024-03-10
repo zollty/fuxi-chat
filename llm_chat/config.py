@@ -13,11 +13,11 @@ FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
 def file_chat_default_temperature():
     return 0.1
 
-def file_chat_relate_qa_model():
-    return DEFAULT_LLM
-
 def file_chat_summary_model():
     return LONG_CONTEXT_MODEL
+
+def file_chat_relate_qa_model():
+    return file_chat_summary_model()
 
 def summary_max_length():
     return 30000
