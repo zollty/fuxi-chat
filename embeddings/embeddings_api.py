@@ -133,6 +133,7 @@ def embed_documents(
     """
     texts = [x.page_content for x in docs]
     metadatas = [x.metadata for x in docs]
+    print(f"----embed_documents, texts=: {texts}")
     embeddings = embed_texts(texts=texts, embed_model=embed_model, to_query=to_query, device=device).data
     if embeddings is not None:
         return {

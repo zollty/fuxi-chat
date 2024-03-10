@@ -210,11 +210,6 @@ if __name__ == "__main__":
     args_dict = vars(args)
 
     init_server_config()
-    import embeddings.config as embeddings_config
-    import llm_chat.config as llm_chat_config
-    print(f"init2 config_embed_models--------: {embeddings_config.config_embed_models}")
-    print(f"init2 online_embed_models--------: {embeddings_config.online_embed_models}")
-    print(f"init2 config_llm_models--------: {llm_chat_config.config_llm_models}")
 
     app = create_app([mount_app_routes], version=VERSION, title="FenghouAI Chat API Server")
 

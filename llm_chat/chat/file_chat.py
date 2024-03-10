@@ -79,6 +79,7 @@ def upload_temp_docs(
             failed_files.append({file: msg})
 
     with memo_cache_faiss_pool.load_vector_store(tmp_knowledge_id).acquire() as vs:
+        print(f"----add_documents: {documents}")
         vs.add_documents(documents)
 
     torch_gc()
