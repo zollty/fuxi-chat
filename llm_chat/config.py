@@ -11,6 +11,19 @@ from typing import (
     Tuple
 )
 
+DEFAULT_LLM = "Qwen-1.8B-Chat"
+LONG_CONTEXT_MODEL = "chatglm3-6b-32k"
+TEMPERATURE = 0.7
+FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
+
+def file_chat_default_temperature():
+    return 0.1
+
+def file_chat_relate_qa_model():
+    return DEFAULT_LLM
+
+def file_chat_summary_model():
+    return LONG_CONTEXT_MODEL
 
 def fschat_openai_api_cfg():
     # if host == "0.0.0.0":
@@ -30,7 +43,7 @@ def default_model():
 
 
 def default_temperature():
-    return 1.0
+    return TEMPERATURE
 
 
 def openai_proxy():

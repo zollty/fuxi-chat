@@ -11,6 +11,7 @@ from fastapi import FastAPI, Body
 from starlette.responses import RedirectResponse
 from llm_chat.chat.chat import chat
 from llm_chat.chat.openai_chat import openai_chat
+from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
 from llm_chat.llm_client import (list_running_models,
                                   change_llm_model, stop_llm_model)
 from typing import List, Literal
@@ -44,6 +45,27 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
              tags=["Chat"],
              summary="与llm模型对话(通过LLMChain)",
              )(chat)
+
+    app.post("/chat/file_chat",
+             tags=["Chat"],
+             summary="文件对话"
+             )(file_chat)
+
+    # 内部接口
+    app.post("/inner/file_chat/auto_summary_docs",
+             tags=["Inner"],
+             summary="自动总结文档（for file_chat，用于文件对话）。内部接口，勿单独调用",
+             )(summary_docs)
+
+    app.post("/inner/file_chat/gen_relate_qa",
+             tags=["Inner"],
+             summary="生成相关提问（for file_chat，用于文件对话）。内部接口，勿单独调用",
+             )(gen_relate_qa)
+
+    app.post("/inner/file_chat/upload_temp_docs",
+             tags=["Inner"],
+             summary="上传文件到临时目录（for file_chat，用于文件对话）。内部接口，勿单独调用"
+             )(upload_temp_docs)
 
     # app.post("/chat/search_engine_chat",
     #          tags=["Chat"],

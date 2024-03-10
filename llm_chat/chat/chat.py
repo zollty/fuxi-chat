@@ -7,17 +7,14 @@ import asyncio
 import json
 from langchain.prompts.chat import ChatPromptTemplate
 from typing import List, Optional, Union
-from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
 from langchain.prompts import PromptTemplate
 # from server.memory.conversation_db_buffer_memory import ConversationBufferDBMemory
 # from server.db.repository import add_message_to_db
 # from server.callback_handler.conversation_callback_handler import ConversationCallbackHandler
-from llm_chat.config import default_temperature, get_prompt_template
+from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
+from llm_chat.config import DEFAULT_LLM, TEMPERATURE, get_prompt_template
 
-DEFAULT_LLM = "Qwen-1.8B-Chat"
-TEMPERATURE = default_temperature()
-
-message_id_curr = {"id":0}
+message_id_curr = {"id": 0}
 
 
 async def chat(query: str = Body(..., description="用户输入", examples=["恼羞成怒"]),
@@ -47,7 +44,8 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
 
         # 负责保存llm response到message db
         message_id_curr["id"] = message_id_curr["id"] + 1
-        message_id = message_id_curr["id"]  # add_message_to_db(chat_type="llm_chat", query=query, conversation_id=conversation_id)
+        message_id = message_id_curr[
+            "id"]  # add_message_to_db(chat_type="llm_chat", query=query, conversation_id=conversation_id)
         # conversation_callback = ConversationCallbackHandler(conversation_id=conversation_id, message_id=message_id,
         #                                                     chat_type="llm_chat",
         #                                                     query=query)

@@ -7,6 +7,20 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
+from typing import (
+    TYPE_CHECKING,
+    Literal,
+    List,
+    Optional,
+    Callable,
+    Generator,
+    Dict,
+    Any,
+    Awaitable,
+    Union,
+    Tuple
+)
+
 def string_args(args, args_list):
     args_str = ""
     for key, value in args._get_kwargs():
@@ -76,3 +90,11 @@ if __name__ == "__main__":
 
     ret = "xxxx@123".split("@2")
     print(len(ret))
+
+    def xx(params: Dict = {}):
+        if "aaa" in params:
+            for kwargs, c in params.items():
+                print(kwargs)
+            print("-------------------------")
+    xx({"aaa": 123, "bbb": 23453})
+
