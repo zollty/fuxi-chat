@@ -62,7 +62,6 @@ def upload_temp_docs(
 
     path, _id = get_temp_dir(prev_id)
     tmp_knowledge_id = "tmp_" + _id
-    print(f"----------------tmp_knowledge_id: {tmp_knowledge_id}--------------prev_id: {prev_id}")
 
     failed_files = []
     file_names = []
@@ -83,7 +82,6 @@ def upload_temp_docs(
 
     if documents:
         with memo_cache_faiss_pool.load_vector_store(tmp_knowledge_id).acquire() as vs:
-            print(f"----add_documents: {documents}")
             vs.add_documents(documents)
 
     torch_gc()
