@@ -10,8 +10,6 @@ from embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, emb
     online_embed_models, get_embed_model_path
 from vectorstores.mem_cache.base import ThreadSafeObject, CachePool
 
-online_embed_models = online_embed_models
-
 
 class EmbeddingsPool(CachePool):
     def load_embeddings(self, model: str = EMBEDDING_MODEL, device: str = embedding_device()) -> Embeddings:
