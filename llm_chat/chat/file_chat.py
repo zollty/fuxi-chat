@@ -75,12 +75,16 @@ def upload_temp_docs(
             file_names.append(file)
             STATIC_DOCUMENTS[tmp_knowledge_id + file] = org_docs
             do_clear(tmp_knowledge_id + file)
+            print(f"{file}--------------------------update file success: ")
         else:
             failed_files.append({file: msg})
+            print(f"{file}--------------------------update file failed: ")
+            print(msg)
 
-    with memo_cache_faiss_pool.load_vector_store(tmp_knowledge_id).acquire() as vs:
-        print(f"----add_documents: {documents}")
-        vs.add_documents(documents)
+    if documents:
+        with memo_cache_faiss_pool.load_vector_store(tmp_knowledge_id).acquire() as vs:
+            print(f"----add_documents: {documents}")
+            vs.add_documents(documents)
 
     torch_gc()
     return BaseResponse(data={"id": tmp_knowledge_id, "files": file_names, "failed_files": failed_files})
