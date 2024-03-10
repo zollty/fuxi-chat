@@ -50,3 +50,6 @@ def init_server_config():
     embeddings_config.config_embed_models = list_embedding_models()
     llm_chat_config.config_llm_models = list_llm_models()
     embeddings_config.online_embed_models = list_online_embed_models()
+    print(f"init config_embed_models--------: {embeddings_config.config_embed_models}")
+    print(f"init online_embed_models--------: {embeddings_config.online_embed_models}")
+    print(f"init config_llm_models--------: {llm_chat_config.config_llm_models}")
