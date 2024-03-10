@@ -75,9 +75,10 @@ def embed_texts(
     TODO: 也许需要加入缓存机制，减少 token 消耗
     """
     try:
+        print(f"-----------------------------------------------------------------------embed_model: {embed_model}")
+        print(f"---------------------------------------------------------config_embed_models: {config_embed_models}")
         if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
-            print(f"-----------------------------------------------------------------------embed_model: {embed_model}")
             print(f"-----------------------------------------------------------------------embed texts: {texts}")
             data = embeddings.embed_documents(texts)
             print(f"-----------------------------------------------------------------------embed data: {data}")
