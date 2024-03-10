@@ -111,6 +111,8 @@ def load_file_docs(
                                   loader_kwargs=loader_kwargs)
     docs = loader.load()
 
+    print(f"{document_loader_name} -----------------------load ret: {docs}")
+
     # 处理 start_length 位置
     target_docs = []
     if start_length >= 0:
