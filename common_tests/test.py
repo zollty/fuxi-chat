@@ -92,6 +92,7 @@ if __name__ == "__main__":
     print(len(ret))
 
     def xx(params: Dict = {}):
+        print(params["bbb"])
         if "aaa" in params:
             for kwargs, c in params.items():
                 print(kwargs)

@@ -1,15 +1,9 @@
 from typing import (
-    TYPE_CHECKING,
-    Literal,
     Optional,
-    Callable,
-    Generator,
     Dict,
-    Any,
-    Awaitable,
-    Union,
-    Tuple
+    List,
 )
+from common.base_config import *
 
 DEFAULT_LLM = "Qwen-1.8B-Chat"
 LONG_CONTEXT_MODEL = "chatglm3-6b-32k"
@@ -27,19 +21,6 @@ def file_chat_summary_model():
 
 def summary_max_length():
     return 30000
-
-def fschat_openai_api_cfg():
-    # if host == "0.0.0.0":
-    #     host = "127.0.0.1"
-    # port = FSCHAT_OPENAI_API["port"]
-    # return f"http://{host}:{port}/v1"
-    # address, api_key
-    return "http://localhost:20000/v1", "EMPTY"
-
-
-def fschat_controller_address():
-    return "http://localhost:21001"
-
 
 def default_model():
     return "Qwen-1.8B-Chat"
@@ -64,3 +45,4 @@ def get_prompt_template(type: str, name: str) -> Optional[str]:
     import importlib
     importlib.reload(prompt_config)  # TODO: 检查configs/prompt_config.py文件有修改再重新加载
     return prompt_config.PROMPT_TEMPLATES[type].get(name)
+

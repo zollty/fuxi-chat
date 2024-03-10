@@ -6,11 +6,11 @@ from langchain.embeddings.base import Embeddings
 
 from common.api_base import (BaseResponse, ListResponse)
 from common.utils import LOG_VERBOSE, logger
-from embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, list_embed_models, \
-    list_online_embed_models, get_model_path
+from embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, config_embed_models, \
+    online_embed_models, get_embed_model_path
 from vectorstores.mem_cache.base import ThreadSafeObject, CachePool
 
-online_embed_models = list_online_embed_models()
+online_embed_models = online_embed_models
 
 
 class EmbeddingsPool(CachePool):
@@ -25,7 +25,7 @@ class EmbeddingsPool(CachePool):
                 if model == "text-embedding-ada-002":  # openai text-embedding-ada-002
                     from langchain.embeddings.openai import OpenAIEmbeddings
                     embeddings = OpenAIEmbeddings(model=model,
-                                                  openai_api_key=get_model_path(model),
+                                                  openai_api_key=get_embed_model_path(model),
                                                   chunk_size=OPENAI_EMBEDDINGS_CHUNK_SIZE)
                 elif 'bge-' in model:
                     from langchain.embeddings import HuggingFaceBgeEmbeddings
@@ -38,14 +38,14 @@ class EmbeddingsPool(CachePool):
                     else:
                         # maybe ReRanker or else, just use empty string instead
                         query_instruction = ""
-                    embeddings = HuggingFaceBgeEmbeddings(model_name=get_model_path(model),
+                    embeddings = HuggingFaceBgeEmbeddings(model_name=get_embed_model_path(model),
                                                           model_kwargs={'device': device},
                                                           query_instruction=query_instruction)
                     if model == "bge-large-zh-noinstruct":  # bge large -noinstruct embedding
                         embeddings.query_instruction = ""
                 else:
                     from langchain.embeddings.huggingface import HuggingFaceEmbeddings
-                    embeddings = HuggingFaceEmbeddings(model_name=get_model_path(model),
+                    embeddings = HuggingFaceEmbeddings(model_name=get_embed_model_path(model),
                                                        model_kwargs={'device': device})
                 item.obj = embeddings
                 item.finish_loading()
@@ -77,7 +77,7 @@ def embed_texts(
     TODO: 也许需要加入缓存机制，减少 token 消耗
     """
     try:
-        if embed_model in list_embed_models():  # 使用本地Embeddings模型
+        if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
             return BaseResponse(data=embeddings.embed_documents(texts))
 
@@ -105,7 +105,7 @@ async def aembed_texts(
     see: embed_texts，如果是online模型则使用异步线程
     """
     try:
-        if embed_model in list_embed_models():  # 使用本地Embeddings模型
+        if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
             return BaseResponse(data=await embeddings.aembed_documents(texts))
 

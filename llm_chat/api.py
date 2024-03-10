@@ -196,6 +196,7 @@ if __name__ == "__main__":
     import argparse
     from common.fastapi_tool import create_app, run_api
     from common.utils import VERSION
+    from common.llm_controller_client import init_server_config
 
     parser = argparse.ArgumentParser(prog='fenghou-ai',
                                      description='About FenghouAI-Chat API')
@@ -206,6 +207,8 @@ if __name__ == "__main__":
     # 初始化消息
     args = parser.parse_args()
     args_dict = vars(args)
+
+    init_server_config()
 
     app = create_app([mount_app_routes], version=VERSION, title="FenghouAI Chat API Server")
 
