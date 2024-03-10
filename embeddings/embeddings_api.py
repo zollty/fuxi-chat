@@ -77,7 +77,11 @@ def embed_texts(
     try:
         if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
-            return BaseResponse(data=embeddings.embed_documents(texts))
+            print(f"-----------------------------------------------------------------------embed_model: {embed_model}")
+            print(f"-----------------------------------------------------------------------embed texts: {texts}")
+            data = embeddings.embed_documents(texts)
+            print(f"-----------------------------------------------------------------------embed data: {data}")
+            return BaseResponse(data=data)
 
         if embed_model in online_embed_models:  # 使用在线API
             worker_class = online_embed_models[embed_model]
