@@ -96,6 +96,7 @@ def load_file_docs(
     """
     filename = str(Path(filename).as_posix())
     ext = os.path.splitext(filename)[-1].lower()
+    print(f"run load_file_docs -----------------------used for------------------- {filename}---{ext}")
     if ext not in SUPPORTED_EXTS:
         raise ValueError(f"暂未支持的文件格式 {filename}")
     # filepath = filepath  # get_file_path(knowledge_base_name, filename)
@@ -103,6 +104,7 @@ def load_file_docs(
     document_loader_name = get_loader_class(ext)
 
     logger.info(f"{document_loader_name} used for {filepath}")
+    print(f"{document_loader_name} -----------------------used for------------------- {filepath}")
 
     loader = get_document_loaders(loader_name=document_loader_name,
                                   file_path=filepath,
