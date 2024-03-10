@@ -9,11 +9,6 @@ sys.path.append(RUNTIME_ROOT_DIR)
 
 from fastapi import FastAPI, Body
 from starlette.responses import RedirectResponse
-from llm_chat.chat.chat import chat
-from llm_chat.chat.openai_chat import openai_chat
-from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
-from llm_chat.llm_client import (list_running_models,
-                                 change_llm_model, stop_llm_model)
 from typing import List, Literal
 from common.api_base import (BaseResponse, ListResponse)
 from llm_chat.config import get_prompt_template
@@ -31,6 +26,12 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
 
 
 def mount_app_routes(app: FastAPI, run_mode: str = None):
+    from llm_chat.chat.chat import chat
+    from llm_chat.chat.openai_chat import openai_chat
+    from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
+    from llm_chat.llm_client import (list_running_models,
+                                     change_llm_model, stop_llm_model)
+
     app.get("/",
             response_model=BaseResponse,
             summary="swagger 文档")(document)
