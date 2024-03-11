@@ -1,6 +1,6 @@
 from fastapi import Body, File, Form, UploadFile
 from typing import AsyncIterable, List, Optional
-import os
+import os, json
 from langchain.docstore.document import Document
 from common.utils import run_in_thread_pool, get_temp_dir
 from tools.document_loaders_helper import load_file_docs
@@ -107,7 +107,7 @@ def test_parse_docs(
                                                                    start_length=start_size,
                                                                    split_docs_fn=split_docs_fn):
         if success:
-            file_docs.append({"f": file, "d": split_docs})
+            file_docs.append({"f": file, "d": json.dumps(split_docs)})
             print(f"{file}--------------------------update file success: ")
             # print(docs)
             rt_success = True
