@@ -107,7 +107,8 @@ def test_parse_docs(
                                                                    start_length=start_size,
                                                                    split_docs_fn=split_docs_fn):
         if success:
-            file_docs.append({"f": file, "d": json.dumps(split_docs)})
+            file_docs.append(
+                {"f": file, "d": [{"page_content": x.page_content, "metadata": x.metadata} for x in split_docs]})
             print(f"{file}--------------------------update file success: ")
             # print(docs)
             rt_success = True
