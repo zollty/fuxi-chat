@@ -28,6 +28,7 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
 def mount_app_routes(app: FastAPI, run_mode: str = None):
     from llm_chat.chat.chat import chat
     from llm_chat.chat.openai_chat import openai_chat
+    from llm_chat.chat.yby_chat import yby_chat
     from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
     from llm_chat.llm_client import (list_running_models,
                                      change_llm_model, stop_llm_model)
@@ -51,6 +52,11 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
              tags=["Chat"],
              summary="文件对话"
              )(file_chat)
+
+    app.post("/chat/yby_chat",
+             tags=["Chat"],
+             summary="与园博园Agent对话"
+             )(yby_chat)
 
     # 内部接口
     app.post("/inner/file_chat/auto_summary_docs",
