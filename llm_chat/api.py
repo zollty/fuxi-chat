@@ -33,6 +33,9 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
     from llm_chat.llm_client import (list_running_models,
                                      change_llm_model, stop_llm_model)
 
+    from tools.file_upload_parse import test_parse_docs
+    from tools.langchain_utils import test_parse_url
+
     app.get("/",
             response_model=BaseResponse,
             summary="swagger 文档")(document)
@@ -73,6 +76,17 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
              tags=["Inner"],
              summary="上传文件到临时目录（for file_chat，用于文件对话）。内部接口，勿单独调用"
              )(upload_temp_docs)
+
+    app.post("/tools/test_parse_docs",
+             tags=["Tools"],
+             summary="解析文件并分段，返回分段文本内容"
+             )(test_parse_docs)
+
+    app.post("/tools/test_parse_url",
+             tags=["Tools"],
+             summary="解析url并分段，返回分段文本内容"
+             )(test_parse_url)
+
 
     # app.post("/chat/search_engine_chat",
     #          tags=["Chat"],
