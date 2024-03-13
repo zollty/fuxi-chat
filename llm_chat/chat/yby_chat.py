@@ -10,7 +10,7 @@ import json
 from langchain.document_loaders import TextLoader
 
 from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
-from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_default_temperature
+from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
 
 # 读取原始文档
 raw_documents_sanguo = TextLoader('/ai/apps/data/园博园参考资料.txt', encoding='utf-8').load()
@@ -18,7 +18,7 @@ raw_documents_xiyou = TextLoader('/ai/apps/data/园博园介绍.txt', encoding='
 raw_documents_fw = TextLoader('/ai/apps/data/园博园服务.txt', encoding='utf-8').load()
 yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 
-YBY_DEFAULT_LLM = "chatglm3-6b-32k"
+YBY_DEFAULT_LLM = LONG_CONTEXT_MODEL
 
 
 async def yby_chat(query: str = Body(..., description="用户输入", examples=["你好"]),
