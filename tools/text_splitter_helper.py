@@ -1,5 +1,4 @@
 import importlib
-import langchain.document_loaders
 from tools.config import text_splitter_dict, DEFAULT_HUGGINGFACE_TOKENIZER_MODEL, SUPPORTED_EXTS
 from typing import List, Union, Dict
 

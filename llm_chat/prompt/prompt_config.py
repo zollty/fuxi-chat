@@ -79,7 +79,21 @@ PROMPT_TEMPLATES = {
             '<已知信息>{{ context }}</已知信息>\n'
             '<问题>{{ question }}</问题>\n',
 
-        "youdao":"""参考信息：
+        "fast": """使用 <Data></Data> 标记中的内容作为你的知识:
+
+<Data>
+{{ context }}
+</Data>
+
+回答要求：
+- 如果你不清楚答案，你需要澄清。
+- 避免提及你是从 <Data></Data> 获取的知识。
+- 保持答案与 <Data></Data> 中描述的一致。
+- 使用 Markdown 语法优化回答格式。
+
+问题:\"\"\"{{ question }}\"\"\"""",
+
+        "youdao": """参考信息：
 {{ context }}
 ---
 我的问题或指令：

@@ -30,6 +30,7 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
     from llm_chat.chat.openai_chat import openai_chat
     from llm_chat.chat.yby_chat import yby_chat
     from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
+    from llm_chat.chat.special_chat import summary_chat
     from llm_chat.llm_client import (list_running_models,
                                      change_llm_model, stop_llm_model)
 
@@ -60,6 +61,11 @@ def mount_app_routes(app: FastAPI, run_mode: str = None):
              tags=["Chat"],
              summary="与园博园Agent对话"
              )(yby_chat)
+
+    app.post("/chat/summary_chat",
+             tags=["Chat"],
+             summary="文档总结"
+             )(summary_chat)
 
     # 内部接口
     app.post("/inner/file_chat/auto_summary_docs",
