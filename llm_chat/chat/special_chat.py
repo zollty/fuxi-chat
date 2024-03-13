@@ -20,6 +20,11 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
         model_name = file_chat_summary_model()
     if not max_tokens:
         max_tokens = -1
+    if not prompt_name:
+        if len(query) > 800:
+            prompt_name = "summary5"
+        else:
+            prompt_name = "summary3"
     return EventSourceResponse(doc_chat_iterator(doc=query,
                                                  stream=stream,
                                                  model_name=model_name,
