@@ -109,7 +109,7 @@ def get_ChatOpenAI_temp(
         callbacks=callbacks,
         openai_api_key=api_key,
         openai_api_base="http://127.0.0.1:23333/v1",
-        model_name="qwen-14b",
+        model_name=model_name,
         temperature=temperature,
         max_tokens=max_tokens,
         openai_proxy=config.openai_proxy(),
