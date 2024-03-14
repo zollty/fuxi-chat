@@ -13,12 +13,15 @@ from llm_chat.chat.utils import History, get_ChatOpenAI_temp, wrap_done
 from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
 
 # 读取原始文档
-raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()
-raw_documents_xiyou = TextLoader('/ai/apps/data/new/园博园介绍.txt', encoding='utf-8').load()
-raw_documents_fw = TextLoader('/ai/apps/data/new/园博园服务信息.txt', encoding='utf-8').load()
-raw_documents_xw = TextLoader('/ai/apps/data/new/园博园新闻动态活动.txt', encoding='utf-8').load()
-yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw + raw_documents_xw
-
+# raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()
+# raw_documents_xiyou = TextLoader('/ai/apps/data/new/园博园介绍.txt', encoding='utf-8').load()
+# raw_documents_fw = TextLoader('/ai/apps/data/new/园博园服务信息.txt', encoding='utf-8').load()
+# raw_documents_xw = TextLoader('/ai/apps/data/new/园博园新闻动态活动.txt', encoding='utf-8').load()
+# yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw + raw_documents_xw
+raw_documents_sanguo = TextLoader('/ai/apps/data/园博园参考资料.txt', encoding='utf-8').load()
+raw_documents_xiyou = TextLoader('/ai/apps/data/园博园介绍.txt', encoding='utf-8').load()
+raw_documents_fw = TextLoader('/ai/apps/data/园博园服务.txt', encoding='utf-8').load()
+yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 YBY_DEFAULT_LLM = LONG_CONTEXT_MODEL
 
 
