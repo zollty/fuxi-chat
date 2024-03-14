@@ -73,11 +73,10 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         chain = LLMChain(prompt=chat_prompt, llm=model)
 
         # Begin a task that runs in the background.
-        # task = asyncio.create_task(wrap_done(
-        #     chain.acall({"context": context, "question": query}),
-        #     callback.done),
-        # )
-        task = asyncio.create_task(chain.acall({"context": context, "question": query}))
+        task = asyncio.create_task(wrap_done(
+            chain.acall({"context": context, "question": query}),
+            callback.done),
+        )
 
         source_documents = [
             f"""出处 [{inum + 1}] [{doc.metadata["source"]}]({doc.metadata["source"]}) \n\n{doc.page_content[:1000]}\n\n"""
