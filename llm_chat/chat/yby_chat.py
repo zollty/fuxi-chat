@@ -9,7 +9,7 @@ import json
 
 from langchain.document_loaders import TextLoader
 
-from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
+from llm_chat.chat.utils import History, get_ChatOpenAI_temp, wrap_done
 from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
 
 # 读取原始文档
@@ -48,7 +48,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
             max_tokens = None
 
         print(f"----------------------------------------------------get model {model_name}, max_tokens={max_tokens}")
-        model = get_ChatOpenAI(
+        model = get_ChatOpenAI_temp(
             model_name=model_name,
             temperature=temperature,
             max_tokens=max_tokens,
