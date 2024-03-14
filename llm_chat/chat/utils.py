@@ -89,6 +89,35 @@ def get_ChatOpenAI(
     return model
 
 
+def get_ChatOpenAI_temp(
+        model_name: str,
+        temperature: float,
+        max_tokens: int = None,
+        streaming: bool = True,
+        callbacks: List[Callable] = [],
+        verbose: bool = True,
+        **kwargs: Any,
+) -> ChatOpenAI:
+    # 非Langchain原生支持的模型，走Fschat封装
+    if model_name == "openai-api":
+        model_name = config.default_openai_model()
+    ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
+    api_base_url, api_key = config.fschat_openai_api_cfg()
+    model = ChatOpenAI(
+        streaming=streaming,
+        verbose=verbose,
+        callbacks=callbacks,
+        openai_api_key=api_key,
+        openai_api_base="http://127.0.0.1:23333/v1",
+        model_name="internlm2-chat-7b",
+        temperature=temperature,
+        max_tokens=max_tokens,
+        openai_proxy=config.openai_proxy(),
+        **kwargs
+    )
+    return model
+
+
 import asyncio
 import logging
 async def wrap_done(fn: Awaitable, event: asyncio.Event):
