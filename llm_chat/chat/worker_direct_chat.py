@@ -106,7 +106,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
                         "index": i,
                         "content": delta_text,
                         "finish_reason": content.get("finish_reason", None)})
-                    continue
+                continue
 
             content["text"] = delta_text
             yield data_handler(content)
