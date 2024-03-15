@@ -113,7 +113,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
         for finish_chunk in finish_stream_events:
             yield finish_handler(finish_chunk)
     if success_last_handler:
-        success_last_handler()
+        yield success_last_handler()
 
 
 async def create_not_stream_chat_completion(

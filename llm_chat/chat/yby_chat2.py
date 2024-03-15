@@ -140,8 +140,8 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         print(ctx)
 
     def success_last_handler():
-        yield json.dumps({"docs": source_documents}, ensure_ascii=False)
         print("-------------------------------------: success_last_handler")
+        return json.dumps({"docs": source_documents}, ensure_ascii=False)
 
     if stream:
         return EventSourceResponse(create_stream_chat_completion(request, data_handler, err_handler,
