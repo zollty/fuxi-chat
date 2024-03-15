@@ -106,7 +106,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
                         "finish_reason": content.get("finish_reason", None)})
                     continue
 
-            #content["content"] = delta_text
+            content["text"] = delta_text
             yield data_handler(content)
     # There is not "content" field in the last delta message, so exclude_none to exclude field "content".
     if finish_handler:

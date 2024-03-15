@@ -139,7 +139,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         print("-------------------------------------: finish_handler")
         print(ctx)
 
-    def success_last_handler(ctx):
+    def success_last_handler():
         yield json.dumps({"docs": source_documents}, ensure_ascii=False)
         print("-------------------------------------: success_last_handler")
 
