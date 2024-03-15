@@ -136,8 +136,9 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
 
     def finish_handler(ctx):
-        print("-------------------------------------: finish_handler")
-        print(ctx)
+        # print("-------------------------------------: finish_handler")
+        # print(ctx)
+        return
 
     def success_last_handler():
         print("-------------------------------------: success_last_handler")
