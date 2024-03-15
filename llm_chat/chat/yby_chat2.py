@@ -130,7 +130,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         print(ctx)
         yield json.dumps(ctx, ensure_ascii=False)
 
-    def data_handler(ctx):
+    def data_handler(ctx) -> str:
         print("-------------------------------------: data_handler")
         print(ctx)
         return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
@@ -144,7 +144,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         yield json.dumps({"docs": source_documents}, ensure_ascii=False)
 
     if stream:
-        return EventSourceResponse(stream_iterator())
+        return EventSourceResponse(create_stream_chat_completion(request, data_handler=data_handler))
     else:
         res = await create_not_stream_chat_completion(request)
         if isinstance(res, ChatCompletionResponse):
