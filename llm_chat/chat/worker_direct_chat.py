@@ -55,7 +55,7 @@ async def get_gen_params(*args, **kwargs) -> Dict[str, Any]:
     return gen_params
 
 
-async def create_stream_chat_completion(request: ChatCompletionRequest, err_handler, data_handler,
+async def create_stream_chat_completion(request: ChatCompletionRequest, err_handler=None, data_handler=None,
                                         success_last_handler=None, finish_handler=None):
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
