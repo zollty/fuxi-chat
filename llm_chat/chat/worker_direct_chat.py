@@ -60,7 +60,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
-    print("---------------start get_gen_params-----------------")
+    # print("---------------start get_gen_params-----------------")
     gen_params = await get_gen_params(
         request.model,
         worker_addr,
@@ -74,14 +74,14 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
         echo=False,
         stop=request.stop,
     )
-    print("---------------end get_gen_params-----------------")
-    print(gen_params)
+    # print("---------------end get_gen_params-----------------")
+    # print(gen_params)
     finish_stream_events = []
     for i in range(request.n):
         previous_text = ""
         async for content in generate_completion_stream(gen_params, worker_addr):
-            print("---------------content-----------------")
-            print(content)
+            # print("---------------content-----------------")
+            # print(content)
             if content["error_code"] != 0:
                 content["code"] = 500
                 if not content.get("message"):
