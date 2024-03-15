@@ -126,13 +126,17 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
           "usage": {"prompt_tokens": 50, "total_tokens": 82, "completion_tokens": 32}}
 
     def err_handler(ctx):
+        print("-------------------------------------: err_handler")
+        print(ctx)
         yield json.dumps(ctx, ensure_ascii=False)
 
     def data_handler(ctx):
+        print("-------------------------------------: data_handler")
+        print(ctx)
         yield json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
 
     def finish_handler(ctx):
-        print("-------------------------------------entrance: finish_handler")
+        print("-------------------------------------: finish_handler")
         print(ctx)
 
     async def stream_iterator():
