@@ -85,8 +85,8 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         for inum, doc in enumerate(docs)
     ]
 
-    print(f"-------------------------source_documents--------------------------------------")
-    print(source_documents)
+    # print(f"-------------------------source_documents--------------------------------------")
+    # print(source_documents)
 
     if len(source_documents) == 0:  # 没有找到相关资料（不太可能）
         source_documents.append(f"""<span style='color:red'>未找到相关文档,该回答为大模型自身能力解答！</span>""")
@@ -119,11 +119,11 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     if error_check_ret is not None:
         return error_check_ret
 
-    aa = {"id": "chatcmpl-3RViU5mrsEBNu8oSxexAEb", "object": "chat.completion", "created": 1705781842,
-          "model": "vicuna-7b-v1.5", "choices": [{"index": 0, "message": {"role": "assistant",
-                                                                          "content": "Sure thing! Here's one for you:\n\nWhy did the tomato turn red?\n\nBecause it saw the salad dressing!"},
-                                                  "finish_reason": "stop"}],
-          "usage": {"prompt_tokens": 50, "total_tokens": 82, "completion_tokens": 32}}
+    # aa = {"id": "chatcmpl-3RViU5mrsEBNu8oSxexAEb", "object": "chat.completion", "created": 1705781842,
+    #       "model": "vicuna-7b-v1.5", "choices": [{"index": 0, "message": {"role": "assistant",
+    #                                                                       "content": "Sure thing! Here's one for you:\n\nWhy did the tomato turn red?\n\nBecause it saw the salad dressing!"},
+    #                                               "finish_reason": "stop"}],
+    #       "usage": {"prompt_tokens": 50, "total_tokens": 82, "completion_tokens": 32}}
 
     def err_handler(ctx):
         print("-------------------------------------: err_handler")
