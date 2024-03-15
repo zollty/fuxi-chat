@@ -1,21 +1,17 @@
 from fastapi import Body, File, Form, UploadFile
 from fastapi.responses import StreamingResponse, JSONResponse
 from sse_starlette.sse import EventSourceResponse
-from langchain.chains import LLMChain
-from langchain.callbacks import AsyncIteratorCallbackHandler
 from typing import AsyncIterable, List, Optional, Dict, Union
-import asyncio
-from langchain.prompts.chat import ChatPromptTemplate
 import json
 
 from langchain.document_loaders import TextLoader
 
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 
-from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
 from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
+from common.prompts.string import jinja2_formatter
 
 # 读取原始文档
 # raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()
@@ -28,12 +24,6 @@ raw_documents_xiyou = TextLoader('/ai/apps/data/园博园介绍.txt', encoding='
 raw_documents_fw = TextLoader('/ai/apps/data/园博园服务.txt', encoding='utf-8').load()
 yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 YBY_DEFAULT_LLM = LONG_CONTEXT_MODEL
-
-# class MessageItem:
-#     role :str
-#     content: str
-
-from common.prompts.string import jinja2_formatter
 
 
 def format_jinja2_tmpl(prompt_tmpl_type: str, prompt_tmpl_name: str,
@@ -115,21 +105,15 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     #                      ensure_ascii=False)
     # await task
 
-    request = ChatCompletionRequest()
-    request.model = model_name
-    request.temperature = temperature
-    # request.top_p: Optional[float] = 1.0
-    request.top_k = top_k
-    # request.n: Optional[int] = 1
-    request.max_tokens = max_tokens
-    # request.stop: Optional[Union[str, List[str]]] = None
-    request.stream = stream
-    # request.presence_penalty: Optional[float] = 0.0
-    # request.frequency_penalty: Optional[float] = 0.0
-    # request.user: Optional[str] = None
-
     history.append(format_jinja2_tmpl("yby_chat", prompt_name, query=query, context=context))
-    request.messages = history
+
+    request = ChatCompletionRequest(model=model_name,
+                                    messages=history,
+                                    temperature=temperature,
+                                    top_k=top_k,
+                                    max_tokens=max_tokens,
+                                    stream=stream,
+                                    )
 
     error_check_ret = check_requests(request)
     if error_check_ret is not None:
