@@ -144,7 +144,8 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
         return json.dumps({"docs": source_documents}, ensure_ascii=False)
 
     if stream:
-        return EventSourceResponse(create_stream_chat_completion(request, data_handler, err_handler,
+        return EventSourceResponse(create_stream_chat_completion(request, data_handler,
+                                                                 err_handler=err_handler,
                                                                  success_last_handler=success_last_handler,
                                                                  finish_handler=finish_handler))
     else:
