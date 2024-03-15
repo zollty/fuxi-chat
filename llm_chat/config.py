@@ -11,20 +11,25 @@ LONG_CONTEXT_MODEL = "Qwen1.5-7B-Chat"
 TEMPERATURE = 0.7
 FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
 
+
 def file_chat_default_temperature():
     return 0.1
+
 
 def file_chat_summary_model():
     return LONG_CONTEXT_MODEL
 
+
 def file_chat_relate_qa_model():
     return file_chat_summary_model()
+
 
 def summary_max_length():
     return 30000
 
+
 def default_model():
-    return "Qwen-1.8B-Chat"
+    return DEFAULT_LLM
 
 
 def default_temperature():
@@ -34,8 +39,10 @@ def default_temperature():
 def openai_proxy():
     return None
 
+
 def default_openai_model():
     return "gpt-4"
+
 
 def get_prompt_template(type: str, name: str) -> Optional[str]:
     """
@@ -46,4 +53,3 @@ def get_prompt_template(type: str, name: str) -> Optional[str]:
     import importlib
     importlib.reload(prompt_config)  # TODO: 检查configs/prompt_config.py文件有修改再重新加载
     return prompt_config.PROMPT_TEMPLATES[type].get(name)
-
