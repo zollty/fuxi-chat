@@ -146,7 +146,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     if stream:
         return EventSourceResponse(stream_iterator())
     else:
-        res = create_not_stream_chat_completion(request)
+        res = await create_not_stream_chat_completion(request)
         if isinstance(res, ChatCompletionResponse):
             answer = res.choices[0].message.content
             return JSONResponse({"answer": answer, "docs": source_documents}, status_code=200)
