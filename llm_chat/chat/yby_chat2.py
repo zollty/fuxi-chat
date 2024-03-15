@@ -125,17 +125,17 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
                                                   "finish_reason": "stop"}],
           "usage": {"prompt_tokens": 50, "total_tokens": 82, "completion_tokens": 32}}
 
-    def err_handler(ctx):
+    async def err_handler(ctx):
         print("-------------------------------------: err_handler")
         print(ctx)
         yield json.dumps(ctx, ensure_ascii=False)
 
-    def data_handler(ctx):
+    async def data_handler(ctx):
         print("-------------------------------------: data_handler")
         print(ctx)
         yield json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
 
-    def finish_handler(ctx):
+    async def finish_handler(ctx):
         print("-------------------------------------: finish_handler")
         print(ctx)
 
