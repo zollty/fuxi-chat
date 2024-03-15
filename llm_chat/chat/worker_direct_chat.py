@@ -55,7 +55,7 @@ async def get_gen_params(*args, **kwargs) -> Dict[str, Any]:
     return gen_params
 
 
-async def create_stream_chat_completion(request: ChatCompletionRequest, err_handler=None, data_handler=None,
+async def create_stream_chat_completion(request: ChatCompletionRequest, data_handler, err_handler,
                                         success_last_handler=None, finish_handler=None):
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
@@ -106,7 +106,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, err_hand
                         "finish_reason": content.get("finish_reason", None)})
                     continue
 
-            content["content"] = delta_text
+            #content["content"] = delta_text
             yield data_handler(content)
     # There is not "content" field in the last delta message, so exclude_none to exclude field "content".
     if finish_handler:

@@ -125,26 +125,28 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
                                                   "finish_reason": "stop"}],
           "usage": {"prompt_tokens": 50, "total_tokens": 82, "completion_tokens": 32}}
 
-    async def err_handler(ctx):
+    def err_handler(ctx):
         print("-------------------------------------: err_handler")
         print(ctx)
-        yield json.dumps(ctx, ensure_ascii=False)
+        return json.dumps(ctx, ensure_ascii=False)
 
     def data_handler(ctx) -> str:
         print("-------------------------------------: data_handler")
         print(ctx)
         return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
 
-    async def finish_handler(ctx):
+    def finish_handler(ctx):
         print("-------------------------------------: finish_handler")
         print(ctx)
 
-    async def stream_iterator():
-        yield create_stream_chat_completion(request, data_handler=data_handler)
+    def success_last_handler(ctx):
         yield json.dumps({"docs": source_documents}, ensure_ascii=False)
+        print("-------------------------------------: success_last_handler")
 
     if stream:
-        return EventSourceResponse(create_stream_chat_completion(request, data_handler=data_handler))
+        return EventSourceResponse(create_stream_chat_completion(request, data_handler, err_handler,
+                                                                 success_last_handler=success_last_handler,
+                                                                 finish_handler=finish_handler))
     else:
         res = await create_not_stream_chat_completion(request)
         if isinstance(res, ChatCompletionResponse):
