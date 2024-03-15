@@ -16,9 +16,10 @@ from fastchat.protocol.openai_api_protocol import (
 
 from fastchat.constants import ErrorCode
 import cachetools
-from fastchat.serve.openai_api_server import app, logger, fetch_remote, get_gen_params, check_requests, \
-    chat_completion_stream_generator, generate_completion, create_error_response, check_api_key, app_settings, \
-    generate_completion_stream
+from fastchat.serve.openai_api_server import (app, logger, fetch_remote, get_gen_params as get_gen_params2,
+                                              check_requests, chat_completion_stream_generator, generate_completion,
+                                              create_error_response,
+                                              check_api_key, app_settings, generate_completion_stream)
 
 # 创建一个带 TTL 的缓存对象
 ttl_cache = cachetools.TTLCache(maxsize=100, ttl=60)
@@ -47,6 +48,13 @@ async def get_worker_address(model_name: str) -> str:
     return worker_addr
 
 
+async def get_gen_params(*args, **kwargs) -> Dict[str, Any]:
+    gen_params = await get_gen_params2(*args, **kwargs)
+    if not gen_params["max_new_tokens"] or gen_params["max_new_tokens"] <= 0:
+        gen_params["max_new_tokens"] = 1024 * 1024
+    return gen_params
+
+
 async def create_stream_chat_completion(request: ChatCompletionRequest, err_handler, data_handler,
                                         success_last_handler=None, finish_handler=None):
     """Creates a completion for the chat message"""
@@ -65,9 +73,6 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, err_hand
         echo=False,
         stop=request.stop,
     )
-
-    if gen_params["max_new_tokens"] <= 0:
-        gen_params["max_new_tokens"] = 1024 * 1024
 
     finish_stream_events = []
     for i in range(request.n):
@@ -107,7 +112,8 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, err_hand
         success_last_handler()
 
 
-async def create_not_stream_chat_completion(request: ChatCompletionRequest) -> Union[ChatCompletionResponse, JSONResponse]:
+async def create_not_stream_chat_completion(request: ChatCompletionRequest) -> Union[
+    ChatCompletionResponse, JSONResponse]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
@@ -124,9 +130,6 @@ async def create_not_stream_chat_completion(request: ChatCompletionRequest) -> U
         echo=False,
         stop=request.stop,
     )
-
-    if gen_params["max_new_tokens"] <= 0:
-        gen_params["max_new_tokens"] = 1024 * 1024
 
     choices = []
     chat_completions = []
@@ -181,9 +184,6 @@ async def create_chat_completion(request: ChatCompletionRequest):
         echo=False,
         stop=request.stop,
     )
-
-    if gen_params["max_new_tokens"] <= 0:
-        gen_params["max_new_tokens"] = 1024 * 1024
 
     if request.stream:
         generator = chat_completion_stream_generator(
