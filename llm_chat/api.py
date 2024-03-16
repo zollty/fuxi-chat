@@ -26,7 +26,7 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
 
 
 def mount_app_routes(app: FastAPI):
-    from llm_chat.chat.chat import chat
+    from llm_chat.chat.chat2 import chat
     # from llm_chat.chat.openai_chat import openai_chat
     from llm_chat.chat.yby_chat2 import yby_chat
     from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa

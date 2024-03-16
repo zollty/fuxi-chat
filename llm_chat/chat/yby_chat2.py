@@ -1,12 +1,11 @@
 from fastapi import Body, File, Form, UploadFile
 from fastapi.responses import StreamingResponse, JSONResponse
+from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 from sse_starlette.sse import EventSourceResponse
 from typing import AsyncIterable, List, Optional, Dict, Union
 import json
 
 from langchain.document_loaders import TextLoader
-
-from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 
 from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
