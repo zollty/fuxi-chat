@@ -1,6 +1,6 @@
 from fastapi import Body
 from sse_starlette.sse import EventSourceResponse
-from typing import AsyncIterable, Dict
+from typing import Dict
 import json
 from typing import List, Optional, Union
 from fastapi.responses import StreamingResponse, JSONResponse
