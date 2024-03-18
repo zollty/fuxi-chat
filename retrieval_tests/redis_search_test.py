@@ -76,8 +76,8 @@ if __name__ == '__main__':
     # insert_doc(client, docs, kb_name, use_id="key")
 
     sentences = [
-        "白蛇娘子",
-        "扬州园",
+        "\"白蛇娘子\"",
+        "\"扬州园\"",
         "美国",
         "照壁",
         "博纳",
@@ -87,5 +87,5 @@ if __name__ == '__main__':
     for doc in sentences:
         print(f"\n\n\n\n-------------------------query: {doc}")
         results = retrieve_docs(client, doc, kb_name)
-        # for x in results:
-        #     print(x)
+        for x in results:
+            print(x)
