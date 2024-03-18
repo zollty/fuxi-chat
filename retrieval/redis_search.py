@@ -63,8 +63,8 @@ def create_schema(client, kb_name: str):
 
     schema = (
         TextField("doc"),
-        TagField("key", as_name="type"),
-        TagField("src", as_name="type"),
+        TagField("key"),
+        TagField("src"),
     )
 
     definition = IndexDefinition(prefix=[prefix], index_type=IndexType.JSON)
