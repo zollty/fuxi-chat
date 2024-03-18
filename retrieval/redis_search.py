@@ -73,7 +73,6 @@ def create_schema(client, kb_name: str):
     )
     print(res)
     # >>> 'OK'
-
     return True
 
 
