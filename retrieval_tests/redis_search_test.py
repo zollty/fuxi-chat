@@ -66,7 +66,7 @@ if __name__ == '__main__':
     # >>> True
 
     kb_name = "yby"
-    # create_and_run_index(client, kb_name)
+    create_and_run_index(client, kb_name)
 
     raw_documents_sanguo = load_docs('/ai/apps/data/园博园参考资料.txt')
     raw_documents_xiyou = load_docs('/ai/apps/data/园博园介绍.txt')
