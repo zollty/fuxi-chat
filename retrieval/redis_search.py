@@ -58,7 +58,7 @@ class DocSchema:
 
 def create_schema(client, kb_name: str):
     s = get_short_url(kb_name)
-    prefix = "r:" + s + ":"
+    prefix = "r:" + s
     name = "doc:" + s
 
     schema = (
@@ -67,9 +67,9 @@ def create_schema(client, kb_name: str):
         TagField("src"),
     )
 
-    definition = IndexDefinition(prefix=[prefix], index_type=IndexType.JSON)
+    definition = IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
     res = client.ft(name).create_index(
-        fields=schema, definition=definition
+        fields=schema, definition=definition, overwrite=True
     )
     print(res)
     # >>> 'OK'
