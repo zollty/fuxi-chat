@@ -103,8 +103,10 @@ def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     s = get_short_url(kb_name)
     name = "doc:" + s
     # query = Query(f"@doc:%%{query}%%")
-    res = client.ft(name).search(query, {"language": "chinese"}).docs
+    # res = client.ft(name).search(query, {"language": "chinese"}).docs
     # print(res)
+    res = client.execute_command('FT.SEARCH', name, f"(@doc:{query}")
+    print(res)
     return res
 
 
@@ -123,5 +125,5 @@ if __name__ == '__main__':
 
     results = retrieve_docs(client, "江苏扬州园", kb_name)
 
-    for x in results:
-        print(x)
+    # for x in results:
+    #     print(x)
