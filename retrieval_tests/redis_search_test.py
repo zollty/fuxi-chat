@@ -87,5 +87,5 @@ if __name__ == '__main__':
     for doc in sentences:
         print(f"\n\n\n\n-------------------------query: {doc}")
         results = retrieve_docs(client, doc, kb_name)
-        for x in results:
-            print(x)
+        # for x in results:
+        #     print(x)
