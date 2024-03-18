@@ -58,7 +58,7 @@ class DocSchema:
 
 def create_schema(client, kb_name: str):
     s = get_short_url(kb_name)
-    prefix = "r:" + s
+    prefix = "r:" + s + ":"
     name = "doc:" + s
 
     schema = (
