@@ -66,14 +66,14 @@ if __name__ == '__main__':
     # >>> True
 
     kb_name = "yby"
-    create_and_run_index(client, kb_name)
-
-    raw_documents_sanguo = load_docs('/ai/apps/data/园博园参考资料.txt')
-    raw_documents_xiyou = load_docs('/ai/apps/data/园博园介绍.txt')
-    raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
-    docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
-
-    insert_doc(client, docs, kb_name, use_id="key")
+    # create_and_run_index(client, kb_name)
+    #
+    # raw_documents_sanguo = load_docs('/ai/apps/data/园博园参考资料.txt')
+    # raw_documents_xiyou = load_docs('/ai/apps/data/园博园介绍.txt')
+    # raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
+    # docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
+    #
+    # insert_doc(client, docs, kb_name, use_id="key")
 
     sentences = [
         "白蛇娘子",
