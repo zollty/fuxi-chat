@@ -102,8 +102,8 @@ def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id:
 def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     s = get_short_url(kb_name)
     name = "doc:" + s
-    query = Query(f"@doc:%%{query}%%")
-    res = client.ft(name).search(query, {"language": "chinese"}).docs#
+    # query = Query(f"@doc:%%{query}%%")
+    res = client.ft(name).search(query, {"language": "chinese"}).docs
     # print(res)
     return res
 
