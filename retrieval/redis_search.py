@@ -111,6 +111,8 @@ if __name__ == '__main__':
     kb_name = "yby"
     create_and_run_index(client, kb_name)
 
+    # insert_doc
+
     results = retrieve_docs(client, "江苏扬州园", kb_name)
 
     for x in results:
