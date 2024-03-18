@@ -65,7 +65,10 @@ def create_and_run_index(client: redis.Redis, kb_name: str):
     )
     print(res)
     # >>> 'OK'
-    return True
+
+    if res == "OK":
+        return True
+    return False
 
 
 def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id: str = None):
@@ -85,7 +88,7 @@ def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id:
         # pipeline.hset(redis_key, "doc", doc.doc)
         # pipeline.hset(redis_key, "key", doc.key)
         # pipeline.hset(redis_key, "src", doc.src)
-        pipeline.hmset(redis_key, doc)
+        pipeline.hset(redis_key, mapping=doc)
 
     res = pipeline.execute()
     print(res)
@@ -94,7 +97,7 @@ def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id:
 def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     s = get_short_url(kb_name)
     name = "doc:" + s
-    query = Query(f"@doc:({query})")
+    query = Query(f"@doc: {query}")
     res = client.ft(name).search(query).docs
     print(res)
     return res
@@ -109,7 +112,7 @@ if __name__ == '__main__':
     # >>> True
 
     kb_name = "yby"
-    create_and_run_index(client, kb_name)
+    #create_and_run_index(client, kb_name)
 
     # insert_doc
 
