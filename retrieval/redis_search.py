@@ -105,7 +105,7 @@ def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     # query = Query(f"@doc:%%{query}%%")
     # res = client.ft(name).search(query, {"language": "chinese"}).docs
     # print(res)
-    res = client.execute_command('FT.SEARCH', name, f"@doc:{query}")
+    res = client.execute_command('FT.SEARCH', name, f"@doc:{query}", "language", "chinese")
     print(res)
     return res
 
