@@ -76,9 +76,9 @@ if __name__ == '__main__':
     # insert_doc(client, docs, kb_name, use_id="key")
 
     sentences = [
-        "\"白蛇娘子\"",
-        "\"扬州园\"",
-        "\"美国\"",
+        "白蛇娘子*",
+        "扬州园*",
+        "美国",
         "照壁",
         "博纳",
         "梅苑山庄",
