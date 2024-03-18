@@ -7,14 +7,13 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-import redis
 from langchain.document_loaders import TextLoader
 from langchain.embeddings import ModelScopeEmbeddings
 from langchain.embeddings import HuggingFaceBgeEmbeddings
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma
 import chardet
-from retrieval.redis_search import create_and_run_index, insert_doc, retrieve_docs, DocSchema, get_short_url
+from retrieval.redis_search_vl import create_and_run_index, insert_doc, retrieve_docs, DocSchema, get_short_url
 
 # def read_file(path, encoding):
 #     result = []
@@ -60,20 +59,15 @@ def load_docs(path: str):
 
 if __name__ == '__main__':
 
-    client = redis.Redis(host="127.0.0.1", port=6389, decode_responses=True)
-    res = client.ping()
-    print(res)
-    # >>> True
-
     kb_name = "yby"
-    # create_and_run_index(client, kb_name)
+    create_and_run_index(kb_name)
 
     raw_documents_sanguo = load_docs('/ai/apps/data/园博园参考资料.txt')
     raw_documents_xiyou = load_docs('/ai/apps/data/园博园介绍.txt')
     raw_documents_fw = load_docs('/ai/apps/data/园博园服务.txt')
     docs = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 
-    insert_doc(client, docs, kb_name, use_id="key")
+    insert_doc(docs, kb_name, use_id="key")
 
     sentences = [
         "白蛇娘子",
@@ -82,10 +76,16 @@ if __name__ == '__main__':
         "博纳",
         "梅苑山庄",
         "院融景园",
-        "江苏扬州园",
+        "在景点分布布局上，主要的景点景区中有梅林山庄吗",
+        "介绍一下景点分布布局上的主要景点景区",
+        "哪里提到了梅苑山庄",
+        "梅苑山庄与什么关联",
+        "提到梅苑山庄是什么事情",
+        "某省被成为曲艺之乡，包括相声、评书等都在这里形成，某园林具有地域文化特色",
+        "“某省被成为曲艺之乡，包括相声、评书等都在这里形成，某园林具有地域文化特色”，请问这是哪个园林",
     ]
     for doc in sentences:
         print(f"\n\n\n\n-------------------------query: {doc}")
-        results = retrieve_docs(client, doc, kb_name)
+        results = retrieve_docs(doc, kb_name, 3)
         for x in results:
-            print(x)
+            print(x["doc"], x["vector_distance"], x["src"])

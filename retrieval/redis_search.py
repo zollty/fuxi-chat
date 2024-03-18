@@ -22,6 +22,7 @@ import redis
 from redis.commands.search.field import (
     NumericField,
     TagField,
+    NumericField,
     TextField,
     VectorField,
 )
@@ -50,13 +51,14 @@ class DocSchema:
 
 def create_and_run_index(client: redis.Redis, kb_name: str):
     s = get_short_url(kb_name)
-    prefix = "r:" + s
+    prefix = "f:" + s
     name = "doc:" + s
 
     schema = (
-        TextField("doc"),
+        NumericField("nid"),
         TagField("key"),
         TagField("src"),
+        TextField("doc"),
     )
 
     definition = IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
@@ -73,22 +75,25 @@ def create_and_run_index(client: redis.Redis, kb_name: str):
 
 def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id: str = None):
     s = get_short_url(kb_name)
-    prefix = "r:" + s
-
-    data = [{"doc": t.doc,
-             "key": t.key,
-             "nid": t.nid,
-             "src": t.src,
-             "embed": v}
-            for t, v in docs]
+    prefix = "f:" + s
+    name = "doc:" + s
 
     pipeline = client.pipeline()
-    for i, doc in enumerate(data, start=1):
-        redis_key = f"{prefix}:{i:03}"
+    ft = pipeline.ft(name)
+    for i, t in enumerate(docs, start=1):
+        redis_key = f"{prefix}:{i}"
         # pipeline.hset(redis_key, "doc", doc.doc)
         # pipeline.hset(redis_key, "key", doc.key)
         # pipeline.hset(redis_key, "src", doc.src)
-        pipeline.hset(redis_key, mapping=doc)
+
+        fields = {"doc": t.doc,
+                  "nid": i,
+                  "key": t.key,
+                  "src": t.src}
+        ft.add_document(redis_key, language="chinese", **fields)
+        # pipeline.hset(redis_key, mapping={"doc": t.doc,
+        #                                   "key": t.key,
+        #                                   "src": t.src})
 
     res = pipeline.execute()
     print(res)
@@ -98,7 +103,7 @@ def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     s = get_short_url(kb_name)
     name = "doc:" + s
     query = Query(f"@doc: {query}")
-    res = client.ft(name).search(query).docs
+    res = client.ft(name).search(query, {"language": "chinese"}).docs
     print(res)
     return res
 
@@ -112,7 +117,7 @@ if __name__ == '__main__':
     # >>> True
 
     kb_name = "yby"
-    #create_and_run_index(client, kb_name)
+    # create_and_run_index(client, kb_name)
 
     # insert_doc
 
