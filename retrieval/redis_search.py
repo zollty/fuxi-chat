@@ -1,4 +1,3 @@
-import time
 from typing import Any, List, Optional, Dict
 
 import hashlib
@@ -19,13 +18,6 @@ def get_short_url(url):
 
 
 from redisvl.index import SearchIndex
-from redisvl.utils.vectorize import HFTextVectorizer
-from redisvl.query import VectorQuery
-
-import json
-import time
-
-import numpy as np
 import redis
 from redis.commands.search.field import (
     NumericField,
@@ -56,7 +48,7 @@ class DocSchema:
         self.doc = doc
 
 
-def create_schema(client, kb_name: str):
+def create_and_run_index(client: redis.Redis, kb_name: str):
     s = get_short_url(kb_name)
     prefix = "r:" + s
     name = "doc:" + s
@@ -69,54 +61,37 @@ def create_schema(client, kb_name: str):
 
     definition = IndexDefinition(prefix=[prefix], index_type=IndexType.HASH)
     res = client.ft(name).create_index(
-        fields=schema, definition=definition, overwrite=True
+        fields=schema, definition=definition
     )
     print(res)
     # >>> 'OK'
     return True
 
 
-def create_and_run_index(kb_name: str, dims: int = DEFAULT_EMBED_DIMS, redis_url: str = REDIS_URL):
-    schema = create_schema(kb_name, dims)
-    index = SearchIndex.from_dict(schema)
-    # connect to local redis instance
-    index.connect(redis_url)
-
-    # create the index (no data yet)
-    index.create(overwrite=True)
-    return index
-
-
-def insert_doc(docs: List[DocSchema], kb_name: str, use_id: str = None, redis_url: str = REDIS_URL,
-               embedd_path: str = DEFAULT_EMBED_PATH):
-    sentences = [t.doc for t in docs]
-
-    # Embedding a single text
-    vectorizer = HFTextVectorizer(model=embedd_path)
-    # Embedding a batch of texts
-    embeddings = vectorizer.embed_many(sentences, batch_size=EMBED_BATCH_SIZE, as_buffer=True)
-    dims = len(embeddings[0])
-
-    schema = create_schema(kb_name, dims)
-    index = SearchIndex.from_dict(schema)
-    # connect to local redis instance
-    index.connect(redis_url)  # "redis://127.0.0.1:6389"
+def insert_doc(client: redis.Redis, docs: List[DocSchema], kb_name: str, use_id: str = None):
+    s = get_short_url(kb_name)
+    prefix = "r:" + s
 
     data = [{"doc": t.doc,
              "key": t.key,
              "nid": t.nid,
              "src": t.src,
              "embed": v}
-            for t, v in zip(docs, embeddings)]
+            for t, v in docs]
 
-    # load装载数据
-    if use_id:
-        index.load(data, id_field=use_id)
-    else:
-        index.load(data)
+    pipeline = client.pipeline()
+    for i, doc in enumerate(data, start=1):
+        redis_key = f"{prefix}:{i:03}"
+        # pipeline.hset(redis_key, "doc", doc.doc)
+        # pipeline.hset(redis_key, "key", doc.key)
+        # pipeline.hset(redis_key, "src", doc.src)
+        pipeline.hmset(redis_key, doc)
+
+    res = pipeline.execute()
+    print(res)
 
 
-def retrieve_docs(client, query: str, kb_name: str):
+def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     s = get_short_url(kb_name)
     name = "doc:" + s
     query = Query(f"@doc:({query})")
@@ -134,7 +109,7 @@ if __name__ == '__main__':
     # >>> True
 
     kb_name = "yby"
-    create_schema(client, kb_name)
+    create_and_run_index(client, kb_name)
 
     results = retrieve_docs(client, "江苏扬州园", kb_name)
 
