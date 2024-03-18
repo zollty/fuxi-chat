@@ -77,12 +77,12 @@ if __name__ == '__main__':
 
     sentences = [
         "白蛇娘子",
+        "江苏扬州园",
         "美国",
         "照壁",
         "博纳",
         "梅苑山庄",
         "院融景园",
-        "江苏扬州园",
     ]
     for doc in sentences:
         print(f"\n\n\n\n-------------------------query: {doc}")
