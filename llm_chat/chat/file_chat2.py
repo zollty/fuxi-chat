@@ -9,7 +9,7 @@ import json
 import threading
 from common.api_base import (BaseResponse, ListResponse)
 from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
-from llm_chat.chat.doc_summary5 import doc_chat_iterator
+from llm_chat.chat.doc_summary import summary_doc
 from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_relate_qa_model, file_chat_summary_model, \
     file_chat_default_temperature, summary_max_length
 from tools.file_upload_parse import parse_files_in_thread
@@ -22,7 +22,7 @@ from vectorstores.mem_cache.faiss_cache import memo_cache_faiss_pool
 from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-from llm_chat.chat.utils import format_jinja2_tmpl_qa
+from llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
 
@@ -134,7 +134,7 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
 
     if len(docs) == 0:  # 如果没有找到相关文档，使用Empty模板
         prompt_name = "empty"
-    history.append(format_jinja2_tmpl_qa("knowledge_base_chat", prompt_name, query=query, context=context))
+    history.append(format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, query=query, context=context))
 
     source_documents = []
     for inum, doc in enumerate(docs):
@@ -187,8 +187,9 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
         return BaseResponse(code=404, msg=f"未找到临时文档 {doc_id}，请检查或重试")
 
     model_name = file_chat_summary_model()
-
     prompt_name = "summary2"
+    max_tokens = MAX_LENGTH
+
     doc = org_docs[0].page_content
     # 计算总长度
     total_length = len(doc)
@@ -210,13 +211,41 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
         src_info = {"doc": f"""原文 {file_name} \n\n{doc[:1000]}\n\n"""}
     print("==================")
     print(src_info)
-    return EventSourceResponse(doc_chat_iterator(doc=doc,
-                                                 stream=stream,
-                                                 model_name=model_name,
-                                                 max_tokens=0,
-                                                 temperature=0.1,
-                                                 prompt_name=prompt_name,
-                                                 src_info=src_info))
+
+    return summary_doc(doc=doc,
+                       stream=stream,
+                       model_name=model_name,
+                       max_tokens=max_tokens,
+                       prompt_name=prompt_name,
+                       src_info=src_info)
+
+    # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
+    #
+    # request = ChatCompletionRequest(model=model_name,
+    #                                 messages=history,
+    #                                 temperature=file_chat_default_temperature(),
+    #                                 max_tokens=max_tokens,
+    #                                 stream=stream,
+    #                                 )
+    #
+    # def data_handler(ctx) -> str:
+    #     return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
+    #
+    # def success_last_handler():
+    #     print("-------------------------------------: success_last_handler")
+    #     return json.dumps({"docs": src_info}, ensure_ascii=False)
+    #
+    # if stream:
+    #     return EventSourceResponse(create_stream_chat_completion(request, data_handler,
+    #                                                              success_last_handler=success_last_handler,
+    #                                                              ))
+    # else:
+    #     res = await create_not_stream_chat_completion(request)
+    #     if isinstance(res, ChatCompletionResponse):
+    #         answer = res.choices[0].message.content
+    #         return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
+    #     else:
+    #         return res
 
 
 async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
@@ -229,9 +258,8 @@ async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
         model_name = file_chat_relate_qa_model()
 
     prompt_name = "relate_qa"
-    return EventSourceResponse(doc_chat_iterator(doc=doc,
-                                                 stream=stream,
-                                                 model_name=model_name,
-                                                 max_tokens=0,
-                                                 temperature=0.1,
-                                                 prompt_name=prompt_name))
+    return summary_doc(doc=doc,
+                       stream=stream,
+                       model_name=model_name,
+                       prompt_name=prompt_name,
+                       )

@@ -17,23 +17,36 @@ from common.utils import LOG_VERBOSE, logger
 from common.prompts.string import jinja2_formatter
 from llm_chat.config import get_prompt_template
 
-def format_jinja2_tmpl(prompt: str, prompt_tmpl_type: str, prompt_tmpl_name: str, input: str):
+
+def format_jinja2_prompt_tmpl(prompt: str = None, tmpl_type: str = None, tmpl_name: str = None, **kwargs):
     if prompt:
         prompt_template = prompt
     else:
-        prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
+        prompt_template = get_prompt_template(tmpl_type, tmpl_name)
     input_msg = {"role": "user",
-                 "content": jinja2_formatter(prompt_template, input=input)
+                 "content": jinja2_formatter(prompt_template, **kwargs)
                  }
     return input_msg
 
-def format_jinja2_tmpl_qa(prompt_tmpl_type: str, prompt_tmpl_name: str,
-                       query: str, context: str):
-    prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
-    input_msg = {"role": "user",
-                 "content": jinja2_formatter(prompt_template, context=context, question=query)
-                 }
-    return input_msg
+
+# def format_jinja2_tmpl(prompt: str, prompt_tmpl_type: str, prompt_tmpl_name: str, input: str):
+#     if prompt:
+#         prompt_template = prompt
+#     else:
+#         prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
+#     input_msg = {"role": "user",
+#                  "content": jinja2_formatter(prompt_template, input=input)
+#                  }
+#     return input_msg
+#
+#
+# def format_jinja2_tmpl_qa(prompt_tmpl_type: str, prompt_tmpl_name: str,
+#                           query: str, context: str):
+#     prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
+#     input_msg = {"role": "user",
+#                  "content": jinja2_formatter(prompt_template, context=context, question=query)
+#                  }
+#     return input_msg
 
 
 class History(BaseModel):
@@ -80,6 +93,7 @@ class History(BaseModel):
 from langchain.chat_models import ChatOpenAI
 from llm_chat.chat.minx_chat_openai import MinxChatOpenAI
 from llm_chat import config
+
 
 def get_ChatOpenAI(
         model_name: str,
@@ -141,6 +155,8 @@ def get_ChatOpenAI_temp(
 
 import asyncio
 import logging
+
+
 async def wrap_done(fn: Awaitable, event: asyncio.Event):
     """Wrap an awaitable with a event to signal when it's done or an exception is raised."""
     try:

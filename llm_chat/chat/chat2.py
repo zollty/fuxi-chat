@@ -8,7 +8,7 @@ from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 from llm_chat.config import DEFAULT_LLM, TEMPERATURE
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from llm_chat.chat.utils import format_jinja2_tmpl
+from llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 message_id_curr = {"id": 0}
 
@@ -40,7 +40,7 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
     if isinstance(max_tokens, int) and max_tokens <= 0:
         max_tokens = None
 
-    history.append(format_jinja2_tmpl(system_prompt, "llm_chat", prompt_name, input=query))
+    history.append(format_jinja2_prompt_tmpl(prompt=system_prompt, tmpl_type="llm_chat", tmpl_name=prompt_name, input=query))
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,

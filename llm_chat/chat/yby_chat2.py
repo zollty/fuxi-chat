@@ -10,7 +10,7 @@ from langchain.document_loaders import TextLoader
 from llm_chat.config import LONG_CONTEXT_MODEL, file_chat_default_temperature
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from llm_chat.chat.utils import format_jinja2_tmpl_qa
+from llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 # 读取原始文档
 # raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()
@@ -98,7 +98,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     #                      ensure_ascii=False)
     # await task
 
-    history.append(format_jinja2_tmpl_qa("yby_chat", prompt_name, query=query, context=context))
+    history.append(format_jinja2_prompt_tmpl(tmpl_type="yby_chat", tmpl_name=prompt_name, query=query, context=context))
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,
