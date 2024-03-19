@@ -121,8 +121,6 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
     if knowledge_id not in memo_cache_faiss_pool.keys():
         return BaseResponse(code=404, msg=f"未找到临时知识库 {knowledge_id}，请先上传文件")
 
-    nonlocal max_tokens
-    # callback = AsyncIteratorCallbackHandler()
     if isinstance(max_tokens, int) and max_tokens <= 0:
         max_tokens = None
 
