@@ -191,15 +191,15 @@ def _launch_demo(args, model, tokenizer):
         gr.Markdown("""\
 <p align="center"><img src="https://modelscope.cn/api/v1/models/qwen/Qwen-7B-Chat/repo?
 Revision=master&FilePath=assets/logo.jpeg&View=true" style="height: 80px"/><p>""")
-        gr.Markdown("""<center><font size=8>Qwen-VL-Chat Bot</center>""")
+        gr.Markdown("""<center><font size=8>风后多模态<视觉模型></center>""")
         gr.Markdown(
             """\
 <center><font size=3>This WebUI is based on Qwen-VL-Chat, developed by Alibaba Cloud. \
-(本WebUI基于Qwen-VL-Chat打造，实现聊天机器人功能。)</center>""")
+(基于开源VL模型打造，支持qwen-vl-7b和internlm-xcomposer-7b，实现图片理解聊天功能)</center>""")
         gr.Markdown("""\
-<center><font size=4>Qwen-VL <a href="https://modelscope.cn/models/qwen/Qwen-VL/summary">🤖 </a> 
+<center><font size=4>模型1-VL <a href="https://modelscope.cn/models/qwen/Qwen-VL/summary">🤖 </a> 
 | <a href="https://huggingface.co/Qwen/Qwen-VL">🤗</a>&nbsp ｜ 
-Qwen-VL-Chat <a href="https://modelscope.cn/models/qwen/Qwen-VL-Chat/summary">🤖 </a> | 
+模型2-VL <a href="https://modelscope.cn/models/qwen/Qwen-VL-Chat/summary">🤖 </a> | 
 <a href="https://huggingface.co/Qwen/Qwen-VL-Chat">🤗</a>&nbsp ｜ 
 &nbsp<a href="https://github.com/QwenLM/Qwen-VL">Github</a></center>""")
 
