@@ -106,8 +106,15 @@ def retrieve_docs(client: redis.Redis, query: str, kb_name: str):
     # res = client.ft(name).search(query, {"language": "chinese"}).docs
     # print(res)
     res = client.execute_command('FT.SEARCH', name, f"@doc:{query}", "language", "chinese")
-    print(res)
+    # print(res)
     return res
+
+
+def list_to_dict(ls):
+    b = {}
+    for i in range(0, len(ls), 2):
+        b[ls[i]] = ls[i + 1]
+    return b
 
 
 if __name__ == '__main__':
@@ -125,5 +132,5 @@ if __name__ == '__main__':
 
     results = retrieve_docs(client, "江苏扬州园", kb_name)
 
-    # for x in results:
-    #     print(x)
+    for x in results:
+        print(list_to_dict(x))

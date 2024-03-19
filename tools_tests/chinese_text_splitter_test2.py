@@ -8,13 +8,10 @@ RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
 if __name__ == "__main__":
-    from tools.text_splitter import ChineseRecursiveTextSplitter
+    from tools.text_splitter.chinese_text_splitter2 import ChineseTextSplitter2
 
-    text_splitter = ChineseRecursiveTextSplitter(
-        keep_separator=True,
-        is_separator_regex=True,
-        chunk_size=100,
-        chunk_overlap=0
+    text_splitter = ChineseTextSplitter2(
+        # sentence_size=500
     )
     ls = [
         """1.园博园建筑格局

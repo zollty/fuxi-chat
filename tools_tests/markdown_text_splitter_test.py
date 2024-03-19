@@ -48,4 +48,4 @@ if __name__ == "__main__":
         print(inum)
         chunks = text_splitter.split_text(text)
         for chunk in chunks:
-            print(chunk)
+            print(f"--------------------------------------{len(chunk.page_content)}: \n{chunk}")

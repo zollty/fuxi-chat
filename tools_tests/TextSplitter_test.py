@@ -7,13 +7,30 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-if __name__ == "__main__":
-    from tools.text_splitter import ChineseRecursiveTextSplitter
+from typing import List
+import re
 
-    text_splitter = ChineseRecursiveTextSplitter(
-        keep_separator=True,
-        is_separator_regex=True,
-        chunk_size=100,
+
+def split_text1(text: str, isPDF: bool = False) -> List[str]:
+    if isPDF:
+        text = re.sub(r"\n{3,}", "\n", text)
+        text = re.sub(r'\s', ' ', text)
+        text = text.replace("\n\n", "")
+    sent_sep_pattern = re.compile('([﹒﹔﹖﹗．。！？]["’”」』]{0,2}|(?=["‘“「『]{1,2}|$))')  # del ：；
+    sent_list = []
+    for ele in sent_sep_pattern.split(text):
+        if sent_sep_pattern.match(ele) and sent_list:
+            sent_list[-1] += ele
+        elif ele:
+            sent_list.append(ele)
+    return sent_list
+
+
+if __name__ == "__main__":
+    from tools.text_splitter.TextSplitter import TextSplitter
+
+    text_splitter = TextSplitter(
+        chunk_size=500,
         chunk_overlap=0
     )
     ls = [
@@ -38,13 +55,11 @@ if __name__ == "__main__":
 1.园博园主要建筑：龙景书院
 龙景书院是重庆园博园中唯一的书院建筑，位于园博园中部龙景湖畔的龙脊山上，结合山头较缓区域，按照中华传统建筑规则，在一条中轴线上呈轴对称布局“西北高，东南低”的两进院落，以传统书院空间结构展示中国传统文化魅力。
 书院配套园林，是以松、竹、梅为主题打造的“三友园”。由于滨湖而建，整个龙景书院也是园博园中一方赏湖佳地。
-
-Hard agree here. Once people understand rust, not read some bullet points on a blog they start to understand how useful even the tooling is.Only thing I'll add is. 8 times out of 10 if you are reaching for advanced rust, you are over engineering. Most software projects don't require it and when they do, you should always question whether there's a simpler more maintainable way or make a other design decision. There is no award for least lines of code, or most utilized compiler. Software is social.That's Go's biggest strength over Rust and Scala. Good luck getting job security in that language. It takes a few years to really know what I'm saying but in my opinion it's the difference between a senior engineer and a non senior.
         """,
     ]
     # text = """"""
     for inum, text in enumerate(ls):
         print(inum)
-        chunks = text_splitter.split_text(text)
+        chunks = text_splitter.split_text1(text)
         for chunk in chunks:
             print(f"--------------------------------------{len(chunk)}: \n{chunk}")

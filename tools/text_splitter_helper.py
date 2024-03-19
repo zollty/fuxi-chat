@@ -3,7 +3,7 @@ from tools.config import text_splitter_dict, DEFAULT_HUGGINGFACE_TOKENIZER_MODEL
 from typing import List, Union, Dict
 
 from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
-
+import langchain
 
 def load_text_splitter(
         splitter_name: str = TEXT_SPLITTER_NAME,
@@ -81,6 +81,7 @@ def load_text_splitter(
         text_splitter_module = importlib.import_module('langchain.text_splitter')
         TextSplitter = getattr(text_splitter_module, "RecursiveCharacterTextSplitter")
         text_splitter = TextSplitter(chunk_size=chunk_size, chunk_overlap=chunk_overlap)
+        print("错误信息见上--------------改用文档切分器：langchain.text_splitter.RecursiveCharacterTextSplitter")
 
     # If you use SpacyTextSplitter you can use GPU to do split likes Issue #1287
     # text_splitter._tokenizer.max_length = 37016792
@@ -121,6 +122,7 @@ def do_split_docs(
     lens = len(split_docs)
     print(f"文档切分结果：-----------------------------------切分后数量：{lens}")
     for dd in split_docs:
+        #print(docs[0].index(dd.page_content))
         print(dd)
 
     return split_docs

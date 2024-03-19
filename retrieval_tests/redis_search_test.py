@@ -88,5 +88,4 @@ if __name__ == '__main__':
         print(f"\n\n\n\n-------------------------query: {doc}")
         results = retrieve_docs(client, doc, kb_name)
         for x in results:
-            print(type(x))
             print(x)
