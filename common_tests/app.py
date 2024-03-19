@@ -172,8 +172,8 @@ def launch_demo(args, preprocessor, model):
                     step=step):
                 print(outputs)
                 # res, tokens = outputs[0]
-                res = outputs[0]
-                tokens = outputs[1]
+                res = outputs[1]
+                tokens = outputs[2]
                 # decode res
                 response = model.tokenizer.decode(res.tolist(),
                                                   offset=response_size)
