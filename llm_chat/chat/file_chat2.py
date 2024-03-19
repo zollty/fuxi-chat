@@ -1,14 +1,9 @@
 from fastapi import Body, File, Form, UploadFile
 from sse_starlette.sse import EventSourceResponse
-from langchain.chains import LLMChain
-from langchain.callbacks import AsyncIteratorCallbackHandler
-from typing import AsyncIterable, List, Optional
-import asyncio
-from langchain.prompts.chat import ChatPromptTemplate
+from typing import Dict, List, Optional
 import json
 import threading
 from common.api_base import (BaseResponse, ListResponse)
-from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
 from llm_chat.chat.doc_summary import summary_doc
 from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_relate_qa_model, file_chat_summary_model, \
     file_chat_default_temperature, summary_max_length
@@ -102,7 +97,7 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
                     score_threshold: float = Body(SCORE_THRESHOLD,
                                                   description="知识库匹配相关度阈值，取值范围在0-1之间，SCORE越小，相关度越高，取到1相当于不筛选，建议设置在0.5左右",
                                                   ge=0, le=2),
-                    history: List[History] = Body([],
+                    history: List[Dict] = Body([],
                                                   description="历史对话",
                                                   examples=[[
                                                       {"role": "user",
