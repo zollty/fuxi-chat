@@ -1,6 +1,6 @@
 from fastapi import Body, File, Form, UploadFile
 from sse_starlette.sse import EventSourceResponse
-from typing import Dict, List, Optional
+from typing import Dict, List, Optional, Union
 import json
 import threading
 from common.api_base import (BaseResponse, ListResponse)
@@ -176,7 +176,7 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
                        file_name: str = Body(..., description="文档名"),
                        stream: bool = Body(False, description="流式输出"),
                        seg: int = Body(0, description="分段"),
-                       ):
+                       ) -> Union[ChatCompletionResponse, JSONResponse]:
     doc_id = kid + file_name
     org_docs = STATIC_DOCUMENTS.get(doc_id)
     if not org_docs:
@@ -210,11 +210,11 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     print(src_info)
 
     return summary_doc(doc=doc,
-                      stream=stream,
-                      model_name=model_name,
-                      max_tokens=max_tokens,
-                      prompt_name=prompt_name,
-                      src_info=src_info)
+                       stream=stream,
+                       model_name=model_name,
+                       max_tokens=max_tokens,
+                       prompt_name=prompt_name,
+                       src_info=src_info)
 
     # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
     #
@@ -248,7 +248,7 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
 async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
                         llm_model: str = Body(None, description="指定模型"),
                         stream: bool = Body(False, description="流式输出"),
-                        ):
+                        ) -> Union[ChatCompletionResponse, JSONResponse]:
     if llm_model:
         model_name = llm_model
     else:
@@ -256,7 +256,7 @@ async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
 
     prompt_name = "relate_qa"
     return summary_doc(doc=doc,
-                      stream=stream,
-                      model_name=model_name,
-                      prompt_name=prompt_name,
-                      )
+                       stream=stream,
+                       model_name=model_name,
+                       prompt_name=prompt_name,
+                       )
