@@ -7,10 +7,10 @@ import json
 
 from langchain.document_loaders import TextLoader
 
-from llm_chat.config import get_prompt_template, LONG_CONTEXT_MODEL, file_chat_default_temperature
+from llm_chat.config import LONG_CONTEXT_MODEL, file_chat_default_temperature
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from common.prompts.string import jinja2_formatter
+from llm_chat.chat.utils import format_jinja2_tmpl_qa
 
 # 读取原始文档
 # raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()
@@ -25,13 +25,7 @@ yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 YBY_DEFAULT_LLM = LONG_CONTEXT_MODEL
 
 
-def format_jinja2_tmpl(prompt_tmpl_type: str, prompt_tmpl_name: str,
-                       query: str, context: str):
-    prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
-    input_msg = {"role": "user",
-                 "content": jinja2_formatter(prompt_template, context=context, question=query)
-                 }
-    return input_msg
+
 
 
 async def yby_chat(query: str = Body(..., description="用户输入", examples=["你好"]),
@@ -104,7 +98,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     #                      ensure_ascii=False)
     # await task
 
-    history.append(format_jinja2_tmpl("yby_chat", prompt_name, query=query, context=context))
+    history.append(format_jinja2_tmpl_qa("yby_chat", prompt_name, query=query, context=context))
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,

@@ -5,23 +5,12 @@ import json
 from typing import List, Optional, Union
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-from llm_chat.config import DEFAULT_LLM, TEMPERATURE, get_prompt_template
+from llm_chat.config import DEFAULT_LLM, TEMPERATURE
 from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from common.prompts.string import jinja2_formatter
+from llm_chat.chat.utils import format_jinja2_tmpl
 
 message_id_curr = {"id": 0}
-
-
-def format_jinja2_tmpl(prompt: str, prompt_tmpl_type: str, prompt_tmpl_name: str, input: str):
-    if prompt:
-        prompt_template = prompt
-    else:
-        prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
-    input_msg = {"role": "user",
-                 "content": jinja2_formatter(prompt_template, input=input)
-                 }
-    return input_msg
 
 
 async def chat(query: str = Body(..., description="用户输入", examples=["恼羞成怒"]),

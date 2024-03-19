@@ -14,6 +14,27 @@ from typing import (
     Tuple
 )
 from common.utils import LOG_VERBOSE, logger
+from common.prompts.string import jinja2_formatter
+from llm_chat.config import get_prompt_template
+
+def format_jinja2_tmpl(prompt: str, prompt_tmpl_type: str, prompt_tmpl_name: str, input: str):
+    if prompt:
+        prompt_template = prompt
+    else:
+        prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
+    input_msg = {"role": "user",
+                 "content": jinja2_formatter(prompt_template, input=input)
+                 }
+    return input_msg
+
+def format_jinja2_tmpl_qa(prompt_tmpl_type: str, prompt_tmpl_name: str,
+                       query: str, context: str):
+    prompt_template = get_prompt_template(prompt_tmpl_type, prompt_tmpl_name)
+    input_msg = {"role": "user",
+                 "content": jinja2_formatter(prompt_template, context=context, question=query)
+                 }
+    return input_msg
+
 
 class History(BaseModel):
     """
