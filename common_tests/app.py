@@ -170,7 +170,7 @@ def launch_demo(args, preprocessor, model):
                     sequence_start=sequence_start,
                     random_seed=seed,
                     step=step):
-                print(outputs[0])
+                print(outputs)
                 res, tokens = outputs[0]
                 # decode res
                 response = model.tokenizer.decode(res.tolist(),
