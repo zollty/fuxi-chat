@@ -240,7 +240,7 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
 async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
                         llm_model: str = Body(None, description="指定模型"),
                         stream: bool = Body(False, description="流式输出"),
-                        ) -> Union[ChatCompletionResponse, JSONResponse]:
+                        ):
     if llm_model:
         model_name = llm_model
     else:
