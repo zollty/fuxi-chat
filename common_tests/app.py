@@ -19,7 +19,7 @@ from lmdeploy.turbomind.chat import valid_str
 
 BATCH_SIZE = 32
 DEFAULT_MODEL_NAME = 'qwen-vl-chat'
-DEFAULT_HF_CKPT = '/ai/models/Qwen-VL-Chat-Int4'
+DEFAULT_HF_CKPT = '/ai/models/Qwen-VL-Chat'
 #DEFAULT_MODEL_NAME = 'internlm-xcomposer-7b'
 # DEFAULT_HF_CKPT = 'internlm/internlm-xcomposer-7b'
 # should use extract_xcomposer_llm.py to extract llm
