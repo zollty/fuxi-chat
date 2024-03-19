@@ -7,7 +7,7 @@ __current_script_path = os.path.abspath(__file__)
 RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(RUNTIME_ROOT_DIR)
 
-from fastapi import FastAPI, Body
+from fastapi import FastAPI, Body, Request
 from starlette.responses import RedirectResponse
 from typing import List, Literal
 from common.api_base import (BaseResponse, ListResponse)
@@ -25,10 +25,12 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
     return BaseResponse(data=ret)
 
 
-def update_config(cfg: str = Body(..., description="更新配置")):
+async def update_config(request: Request):
+    body_bytes = await request.body()
+    body_text = body_bytes.decode("utf-8")
     print("---------------------------------------")
-    print(cfg)
-    return BaseResponse()
+    print(body_text)
+    return BaseResponse(data=body_text)
 
 
 def mount_app_routes(app: FastAPI):
