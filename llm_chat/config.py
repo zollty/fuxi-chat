@@ -7,7 +7,7 @@ from common.base_config import *
 
 DEFAULT_LLM = "Qwen-1.8B-Chat"
 # LONG_CONTEXT_MODEL = "chatglm3-6b-32k"
-LONG_CONTEXT_MODEL = "Qwen1.5-7B-Chat"
+LONG_CONTEXT_MODEL = "Qwen1.5-14B-Chat-GPTQ-Int4" # "Qwen1.5-7B-Chat"
 TEMPERATURE = 0.7
 FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
 

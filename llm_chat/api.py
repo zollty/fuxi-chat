@@ -25,6 +25,12 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
     return BaseResponse(data=ret)
 
 
+def update_config(cfg: str = Body(..., description="更新配置")):
+    print("---------------------------------------")
+    print(cfg)
+    return BaseResponse()
+
+
 def mount_app_routes(app: FastAPI):
     from llm_chat.chat.chat2 import chat
     # from llm_chat.chat.openai_chat import openai_chat
@@ -82,6 +88,11 @@ def mount_app_routes(app: FastAPI):
              tags=["Inner"],
              summary="上传文件到临时目录（for file_chat，用于文件对话）。内部接口，勿单独调用"
              )(upload_temp_docs)
+
+    app.post("/inner/config/update_config",
+             tags=["Inner"],
+             summary="更新配置"
+             )(update_config)
 
     app.post("/tools/test_parse_docs",
              tags=["Tools"],
