@@ -14,9 +14,7 @@ import os
 import re
 import secrets
 import tempfile
-from modelscope import (
-    snapshot_download, AutoModelForCausalLM, AutoTokenizer, GenerationConfig
-)
+from modelscope import AutoModelForCausalLM, AutoTokenizer, GenerationConfig
 
 DEFAULT_CKPT_PATH = '/ai/models/Qwen-VL-Chat-Int4'
 BOX_TAG_PATTERN = r"<box>([\s\S]*?)</box>"
