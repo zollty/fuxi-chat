@@ -175,7 +175,9 @@ def launch_demo(args, preprocessor, model):
                 res = outputs[1]
                 tokens = outputs[2]
                 # decode res
-                response = model.tokenizer.decode(res.tolist(),
+                # response = model.tokenizer.decode(res.tolist(),
+                #                                   offset=response_size)
+                response = model.tokenizer.decode(res,
                                                   offset=response_size)
                 if response.endswith('�'):
                     continue
