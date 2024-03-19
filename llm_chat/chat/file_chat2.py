@@ -98,13 +98,13 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
                                                   description="知识库匹配相关度阈值，取值范围在0-1之间，SCORE越小，相关度越高，取到1相当于不筛选，建议设置在0.5左右",
                                                   ge=0, le=2),
                     history: List[Dict] = Body([],
-                                                  description="历史对话",
-                                                  examples=[[
-                                                      {"role": "user",
-                                                       "content": "我们来玩成语接龙，我先来，生龙活虎"},
-                                                      {"role": "assistant",
-                                                       "content": "虎头虎脑"}]]
-                                                  ),
+                                               description="历史对话",
+                                               examples=[[
+                                                   {"role": "user",
+                                                    "content": "我们来玩成语接龙，我先来，生龙活虎"},
+                                                   {"role": "assistant",
+                                                    "content": "虎头虎脑"}]]
+                                               ),
                     stream: bool = Body(False, description="流式输出"),
                     model_name: str = Body(DEFAULT_LLM, description="LLM 模型名称。"),
                     temperature: float = Body(file_chat_default_temperature(), description="LLM 采样温度", ge=0.0,
@@ -129,7 +129,8 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
 
     if len(docs) == 0:  # 如果没有找到相关文档，使用Empty模板
         prompt_name = "empty"
-    history.append(format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, query=query, context=context))
+    history.append(
+        format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, query=query, context=context))
 
     source_documents = []
     for inum, doc in enumerate(docs):
@@ -179,7 +180,8 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     doc_id = kid + file_name
     org_docs = STATIC_DOCUMENTS.get(doc_id)
     if not org_docs:
-        return BaseResponse(code=404, msg=f"未找到临时文档 {doc_id}，请检查或重试")
+        # return BaseResponse(code=404, msg=f"未找到临时文档 {doc_id}，请检查或重试")
+        return JSONResponse({"code": 404, "msg": f"未找到临时文档 {doc_id}，请检查或重试"}, status_code=200)
 
     model_name = file_chat_summary_model()
     prompt_name = "summary2"
@@ -208,11 +210,11 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     print(src_info)
 
     return summary_doc(doc=doc,
-                       stream=stream,
-                       model_name=model_name,
-                       max_tokens=max_tokens,
-                       prompt_name=prompt_name,
-                       src_info=src_info)
+                      stream=stream,
+                      model_name=model_name,
+                      max_tokens=max_tokens,
+                      prompt_name=prompt_name,
+                      src_info=src_info)
 
     # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
     #
@@ -254,7 +256,7 @@ async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
 
     prompt_name = "relate_qa"
     return summary_doc(doc=doc,
-                       stream=stream,
-                       model_name=model_name,
-                       prompt_name=prompt_name,
-                       )
+                      stream=stream,
+                      model_name=model_name,
+                      prompt_name=prompt_name,
+                      )
