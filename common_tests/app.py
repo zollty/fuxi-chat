@@ -11,7 +11,7 @@ from typing import List, Tuple
 import gradio as gr
 from packaging.version import Version, parse
 from qwen_model import QwenVLChat
-from xcomposer_model import InternLMXComposer
+# from xcomposer_model import InternLMXComposer
 
 from lmdeploy.serve.gradio.constants import CSS, THEME, disable_btn, enable_btn
 from lmdeploy.turbomind import TurboMind
@@ -27,7 +27,7 @@ DEFAULT_HF_CKPT = '/ai/models/Qwen-VL-Chat-Int4'
 DEFAULT_LLM_CKPT = None
 
 SUPPORTED_MODELS = {
-    'internlm-xcomposer-7b': InternLMXComposer,
+    'internlm-xcomposer-7b': None,#InternLMXComposer,
     'qwen-vl-chat': QwenVLChat
 }
 
