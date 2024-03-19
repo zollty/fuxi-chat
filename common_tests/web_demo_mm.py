@@ -44,7 +44,8 @@ def _get_args():
 
 def _load_model_tokenizer(args):
     tokenizer = AutoTokenizer.from_pretrained(
-        args.checkpoint_path, trust_remote_code=True, resume_download=False
+        args.checkpoint_path, trust_remote_code=True,
+        # resume_download=False
         # , revision='master',
     )
 
