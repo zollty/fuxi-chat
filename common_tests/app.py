@@ -213,7 +213,7 @@ def launch_demo(args, preprocessor, model):
 
     with gr.Blocks(css=CSS, theme=THEME) as demo:
         with gr.Column(elem_id='container'):
-            gr.Markdown('## LMDeploy VL Playground')
+            gr.Markdown('## 风后 VL Playground')
 
             chatbot = gr.Chatbot(elem_id='chatbot', label=model.model_name)
             query = gr.Textbox(placeholder='Please input the instruction',
