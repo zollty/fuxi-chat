@@ -14,7 +14,7 @@ cfg = Dynaconf(
     settings_files=['llm_model/conf_llm_model.yml', 'settings.yaml'],
 )
 
-def fschat_openai_api_cfgX():
+def fschat_openai_api_cfg():
     # if host == "0.0.0.0":
     #     host = "127.0.0.1"
     # port = FSCHAT_OPENAI_API["port"]
