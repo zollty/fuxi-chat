@@ -221,7 +221,7 @@ def launch_demo(args, preprocessor, model):
             gr.Markdown('## 风后 VL Playground')
 
             chatbot = gr.Chatbot(elem_id='chatbot', label=model.model_name, height=600)
-            query = gr.Textbox(lines=2, placeholder='Please input the instruction',
+            query = gr.Textbox(placeholder='Please input the instruction',
                                label='Instruction')
             session = gr.State()
 
