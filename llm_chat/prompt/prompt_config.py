@@ -66,7 +66,7 @@ PROMPT_TEMPLATES = {
 已知（提供知识）xxxxxxxxxxxxxxxxxxxxxxxxxx
 ---
 我的问题或指令：
-{input}
+{{ input }}
 ---
 请根据上述参考信息回答我的问题或回复我的指令。前面的参考信息可能有用，也可能没用，你需要从我给出的参考信息中选出与我的问题最相关的那些，来为你的回答提供依据。回答一定要忠于原文，简洁但不丢信息，不要胡乱编造。我的问题或指令是什么语种，你就用什么语种回复,
 你的回复：""",
@@ -121,10 +121,10 @@ PROMPT_TEMPLATES = {
             '<问题>{{ question }}</问题>\n',
 
         "youdao":"""参考信息：
-{context}
+{{ context }}
 ---
 我的问题或指令：
-{question}
+{{ question }}
 ---
 请根据上述参考信息回答我的问题或回复我的指令。前面的参考信息可能有用，也可能没用，你需要从我给出的参考信息中选出与我的问题最相关的那些，来为你的回答提供依据。回答一定要忠于原文，简洁但不丢信息，不要胡乱编造。我的问题或指令是什么语种，你就用什么语种回复,
 你的回复：""",
@@ -138,14 +138,14 @@ PROMPT_TEMPLATES = {
         "summary1": """请简洁和专业的总结下面文档内容。文档内容如下：
 
 
-"{text}"
+"{{ text }}"
 
 
 文档总结为：""",
 
         "summary2": """<指令>请简洁和专业的总结下面文档内容。请用中文总结。</指令>
 
-<文档>"{text}"</文档>
+<文档>"{{ text }}"</文档>
 
 
 文档总结为：""",
@@ -162,7 +162,7 @@ PROMPT_TEMPLATES = {
 
         "summary5": """<指令>请简洁和专业的总结下面文档内容。总结后不超过200字。</指令>
 
-<文档>"{text}"</文档>
+<文档>"{{ text }}"</文档>
 
 
 文档总结（不超过200字）为：""",
@@ -171,7 +171,7 @@ PROMPT_TEMPLATES = {
             """Write a concise summary of the following:
 
 
-"{text}"
+"{{ text }}"
 
 
 CONCISE SUMMARY:""",
@@ -180,7 +180,7 @@ CONCISE SUMMARY:""",
             """Write a concise summary of the following:
 
 
-"{text}"
+"{{ text }}"
 
 
 CONCISE SUMMARY IN CHINESE:""",
@@ -191,7 +191,7 @@ Your job is to produce a final summary.
 We have provided an existing summary up to a certain point: {existing_answer}
 We have the opportunity to refine the existing summary (only if needed) with some more context below.
 ------------
-{text}
+{{ text }}
 ------------
 Given the new context, refine the original summary.
 If the context isn't useful, return the original summary.\
@@ -200,7 +200,7 @@ If the context isn't useful, return the original summary.\
         "relate_qa": """根据以下内容，生成几个相关的提问。内容如下：
 
 
-"{text}"
+"{{ text }}"
 
 
 相关的提问：""",
