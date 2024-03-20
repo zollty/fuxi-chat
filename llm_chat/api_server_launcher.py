@@ -88,7 +88,7 @@ def init_api_server():
     cfg = Dynaconf(
         envvar_prefix="FUXI",
         root_path=RUNTIME_ROOT_DIR,
-        settings_files=['conf_llm_model.yml', 'settings.yaml'],
+        settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
     )
 
     log_level = cfg.get("llm.openai_api_server.log_level", "info")
