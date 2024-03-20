@@ -54,10 +54,7 @@ def base_init_0(cfg: Dynaconf, log_level):
 
     logger.setLevel(log_level.upper())
 
-    host = cfg.get("llm.openai_api_server.host")
-    port = cfg.get("llm.openai_api_server.port")
-
-    app_settings.controller_address = f"http://{host}:{port}"
+    app_settings.controller_address = cfg.get("agent.controller.address")
     app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
 
     app = base_init_1(cfg)
@@ -67,6 +64,8 @@ def base_init_0(cfg: Dynaconf, log_level):
     # with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
     #     f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
 
+    host = cfg.get("llm.openai_api_server.host")
+    port = cfg.get("llm.openai_api_server.port")
     if host == "localhost" or host == "127.0.0.1":
         host = "0.0.0.0"
 

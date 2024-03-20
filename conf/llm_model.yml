@@ -9,8 +9,8 @@ agent:
     - "Qwen1.5-7B-Chat"
     - "chatglm3-6b-32k"
     - "Qwen-1.8B-Chat"
-#  controller:
-#    address: http://localhost:21001
+  controller:
+    address: http://localhost:21001
   openai_api:
     address: http://localhost:20000/v1
     api_keys: EMPTY
