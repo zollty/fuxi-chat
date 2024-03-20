@@ -88,7 +88,7 @@ def init_config():
     from apscheduler.schedulers.background import BackgroundScheduler
     scheduler = BackgroundScheduler()
     # 调度方法为 timedTask，触发器选择 interval(间隔性)，间隔时长为 2 秒
-    scheduler.add_job(init_get_running_models, 'interval', seconds=5)
+    scheduler.add_job(init_get_running_models, 'interval', seconds=15)
     scheduler.start()
     # t = threading.Timer(5, init_get_running_models)  # 延时x秒后执行action函数
     # t.start()

@@ -7,6 +7,10 @@ from fastchat.serve.openai_api_server import app_settings
 
 api = ApiRequest(base_url=app_settings.controller_address)
 
+print(f"=============================={api}")
+print(f"=============================={api}")
+print(f"=============================={api}")
+print(f"=============================={api}")
 
 def list_llm_models(
         types: List[str] = ["local", "online"],
