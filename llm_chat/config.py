@@ -32,7 +32,9 @@ def default_model():
     default_model_order = cfg["agent.default_model_order"]
     for model in default_model_order:
         if model in global_running_models_dict:
+            print(f"use model: {model}, running models:{global_running_models_dict}")
             return model
+    print(f"warning: use default model: Qwen-1.8B-Chat, running models:{global_running_models_dict}")
     return "Qwen-1.8B-Chat"
 
 
@@ -44,7 +46,9 @@ def default_long_context_model():
     default_model_order = cfg["agent.default_long_context_model_order"]
     for model in default_model_order:
         if model in global_running_models_dict:
+            print(f"use model: {model}, running models:{global_running_models_dict}")
             return model
+    print(f"warning: use default model: Qwen1.5-7B-Chat, running models:{global_running_models_dict}")
     return "Qwen1.5-7B-Chat"
 
 
