@@ -5,7 +5,7 @@ import json
 from llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-from llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from llm_chat.chat.utils import format_jinja2_tmpl_text
 from llm_chat.chat.worker_direct_chat import ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
 
@@ -32,7 +32,7 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
         else:
             prompt_name = "summary3"
 
-    history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=query)]
+    history = [format_jinja2_tmpl_text(tmpl_type="doc_chat", tmpl_name=prompt_name, text=query)]
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,

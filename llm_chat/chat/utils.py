@@ -29,6 +29,17 @@ def format_jinja2_prompt_tmpl(prompt: str = None, tmpl_type: str = None, tmpl_na
     return input_msg
 
 
+def format_jinja2_tmpl_text(prompt: str = None, tmpl_type: str = None, tmpl_name: str = None, text: str = None):
+    if prompt:
+        prompt_template = prompt
+    else:
+        prompt_template = get_prompt_template(tmpl_type, tmpl_name)
+    input_msg = {"role": "user",
+                 "content": jinja2_formatter(prompt_template, text=text)
+                 }
+    return input_msg
+
+
 # def format_jinja2_tmpl(prompt: str, prompt_tmpl_type: str, prompt_tmpl_name: str, input: str):
 #     if prompt:
 #         prompt_template = prompt
