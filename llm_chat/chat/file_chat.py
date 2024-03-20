@@ -107,7 +107,7 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
                     stream: bool = Body(False, description="流式输出"),
                     model_name: Optional[str] = Body(None, description="LLM 模型名称。"),
                     temperature: Optional[float] = Body(None, description="LLM 采样温度", ge=0.0,
-                                              le=1.0),
+                                                        le=1.0),
                     max_tokens: Optional[int] = Body(None, description="限制LLM生成Token数量，默认None代表模型最大值"),
                     prompt_name: str = Body("default",
                                             description="使用的prompt模板名称(在configs/prompt_config.py中配置)"),
