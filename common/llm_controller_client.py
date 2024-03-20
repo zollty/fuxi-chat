@@ -8,10 +8,6 @@ from fastchat.serve.openai_api_server import app_settings
 api = ApiRequest(base_url=app_settings.controller_address)
 
 url = app_settings.controller_address
-print(f"=============================={url}")
-print(f"=============================={url}")
-print(f"=============================={url}")
-print(f"=============================={url}")
 
 def list_llm_models(
         types: List[str] = ["local", "online"],
