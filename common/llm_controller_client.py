@@ -3,9 +3,9 @@ from typing import (
     Dict,
 )
 from common.api_base import ApiRequest
-from common.base_config import fschat_controller_address
+from fastchat.serve.openai_api_server import app_settings
 
-api = ApiRequest(base_url=fschat_controller_address())
+api = ApiRequest(base_url=app_settings.controller_address)
 
 
 def list_llm_models(
@@ -42,6 +42,14 @@ def list_online_embed_models() -> Dict:
         "/list_online_embed_models",
     )
     return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", {}))
+
+
+def list_running_llm_models() -> Dict:
+    print("start to list_models---------------------------------")
+    response = api.post(
+        "/list_models"
+    )
+    return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("models", {}))
 
 
 def init_server_config():

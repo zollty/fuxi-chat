@@ -10,29 +10,29 @@ sys.path.append(RUNTIME_ROOT_DIR)
 from dynaconf import Dynaconf
 
 
-def create_openai_api_server_app(cfg: Dynaconf, log_level):
+def mount_more_routes(app):
+    from llm_chat.api import mount_app_routes
+    mount_app_routes(app)
+
+
+def call_controller_to_init(cfg: Dynaconf, app):
+    from common.llm_controller_client import init_server_config
+    init_server_config()
+
+    from llm_chat.config import init_config
+    init_config()
+
+
+def base_init_1(cfg: Dynaconf):
+    import fastchat
     from fastapi.middleware.cors import CORSMiddleware
-    from common.utils import DEFAULT_LOG_PATH, OPEN_CROSS_DOMAIN
     from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
-    import sys
-    import fastchat.constants
-    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
-    from fastchat.serve.openai_api_server import app, app_settings
-    from fastchat.utils import build_logger
-    logger = build_logger("openai_api", "openai_api.log")
-    sys.modules["fastchat.serve.openai_api_server"].logger = logger
-
-    logger.setLevel(log_level.upper())
-
-    controller_address = cfg.get("llm.openai_api_server.controller_addr")
-    cross_domain = cfg.get("llm.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
-
-    app_settings.controller_address = controller_address
-    app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
+    from fastchat.serve.openai_api_server import app
 
     app.title = "风后AI-Chat API Server (兼容OpenAI API)"
     app.version = fastchat.__version__
 
+    cross_domain = cfg.get("llm.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
     if cross_domain:
         app.add_middleware(
             CORSMiddleware,
@@ -49,13 +49,41 @@ def create_openai_api_server_app(cfg: Dynaconf, log_level):
     return app
 
 
-def run_openai_api_server():
-    from common.utils import RUNTIME_ROOT_DIR
+def base_init_0(cfg: Dynaconf, log_level):
+    from fastchat.serve.openai_api_server import logger, app_settings
+
+    logger.setLevel(log_level.upper())
+
+    host = cfg.get("llm.openai_api_server.host")
+    port = cfg.get("llm.openai_api_server.port")
+
+    app_settings.controller_address = f"http://{host}:{port}"
+    app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
+
+    app = base_init_1(cfg)
+    call_controller_to_init(cfg, app)
+    mount_more_routes(app)
+
+    # with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+    #     f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
+
+    if host == "localhost" or host == "127.0.0.1":
+        host = "0.0.0.0"
+
+    from common.fastapi_tool import run_api
+    run_api(
+        app,
+        host=host,
+        port=port,
+        log_level=log_level,
+        ssl_keyfile=cfg.get("llm.openai_api_server.ssl_keyfile"),
+        ssl_certfile=cfg.get("llm.openai_api_server.ssl_certfile"),
+    )
+
+
+def init_api_server():
     import argparse
-    from common.fastapi_tool import create_app, run_api
-    from common.utils import VERSION
-    from common.llm_controller_client import init_server_config
-    from llm_chat.api import mount_app_routes
+    from common.utils import RUNTIME_ROOT_DIR, DEFAULT_LOG_PATH
 
     print(RUNTIME_ROOT_DIR)
     cfg = Dynaconf(
@@ -77,26 +105,14 @@ def run_openai_api_server():
     host = args.host
     port = args.port
 
-    # ---------------------MAIN--------------------------
-    init_server_config()
-    app = create_openai_api_server_app(cfg, log_level)
-    mount_app_routes(app)
-    # ---------------------MAIN-------------------------
+    cfg["llm.openai_api_server.host"] = host
+    cfg["llm.openai_api_server.port"] = port
 
-    # with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
-    #     f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
+    import fastchat.constants
+    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
 
-    if host == "localhost" or host == "127.0.0.1":
-        host = "0.0.0.0"
-    run_api(
-        app,
-        host=host,
-        port=port,
-        log_level=log_level,
-        ssl_keyfile=cfg.get("llm.openai_api_server.ssl_keyfile"),
-        ssl_certfile=cfg.get("llm.openai_api_server.ssl_certfile"),
-    )
+    base_init_0(cfg, log_level)
 
 
 if __name__ == "__main__":
-    run_openai_api_server()
+    init_api_server()

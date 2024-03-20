@@ -3,7 +3,7 @@ from typing import List, Optional
 import openai
 from pydantic import BaseModel
 from common.utils import LOG_VERBOSE, logger
-from llm_chat.config import fschat_openai_api_cfg
+from llm_chat.config import openai_api_cfg
 
 class OpenAiMessage(BaseModel):
     role: str = "user"
@@ -23,7 +23,7 @@ class OpenAiChatMsgIn(BaseModel):
 
 
 async def openai_chat(msg: OpenAiChatMsgIn):
-    api_base_url, api_key = fschat_openai_api_cfg()
+    api_base_url, api_key = openai_api_cfg()
     openai.api_key = api_key
     print(f"{openai.api_key=}")
     openai.api_base = api_base_url

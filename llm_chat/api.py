@@ -26,21 +26,23 @@ def query_message(conversation_id: str = Body(..., examples=["0f4f588ede084b80be
 
 
 async def update_config(request: Request):
+    from omegaconf import OmegaConf
     body_bytes = await request.body()
     body_text = body_bytes.decode("utf-8")
     print("---------------------------------------")
-    print(body_text)
+    # print(body_text)
+    conf = OmegaConf.create(body_text)
+    print(conf["llm"]["default_run"])
+    print(OmegaConf.to_yaml(conf))
     return BaseResponse(data=body_text)
 
 
 def mount_app_routes(app: FastAPI):
-    from llm_chat.chat.chat2 import chat
-    # from llm_chat.chat.openai_chat import openai_chat
-    from llm_chat.chat.yby_chat2 import yby_chat
-    from llm_chat.chat.file_chat2 import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
+    from llm_chat.chat.chat import chat
+    from llm_chat.chat.openai_chat import openai_chat
+    from llm_chat.chat.yby_chat import yby_chat
+    from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
     from llm_chat.chat.special_chat import summary_chat
-    from llm_chat.llm_client import (list_running_models,
-                                     change_llm_model, stop_llm_model)
 
     from tools.file_upload_parse import test_parse_docs
     from tools.langchain_utils import test_parse_url
@@ -50,11 +52,6 @@ def mount_app_routes(app: FastAPI):
             summary="swagger 文档")(document)
 
     # Tag: Chat
-    # app.post("/chat/openapi",
-    #          tags=["Chat"],
-    #          summary="与llm模型对话(直接与fs代理的openapi对话)",
-    #          )(openai_chat)
-
     app.post("/chat/chat",
              tags=["Chat"],
              summary="与llm模型对话(通过LLMChain)",
@@ -74,6 +71,11 @@ def mount_app_routes(app: FastAPI):
              tags=["Chat"],
              summary="文档总结"
              )(summary_chat)
+
+    app.post("/chat/openai",
+             tags=["Chat"],
+             summary="与代理的openai api对话",
+             )(openai_chat)
 
     # 内部接口
     app.post("/inner/file_chat/auto_summary_docs",
@@ -111,50 +113,10 @@ def mount_app_routes(app: FastAPI):
     #          tags=["Chat"],
     #          summary="与搜索引擎对话",
     #          )(search_engine_chat)
-    #
-    # app.post("/chat/yby_chat",
-    #          tags=["Chat"],
-    #          summary="与园博园Agent对话",
-    #          )(yby_chat)
-
     # app.post("/chat/feedback",
     #          tags=["Chat"],
     #          summary="返回llm模型对话评分",
     #          )(chat_feedback)
-
-    # 知识库相关接口
-    # mount_knowledge_routes(app)
-    # 摘要相关接口
-    # mount_filename_summary_routes(app)
-
-    # LLM模型相关接口
-    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    app.post("/llm_model/list_running_models11",
-             tags=["LLM Model Management"],
-             summary="列出当前已加载的模型",
-             )(list_running_models)
-
-    # app.post("/llm_model/list_config_models",
-    #          tags=["LLM Model Management"],
-    #          summary="列出configs已配置的模型",
-    #          )(list_config_models)
-    #
-    # app.post("/llm_model/get_model_config",
-    #          tags=["LLM Model Management"],
-    #          summary="获取模型配置（合并后）",
-    #          )(get_model_config)
-
-    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    app.post("/llm_model/stop11",
-             tags=["LLM Model Management"],
-             summary="停止指定的LLM模型（Model Worker)",
-             )(stop_llm_model)
-
-    # Depercated!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-    app.post("/llm_model/change11",
-             tags=["LLM Model Management"],
-             summary="切换指定的LLM模型（Model Worker)",
-             )(change_llm_model)
 
     # 服务器相关接口
     # app.post("/server/configs",
@@ -178,61 +140,12 @@ def mount_app_routes(app: FastAPI):
     ) -> str:
         return get_prompt_template(type=type, name=name)
 
-    # 其它接口
-    # app.post("/other/completion",
-    #          tags=["Other"],
-    #          summary="要求llm模型补全(通过LLMChain)",
-    #          )(completion)
-    #
-    # app.post("/other/embed_texts",
-    #          tags=["Other"],
-    #          summary="将文本向量化，支持本地模型和在线模型",
-    #          )(embed_texts_endpoint)
 
     app.post("/other/filter_message",
              tags=["Other"],
              summary="查询历史消息",
              )(query_message)
 
-    # app.post("/other/parse_docs",
-    #          tags=["Other"],
-    #          summary="解析文件，返回原始文本内容"
-    #          )(parse_docs)
-    #
-    # app.post("/other/test_parse_docs",
-    #          tags=["Other"],
-    #          summary="解析文件并分段，返回分段文本内容"
-    #          )(test_parse_docs)
-    #
-    # app.post("/other/test_parse_url",
-    #          tags=["Other"],
-    #          summary="解析url并分段，返回分段文本内容"
-    #          )(test_parse_url)
-
-
-# def mount_knowledge_routes(app: FastAPI):
-#     from server.chat.file_chat import upload_temp_docs, file_chat, summary_docs, gen_relate_qa
-#     from server.chat.agent_chat import agent_chat
-#
-#     app.post("/chat/file_chat",
-#              tags=["Knowledge Base Management"],
-#              summary="文件对话"
-#              )(file_chat)
-#
-#     app.post("/chat/agent_chat",
-#              tags=["Chat"],
-#              summary="与agent对话")(agent_chat)
-#
-#     # 内部接口
-#     app.post("/inner/auto_summary_docs",
-#              tags=["Inner"],
-#              summary="自动总结文档",
-#              )(summary_docs)
-#
-#     app.post("/inner/gen_relate_qa",
-#              tags=["Inner"],
-#              summary="生成相关提问",
-#              )(gen_relate_qa)
 
 
 if __name__ == "__main__":

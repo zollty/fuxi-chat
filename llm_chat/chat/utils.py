@@ -108,7 +108,7 @@ def get_ChatOpenAI(
     if model_name == "openai-api":
         model_name = config.default_openai_model()
     ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
-    api_base_url, api_key = config.fschat_openai_api_cfg()
+    api_base_url, api_key = config.openai_api_cfg()
     model = ChatOpenAI(
         streaming=streaming,
         verbose=verbose,
@@ -137,7 +137,7 @@ def get_ChatOpenAI_temp(
     if model_name == "openai-api":
         model_name = config.default_openai_model()
     ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
-    api_base_url, api_key = config.fschat_openai_api_cfg()
+    api_base_url, api_key = config.openai_api_cfg()
     model = ChatOpenAI(
         streaming=streaming,
         verbose=verbose,

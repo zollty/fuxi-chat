@@ -3,13 +3,49 @@ from typing import (
     Dict,
     List,
 )
+import threading
 from common.base_config import *
 
-DEFAULT_LLM = "Qwen-1.8B-Chat"
+# DEFAULT_LLM = "Qwen-1.8B-Chat"
 # LONG_CONTEXT_MODEL = "chatglm3-6b-32k"
-LONG_CONTEXT_MODEL = "Qwen1.5-14B-Chat-GPTQ-Int4" # "Qwen1.5-7B-Chat"
-TEMPERATURE = 0.7
-FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
+# LONG_CONTEXT_MODEL = "Qwen1.5-14B-Chat-GPTQ-Int4"  # "Qwen1.5-7B-Chat"
+# TEMPERATURE = 0.7
+# FILE_CHAT_DEFAULT_TEMPERATURE = 0.1
+
+global_running_models_dict = {}
+
+
+# from fastchat.serve.openai_api_server import (app, logger, fetch_remote, get_gen_params, get_worker_address,
+#                                               check_requests, chat_completion_stream_generator, generate_completion,
+#                                               create_error_response,
+#                                               check_api_key, app_settings, generate_completion_stream)
+
+def init_get_running_models():
+    from common.llm_controller_client import list_running_llm_models
+    global global_running_models_dict
+    global_running_models_dict = list_running_llm_models()
+    print("--------------------get global_running_models_dict--------------------------")
+    print(global_running_models_dict)
+
+
+def default_model():
+    default_model_order = cfg["agent.default_model_order"]
+    for model in default_model_order:
+        if model in global_running_models_dict:
+            return model
+    return "Qwen-1.8B-Chat"
+
+
+def default_temperature():
+    return 0.7
+
+
+def default_long_context_model():
+    default_model_order = cfg["agent.default_long_context_model_order"]
+    for model in default_model_order:
+        if model in global_running_models_dict:
+            return model
+    return "Qwen1.5-7B-Chat"
 
 
 def file_chat_default_temperature():
@@ -17,7 +53,7 @@ def file_chat_default_temperature():
 
 
 def file_chat_summary_model():
-    return LONG_CONTEXT_MODEL
+    return default_long_context_model()
 
 
 def file_chat_relate_qa_model():
@@ -26,14 +62,6 @@ def file_chat_relate_qa_model():
 
 def summary_max_length():
     return 30000
-
-
-def default_model():
-    return DEFAULT_LLM
-
-
-def default_temperature():
-    return TEMPERATURE
 
 
 def openai_proxy():
@@ -53,3 +81,11 @@ def get_prompt_template(type: str, name: str) -> Optional[str]:
     import importlib
     importlib.reload(prompt_config)  # TODO: 检查configs/prompt_config.py文件有修改再重新加载
     return prompt_config.PROMPT_TEMPLATES[type].get(name)
+
+
+
+def init_config():
+    t = threading.Timer(5, init_get_running_models)  # 延时x秒后执行action函数
+    t.start()
+    threading.Timer(10, init_get_running_models).start()
+    threading.Timer(15, init_get_running_models).start()
