@@ -134,7 +134,7 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
     if len(docs) == 0:  # 如果没有找到相关文档，使用Empty模板
         prompt_name = "empty"
     history.append(
-        format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, query=query, context=context))
+        format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, question=query, context=context))
 
     source_documents = []
     for inum, doc in enumerate(docs):

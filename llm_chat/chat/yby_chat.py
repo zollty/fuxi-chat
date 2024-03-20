@@ -99,7 +99,7 @@ async def yby_chat(query: str = Body(..., description="用户输入", examples=[
     #                      ensure_ascii=False)
     # await task
 
-    history.append(format_jinja2_prompt_tmpl(tmpl_type="yby_chat", tmpl_name=prompt_name, query=query, context=context))
+    history.append(format_jinja2_prompt_tmpl(tmpl_type="yby_chat", tmpl_name=prompt_name, question=query, context=context))
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,
