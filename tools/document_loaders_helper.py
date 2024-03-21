@@ -50,7 +50,7 @@ def get_document_loaders(loader_name: str, file_path: str, loader_kwargs: Dict =
     try:
         if loader_name in ["RapidOCRPDFLoader", "RapidOCRLoader", "FilteredCSVLoader",
                            "RapidOCRDocLoader", "RapidOCRPPTLoader"]:
-            document_loaders_module = importlib.import_module('tools.document_loaders')
+            document_loaders_module = importlib.import_module('jian.tools.document_loaders')
         else:
             document_loaders_module = importlib.import_module('langchain.document_loaders')
         DocumentLoader = getattr(document_loaders_module, loader_name)

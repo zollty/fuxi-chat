@@ -25,7 +25,7 @@ def load_text_splitter(
         else:
 
             try:  # 优先使用用户自定义的text_splitter
-                text_splitter_module = importlib.import_module('tools.text_splitter')
+                text_splitter_module = importlib.import_module('jian.tools.text_splitter')
                 TextSplitter = getattr(text_splitter_module, splitter_name)
             except:  # 否则使用langchain的text_splitter
                 text_splitter_module = importlib.import_module('langchain.text_splitter')
@@ -90,7 +90,7 @@ def load_text_splitter(
 
 
 from langchain.docstore.document import Document
-from tools.zh_title_enhance import zh_title_enhance as func_zh_title_enhance
+from jian.tools.zh_title_enhance import zh_title_enhance as func_zh_title_enhance
 
 
 def do_split_docs(
