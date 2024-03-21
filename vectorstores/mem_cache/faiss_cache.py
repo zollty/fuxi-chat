@@ -6,10 +6,10 @@ from langchain.schema import Document
 from typing import List, Any, Union, Tuple
 
 from fuxi.utils.runtime_conf import get_log_verbose, logger
-from vectorstores.mem_cache.base import ThreadSafeObject, CachePool
-from embeddings.config import embedding_device
-from embeddings.base import EmbeddingsFunAdapter
-from vectorstores.config import CACHED_EMBEDDING_MODEL, CACHED_MEMO_VS_NUM
+from jian.vectorstores.mem_cache.base import ThreadSafeObject, CachePool
+from jian.embeddings.config import embedding_device
+from jian.embeddings.base import EmbeddingsFunAdapter
+from jian.vectorstores.config import CACHED_EMBEDDING_MODEL, CACHED_MEMO_VS_NUM
 
 
 # patch FAISS to include doc id in Document.metadata

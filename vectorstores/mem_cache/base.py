@@ -32,11 +32,11 @@ class ThreadSafeObject:
             self._lock.acquire()
             if self._pool is not None:
                 self._pool._cache.move_to_end(self.key)
-            if LOG_VERBOSE:
+            if get_log_verbose():
                 logger.info(f"{owner} 开始操作：{self.key}。{msg}")
             yield self._obj
         finally:
-            if LOG_VERBOSE:
+            if get_log_verbose():
                 logger.info(f"{owner} 结束操作：{self.key}。{msg}")
             self._lock.release()
 
