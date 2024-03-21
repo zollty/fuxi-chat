@@ -1,9 +1,5 @@
-from langchain.embeddings.base import Embeddings
 from langchain.vectorstores.faiss import FAISS
 import threading
-# from configs import (EMBEDDING_MODEL, CHUNK_SIZE,
-#                      logger, log_verbose)
-# from server.utils import embedding_device, get_model_path, list_online_embed_models
 from contextlib import contextmanager
 from collections import OrderedDict
 from typing import List, Any, Union, Tuple

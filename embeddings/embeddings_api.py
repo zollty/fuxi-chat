@@ -6,9 +6,9 @@ from langchain.embeddings.base import Embeddings
 
 from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from fuxi.utils.runtime_conf import get_log_verbose, logger
-from embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, config_embed_models, \
+from jian.embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, config_embed_models, \
     online_embed_models, get_embed_model_path
-from vectorstores.mem_cache.base import ThreadSafeObject, CachePool
+from jian.vectorstores.mem_cache.base import ThreadSafeObject, CachePool
 
 
 class EmbeddingsPool(CachePool):
