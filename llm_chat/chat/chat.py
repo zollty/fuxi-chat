@@ -5,10 +5,11 @@ import json
 from typing import List, Optional, Union
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-from llm_chat.config import default_model, default_temperature
-from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
+
+from jian.llm_chat.config import default_model, default_temperature
+from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 message_id_curr = {"id": 0}
 

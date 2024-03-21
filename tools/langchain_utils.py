@@ -1,6 +1,6 @@
 from fastapi import Body, File, Form, UploadFile
-from common.api_base import (BaseResponse, ListResponse)
-from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
+from fuxi.utils.api_base import (BaseResponse, ListResponse)
+from jian.tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
 
 from langchain.document_loaders import WebBaseLoader
 

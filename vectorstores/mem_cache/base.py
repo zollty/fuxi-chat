@@ -7,7 +7,7 @@ import threading
 from contextlib import contextmanager
 from collections import OrderedDict
 from typing import List, Any, Union, Tuple
-from common.utils import LOG_VERBOSE, logger
+from fuxi.utils.runtime_conf import get_log_verbose, logger
 
 class ThreadSafeObject:
     def __init__(self, key: Union[str, Tuple], obj: Any = None, pool: "CachePool" = None):

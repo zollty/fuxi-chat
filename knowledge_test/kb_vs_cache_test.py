@@ -7,7 +7,7 @@ from typing import List, Any, Union, Tuple
 from langchain.embeddings.base import Embeddings
 
 import threading
-from common.utils import LOG_VERBOSE, logger
+from fuxi.utils.runtime_conf import get_log_verbose, logger
 from knowledge.kb_vs_cache import kb_cache_faiss_pool
 from embeddings.embeddings_api import load_local_embeddings
 

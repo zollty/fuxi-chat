@@ -1,8 +1,8 @@
 import importlib
-from tools.config import text_splitter_dict, DEFAULT_HUGGINGFACE_TOKENIZER_MODEL, SUPPORTED_EXTS
+from jian.tools.config import text_splitter_dict, DEFAULT_HUGGINGFACE_TOKENIZER_MODEL, SUPPORTED_EXTS
 from typing import List, Union, Dict
 
-from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
+from jian.tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
 import langchain
 
 def load_text_splitter(

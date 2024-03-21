@@ -19,40 +19,6 @@ from fastchat.serve.openai_api_server import (app, logger, fetch_remote, get_gen
                                               check_requests, chat_completion_stream_generator, generate_completion,
                                               create_error_response,
                                               check_api_key, app_settings, generate_completion_stream)
-# import cachetools
-# # 创建一个带 TTL 的缓存对象
-# ttl_cache = cachetools.TTLCache(maxsize=100, ttl=60)
-#
-#
-# async def get_worker_address(model_name: str) -> str:
-#     """
-#     Get worker address based on the requested model
-#
-#     :param model_name: The worker's model name
-#     :return: Worker address from the controller
-#     :raises: :class:`ValueError`: No available worker for requested model
-#     """
-#     if worker_addr := ttl_cache.get("worker_addr", None):
-#         return worker_addr
-#
-#     controller_address = app_settings.controller_address
-#     worker_addr = await fetch_remote(
-#         controller_address + "/get_worker_address", {"model": model_name}, "address"
-#     )
-#
-#     # No available worker
-#     if worker_addr == "":
-#         raise ValueError(f"No available worker for {model_name}")
-#     logger.debug(f"model_name: {model_name}, worker_addr: {worker_addr}")
-#     ttl_cache["worker_addr"] = worker_addr
-#     return worker_addr
-
-
-# async def get_gen_params(*args, **kwargs) -> Dict[str, Any]:
-#     gen_params = await get_gen_params2(*args, **kwargs)
-#     if not gen_params["max_new_tokens"] or gen_params["max_new_tokens"] <= 0:
-#         gen_params["max_new_tokens"] = 1024 * 1024
-#     return gen_params
 
 
 async def create_stream_chat_completion(request: ChatCompletionRequest, data_handler,

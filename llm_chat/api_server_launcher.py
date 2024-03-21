@@ -4,30 +4,30 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(os.path.dirname(__current_script_path)))
+sys.path.append(runtime_root_dir)
 
 from dynaconf import Dynaconf
 
 
 def mount_more_routes(app):
-    from llm_chat.api import mount_app_routes
+    from jian.llm_chat.api import mount_app_routes
     mount_app_routes(app)
 
 
 def call_controller_to_init(cfg: Dynaconf, app):
-    from common.llm_controller_client import init_server_config
+    from jian.common.llm_controller_client import init_server_config
     init_server_config()
 
-    from llm_chat.config import init_config
+    from jian.llm_chat.config import init_config
     init_config()
 
 
 def base_init_1(cfg: Dynaconf):
     import fastchat
     from fastapi.middleware.cors import CORSMiddleware
-    from common.fastapi_tool import set_httpx_config, MakeFastAPIOffline
     from fastchat.serve.openai_api_server import app
+    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
 
     app.title = "风后AI-Chat API Server (兼容OpenAI API)"
     app.version = fastchat.__version__
@@ -61,7 +61,7 @@ def base_init_0(cfg: Dynaconf, log_level):
     call_controller_to_init(cfg, app)
     mount_more_routes(app)
 
-    # with open(RUNTIME_ROOT_DIR + '/logs/start_info.txt', 'a') as f:
+    # with open(get_runtime_root_dir() + '/logs/start_info.txt', 'a') as f:
     #     f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
 
     host = cfg.get("llm.openai_api_server.host")
@@ -69,7 +69,7 @@ def base_init_0(cfg: Dynaconf, log_level):
     if host == "localhost" or host == "127.0.0.1":
         host = "0.0.0.0"
 
-    from common.fastapi_tool import run_api
+    from fuxi.utils.fastapi_tool import run_api
     run_api(
         app,
         host=host,
@@ -82,12 +82,12 @@ def base_init_0(cfg: Dynaconf, log_level):
 
 def init_api_server():
     import argparse
-    from common.utils import RUNTIME_ROOT_DIR, DEFAULT_LOG_PATH
+    from fuxi.utils.runtime_conf import get_runtime_root_dir, get_default_log_path
 
-    print(RUNTIME_ROOT_DIR)
+    print(get_runtime_root_dir())
     cfg = Dynaconf(
         envvar_prefix="FUXI",
-        root_path=RUNTIME_ROOT_DIR,
+        root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
     )
 
@@ -108,7 +108,7 @@ def init_api_server():
     cfg["llm.openai_api_server.port"] = port
 
     import fastchat.constants
-    fastchat.constants.LOGDIR = DEFAULT_LOG_PATH
+    fastchat.constants.LOGDIR = get_default_log_path()
 
     base_init_0(cfg, log_level)
 

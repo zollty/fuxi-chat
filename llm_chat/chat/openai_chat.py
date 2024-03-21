@@ -2,8 +2,8 @@ from sse_starlette.sse import EventSourceResponse
 from typing import List, Optional
 import openai
 from pydantic import BaseModel
-from common.utils import LOG_VERBOSE, logger
-from llm_chat.config import openai_api_cfg
+from fuxi.utils.runtime_conf import get_log_verbose, logger
+from jian.llm_chat.config import openai_api_cfg
 
 class OpenAiMessage(BaseModel):
     role: str = "user"
@@ -52,6 +52,6 @@ async def openai_chat(msg: OpenAiChatMsgIn):
         except Exception as e:
             msg = f"获取ChatCompletion时出错：{e}"
             logger.error(f'{e.__class__.__name__}: {msg}',
-                         exc_info=e if LOG_VERBOSE else None)
+                         exc_info=e if get_log_verbose() else None)
 
     return EventSourceResponse(get_response(msg))

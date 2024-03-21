@@ -1,7 +1,7 @@
 from typing import List, Union, Dict, Optional, Tuple
 from langchain.embeddings.base import Embeddings
-from embeddings.config import EMBEDDING_MODEL
-from embeddings.embeddings_api import embed_texts, aembed_texts, embedding_device
+from jian.embeddings.config import EMBEDDING_MODEL
+from jian.embeddings.embeddings_api import embed_texts, aembed_texts, embedding_device
 import numpy as np
 
 

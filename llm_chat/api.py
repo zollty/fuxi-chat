@@ -4,14 +4,14 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-RUNTIME_ROOT_DIR = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(RUNTIME_ROOT_DIR)
+runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(runtime_root_dir)
 
 from fastapi import FastAPI, Body, Request
 from starlette.responses import RedirectResponse
 from typing import List, Literal
-from common.api_base import (BaseResponse, ListResponse)
-from llm_chat.config import get_prompt_template
+from fuxi.utils.api_base import (BaseResponse, ListResponse)
+from jian.llm_chat.config import get_prompt_template
 
 
 async def document():
@@ -38,14 +38,14 @@ async def update_config(request: Request):
 
 
 def mount_app_routes(app: FastAPI):
-    from llm_chat.chat.chat import chat
-    from llm_chat.chat.openai_chat import openai_chat
-    from llm_chat.chat.yby_chat import yby_chat
-    from llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
-    from llm_chat.chat.special_chat import summary_chat
+    from jian.llm_chat.chat.chat import chat
+    from jian.llm_chat.chat.openai_chat import openai_chat
+    from jian.llm_chat.chat.yby_chat import yby_chat
+    from jian.llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
+    from jian.llm_chat.chat.special_chat import summary_chat
 
-    from tools.file_upload_parse import test_parse_docs
-    from tools.langchain_utils import test_parse_url
+    from jian.tools.file_upload_parse import test_parse_docs
+    from jian.tools.langchain_utils import test_parse_url
 
     app.get("/",
             response_model=BaseResponse,
@@ -108,7 +108,6 @@ def mount_app_routes(app: FastAPI):
              summary="解析url并分段，返回分段文本内容"
              )(test_parse_url)
 
-
     # app.post("/chat/search_engine_chat",
     #          tags=["Chat"],
     #          summary="与搜索引擎对话",
@@ -140,19 +139,16 @@ def mount_app_routes(app: FastAPI):
     ) -> str:
         return get_prompt_template(type=type, name=name)
 
-
     app.post("/other/filter_message",
              tags=["Other"],
              summary="查询历史消息",
              )(query_message)
 
 
-
 if __name__ == "__main__":
     import argparse
-    from common.fastapi_tool import create_app, run_api
-    from common.utils import VERSION
-    from common.llm_controller_client import init_server_config
+    from fuxi.utils.fastapi_tool import create_app, run_api
+    from jian.common.llm_controller_client import init_server_config
 
     parser = argparse.ArgumentParser(prog='fenghou-ai',
                                      description='About FenghouAI-Chat API')
@@ -166,7 +162,7 @@ if __name__ == "__main__":
 
     init_server_config()
 
-    app = create_app([mount_app_routes], version=VERSION, title="FenghouAI Chat API Server")
+    app = create_app([mount_app_routes], version="1.0.0", title="FenghouAI Chat API Server")
 
     run_api(app,
             host=args.host,

@@ -7,10 +7,10 @@ import json
 
 from langchain.document_loaders import TextLoader
 
-from llm_chat.config import default_long_context_model, file_chat_default_temperature
-from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
+from jian.llm_chat.config import default_long_context_model, file_chat_default_temperature
+from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
-from llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 # 读取原始文档
 # raw_documents_sanguo = TextLoader('/ai/apps/data/new/园博园参考资料.txt', encoding='utf-8').load()

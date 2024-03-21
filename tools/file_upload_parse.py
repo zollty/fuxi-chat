@@ -2,11 +2,12 @@ from fastapi import Body, File, Form, UploadFile
 from typing import AsyncIterable, List, Optional
 import os, json
 from langchain.docstore.document import Document
-from common.utils import run_in_thread_pool, get_temp_dir
-from tools.document_loaders_helper import load_file_docs
-from tools.text_splitter_helper import do_split_docs
-from common.api_base import (BaseResponse, ListResponse)
-from tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
+from fuxi.utils.runtime_conf import get_temp_dir
+from fuxi.utils.thread_helper import run_in_thread_pool
+from jian.tools.document_loaders_helper import load_file_docs
+from jian.tools.text_splitter_helper import do_split_docs
+from fuxi.utils.api_base import (BaseResponse, ListResponse)
+from jian.tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
 
 
 def parse_files_in_thread(

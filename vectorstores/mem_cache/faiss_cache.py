@@ -5,7 +5,7 @@ import os
 from langchain.schema import Document
 from typing import List, Any, Union, Tuple
 
-from common.utils import LOG_VERBOSE, logger
+from fuxi.utils.runtime_conf import get_log_verbose, logger
 from vectorstores.mem_cache.base import ThreadSafeObject, CachePool
 from embeddings.config import embedding_device
 from embeddings.base import EmbeddingsFunAdapter

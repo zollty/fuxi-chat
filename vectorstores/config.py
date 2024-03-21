@@ -1,6 +1,5 @@
 import os
 from typing import List, Literal, Optional, Dict
-from common.utils import detect_device
 
 # 知识库匹配向量数量
 VECTOR_SEARCH_TOP_K = 100

@@ -4,8 +4,8 @@ import json
 from typing import List, Union, Dict
 import chardet
 
-from common.utils import LOG_VERBOSE, logger
-from tools.config import LOADER_DICT, SUPPORTED_EXTS
+from fuxi.utils.runtime_conf import get_log_verbose, logger
+from jian.tools.config import LOADER_DICT, SUPPORTED_EXTS
 
 import os
 from pathlib import Path
@@ -57,7 +57,7 @@ def get_document_loaders(loader_name: str, file_path: str, loader_kwargs: Dict =
     except Exception as e:
         msg = f"为文件{file_path}查找加载器{loader_name}时出错：{e}"
         logger.error(f'{e.__class__.__name__}: {msg}',
-                     exc_info=e if LOG_VERBOSE else None)
+                     exc_info=e if get_log_verbose() else None)
         document_loaders_module = importlib.import_module('langchain.document_loaders')
         DocumentLoader = getattr(document_loaders_module, "UnstructuredFileLoader")
 

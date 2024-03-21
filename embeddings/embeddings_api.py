@@ -4,8 +4,8 @@ from fastapi.concurrency import run_in_threadpool
 from typing import Dict, List
 from langchain.embeddings.base import Embeddings
 
-from common.api_base import (BaseResponse, ListResponse)
-from common.utils import LOG_VERBOSE, logger
+from fuxi.utils.api_base import (BaseResponse, ListResponse)
+from fuxi.utils.runtime_conf import get_log_verbose, logger
 from embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, config_embed_models, \
     online_embed_models, get_embed_model_path
 from vectorstores.mem_cache.base import ThreadSafeObject, CachePool

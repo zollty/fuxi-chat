@@ -4,8 +4,8 @@ import numpy as np
 import cv2
 from PIL import Image
 import tqdm
-from tools.config import PDF_OCR_THRESHOLD
-from tools.document_loaders.ocr import get_ocr
+from jian.tools.config import PDF_OCR_THRESHOLD
+from jian.tools.document_loaders.ocr import get_ocr
 
 
 class RapidOCRPDFLoader(UnstructuredFileLoader):

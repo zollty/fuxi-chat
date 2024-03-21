@@ -1,5 +1,5 @@
 from typing import List, Literal, Optional, Dict
-from common.utils import detect_device
+from fuxi.utils.torch_helper import detect_device
 
 # 选用的 Embedding 名称
 EMBEDDING_MODEL = "bge-large-zh-v1.5"

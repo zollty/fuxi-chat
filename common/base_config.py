@@ -4,13 +4,13 @@ from typing import (
     List,
 )
 
-from common.utils import RUNTIME_ROOT_DIR
+from fuxi.utils.runtime_conf import get_runtime_root_dir
 from dynaconf import Dynaconf
 
-print(RUNTIME_ROOT_DIR)
+print(get_runtime_root_dir())
 cfg = Dynaconf(
-    envvar_prefix="FUXI",
-    root_path=RUNTIME_ROOT_DIR,
+    envvar_prefix="JIAN",
+    root_path=get_runtime_root_dir(),
     settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
 )
 

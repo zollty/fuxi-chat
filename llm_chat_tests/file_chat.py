@@ -7,7 +7,7 @@ import asyncio
 from langchain.prompts.chat import ChatPromptTemplate
 import json
 import threading
-from common.api_base import (BaseResponse, ListResponse)
+from jian.common.api_base import (BaseResponse, ListResponse)
 from llm_chat.chat.utils import History, get_ChatOpenAI, wrap_done
 from llm_chat.chat.doc_summary5 import doc_chat_iterator
 from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_relate_qa_model, file_chat_summary_model, \
@@ -15,7 +15,7 @@ from llm_chat.config import get_prompt_template, DEFAULT_LLM, file_chat_relate_q
 from tools.file_upload_parse import parse_files_in_thread
 
 from langchain.docstore.document import Document
-from common.utils import get_temp_dir, torch_gc
+from jian.common.utils import get_temp_dir, torch_gc
 from tools.text_splitter_helper import do_split_docs
 # 使用默认的 vectorstore及默认的 embedding
 from vectorstores.mem_cache.faiss_cache import memo_cache_faiss_pool

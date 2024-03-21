@@ -1,9 +1,9 @@
 import os
 from typing import List, Literal, Optional, Dict
-from common.utils import detect_device, RUNTIME_ROOT_DIR
+from fuxi.utils.runtime_conf import get_runtime_root_dir
 
 # 知识库默认存储路径
-KB_ROOT_PATH = os.path.join(RUNTIME_ROOT_DIR, "data/knowledge")
+KB_ROOT_PATH = os.path.join(get_runtime_root_dir(), "data/knowledge")
 if not os.path.exists(KB_ROOT_PATH):
     os.mkdir(KB_ROOT_PATH)
 # 数据库默认存储路径。
