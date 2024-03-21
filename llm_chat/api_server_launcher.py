@@ -86,7 +86,7 @@ def init_api_server():
 
     print(get_runtime_root_dir())
     cfg = Dynaconf(
-        envvar_prefix="FUXI",
+        envvar_prefix="JIAN",
         root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
     )
