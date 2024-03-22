@@ -165,7 +165,7 @@ PROMPT_TEMPLATES = {
 <文档>"{{text}}"</文档>
 
 
-文档总结为（不要提文档总结、概述等字，直接跟总结后的正文内容）：""",
+以上文档总结为：（注意不要提文档总结、概述等字，直接跟总结后的内容）\n""",
 
         "summary_lc":
             """Write a concise summary of the following:
