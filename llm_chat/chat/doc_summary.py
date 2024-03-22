@@ -1,4 +1,4 @@
-from typing import AsyncIterable, Optional, Generator
+from typing import AsyncIterable, Optional, Generator, Any
 import json
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.llm_chat.chat.worker_direct_chat import chat_iter33, ChatCompletionRequest
@@ -33,7 +33,7 @@ async def summary_doc(doc: str,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
-                      ) -> Generator[str]:
+                      ) -> Generator[str,None,Any]:
     if not model_name:
         model_name = file_chat_summary_model()
     if not temperature:
