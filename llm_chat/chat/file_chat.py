@@ -189,9 +189,9 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     if not org_docs:
         return BaseResponse(code=400, msg=f"未找到临时文档 {doc_id}，请检查或重试")
 
-    # model_name = file_chat_summary_model()
+    model_name = file_chat_summary_model()
     prompt_name = "summary2"
-    # max_tokens = MAX_LENGTH
+    max_tokens = MAX_LENGTH
 
     doc = org_docs[0].page_content
     # 计算总长度
@@ -215,37 +215,37 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     print("==================")
     print(src_info)
 
-    return EventSourceResponse(summary_doc(doc, prompt_name=prompt_name,
-                                           stream=stream,
-                                           src_info=src_info,
-                                           ))
+    # return EventSourceResponse(summary_doc(doc, prompt_name=prompt_name,
+    #                                        stream=stream,
+    #                                        src_info=src_info,
+    #                                        ))
 
-    # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
-    #
-    # request = ChatCompletionRequest(model=model_name,
-    #                                 messages=history,
-    #                                 temperature=file_chat_default_temperature(),
-    #                                 max_tokens=max_tokens,
-    #                                 stream=stream,
-    #                                 )
-    # def data_handler(ctx) -> str:
-    #     return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
-    #
-    # def success_last_handler():
-    #     print("-------------------------------------: success_last_handler")
-    #     return json.dumps({"docs": src_info}, ensure_ascii=False)
-    #
-    # if stream:
-    #     return EventSourceResponse(create_stream_chat_completion(request, data_handler,
-    #                                                              success_last_handler=success_last_handler,
-    #                                                              ))
-    # else:
-    #     res = await create_not_stream_chat_completion(request)
-    #     if isinstance(res, ChatCompletionResponse):
-    #         answer = res.choices[0].message.content
-    #         return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
-    #     else:
-    #         return res
+    history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
+
+    request = ChatCompletionRequest(model=model_name,
+                                    messages=history,
+                                    temperature=file_chat_default_temperature(),
+                                    max_tokens=max_tokens,
+                                    stream=stream,
+                                    )
+    def data_handler(ctx) -> str:
+        return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
+
+    def success_last_handler():
+        print("-------------------------------------: success_last_handler")
+        return json.dumps({"docs": src_info}, ensure_ascii=False)
+
+    if stream:
+        return EventSourceResponse(create_stream_chat_completion(request, data_handler,
+                                                                 success_last_handler=success_last_handler,
+                                                                 ))
+    else:
+        res = await create_not_stream_chat_completion(request)
+        if isinstance(res, ChatCompletionResponse):
+            answer = res.choices[0].message.content
+            return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
+        else:
+            return res
 
 
 async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
