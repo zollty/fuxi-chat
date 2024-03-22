@@ -172,6 +172,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
     try:
         all_tasks = await asyncio.gather(*chat_completions)
     except Exception as e:
+        logger.exception(e)
         yield ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict()
         return
     usage = UsageInfo()

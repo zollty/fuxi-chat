@@ -67,7 +67,7 @@ async def summary_doc(doc: str,
         else:
             yield json.dumps(chunk, ensure_ascii=False)
 
-    if not src_info:
+    if src_info:
         yield json.dumps({"docs": src_info}, ensure_ascii=False)
     print("end" + "-" * 20)
 
