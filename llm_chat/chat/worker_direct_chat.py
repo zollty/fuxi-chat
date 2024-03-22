@@ -128,7 +128,7 @@ def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, 
         yield chunk.model_dump(exclude_unset=True)
 
         previous_text = ""
-        for content in generate_completion_stream(gen_params, worker_addr):
+        async for content in generate_completion_stream(gen_params, worker_addr):
             if content["error_code"] != 0:
                 yield content
                 return
