@@ -258,7 +258,7 @@ async def chat_iter(request: ChatCompletionRequest) -> Generator[dict, None, Any
     if request.stream:
         yield stream_chat_completion(request.model, gen_params, request.n, worker_addr)
     else:
-        yield not_stream_chat_completion_special(request, worker_addr, gen_params)
+        yield not_stream_chat_completion_special2(request, worker_addr, gen_params)
 
 
 async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr, gen_params) -> Dict:
