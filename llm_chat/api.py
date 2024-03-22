@@ -42,7 +42,7 @@ def mount_app_routes(app: FastAPI):
     from jian.llm_chat.chat.openai_chat import openai_chat
     from jian.llm_chat.chat.yby_chat import yby_chat
     from jian.llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
-    from jian.llm_chat.chat.special_chat import summary_chat
+    from jian.llm_chat.chat.special_chat import summary_chat, summary_chat2
 
     from jian.tools.file_upload_parse import test_parse_docs
     from jian.tools.langchain_utils import test_parse_url
@@ -71,6 +71,11 @@ def mount_app_routes(app: FastAPI):
              tags=["Chat"],
              summary="文档总结"
              )(summary_chat)
+
+    app.post("/chat/summary_chat2",
+             tags=["Chat"],
+             summary="文档总结"
+             )(summary_chat2)
 
     app.post("/chat/openai",
              tags=["Chat"],
