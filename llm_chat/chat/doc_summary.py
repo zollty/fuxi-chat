@@ -1,12 +1,8 @@
 from typing import AsyncIterable, Optional, Union
 import json
-from sse_starlette.sse import EventSourceResponse
-from llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
-from fastapi.responses import StreamingResponse, JSONResponse
-from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-from llm_chat.chat.utils import format_jinja2_prompt_tmpl
-from llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
-    create_stream_chat_completion, create_not_stream_chat_completion
+from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from jian.llm_chat.chat.worker_direct_chat import chat_iter, ChatCompletionRequest
+from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
 
 MAX_LENGTH = summary_max_length()
 
@@ -18,11 +14,11 @@ async def summary_doc(doc: str,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
-                      ) -> Union[ChatCompletionResponse, JSONResponse]:
+                      ) -> AsyncIterable[str]:
     if max_tokens > 0:
         use_max_tokens = max_tokens
     else:
-        use_max_tokens = summary_max_length()
+        use_max_tokens = MAX_LENGTH
     if not temperature:
         temperature = file_chat_default_temperature()
 
@@ -38,21 +34,34 @@ async def summary_doc(doc: str,
                                     stream=stream,
                                     )
 
-    def data_handler(ctx) -> str:
-        return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
-
-    def success_last_handler():
-        print("-------------------------------------: success_last_handler")
-        return json.dumps({"docs": src_info}, ensure_ascii=False)
-
-    if stream:
-        return EventSourceResponse(create_stream_chat_completion(request, data_handler,
-                                                                 success_last_handler=success_last_handler,
-                                                                 ))
-    else:
-        res = await create_not_stream_chat_completion(request)
-        if isinstance(res, ChatCompletionResponse):
-            answer = res.choices[0].message.content
-            return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
+    print("start" + "-" * 20)
+    for chunk in chat_iter(request):
+        # handle the chunk data here
+        print(json.dumps(chunk, ensure_ascii=False))
+        if chunk.get("choices") is not None:
+            # res.choices[0].delta.content
+            json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
         else:
-            return res
+            yield json.dumps(chunk, ensure_ascii=False)
+
+    if not src_info:
+        yield json.dumps({"docs": src_info}, ensure_ascii=False)
+    print("end" + "-" * 20)
+
+    # if stream:
+    #     for chunk in chat_iter(request):
+    #         # handle the chunk data here
+    #         if chunk["error_code"] != 0:
+    #             yield json.dumps(chunk, ensure_ascii=False)
+    #         elif chunk["text"] is not None:
+    #             json.dumps({"answer": chunk["text"]}, ensure_ascii=False)
+    #         else:
+    #             json.dumps({"docs": src_info}, ensure_ascii=False)
+    #
+    # else:
+    #     res = await create_not_stream_chat_completion(request)
+    #     if isinstance(res, ChatCompletionResponse):
+    #         answer = res.choices[0].message.content
+    #         yield json.dumps({"answer": answer, "docs": src_info}, ensure_ascii=False)
+    #     else:
+    #         yield

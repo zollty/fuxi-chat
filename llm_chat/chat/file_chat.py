@@ -20,6 +20,7 @@ from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion
+from jian.llm_chat.chat.doc_summary import summary_doc
 
 MAX_LENGTH = summary_max_length()
 STATIC_DOCUMENTS = dict()
@@ -135,7 +136,8 @@ async def file_chat(query: str = Body(..., description="用户输入", examples=
     if len(docs) == 0:  # 如果没有找到相关文档，使用Empty模板
         prompt_name = "empty"
     history.append(
-        format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, question=query, context=context))
+        format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name, question=query,
+                                  context=context))
 
     source_documents = []
     for inum, doc in enumerate(docs):
@@ -213,33 +215,38 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     print("==================")
     print(src_info)
 
-    history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
+    return EventSourceResponse(summary_doc(doc, model_name=model_name,
+                                           prompt_name=prompt_name,
+                                           stream=stream,
+                                           src_info=src_info,
+                                           ))
 
-    request = ChatCompletionRequest(model=model_name,
-                                    messages=history,
-                                    temperature=file_chat_default_temperature(),
-                                    max_tokens=max_tokens,
-                                    stream=stream,
-                                    )
-
-    def data_handler(ctx) -> str:
-        return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
-
-    def success_last_handler():
-        print("-------------------------------------: success_last_handler")
-        return json.dumps({"docs": src_info}, ensure_ascii=False)
-
-    if stream:
-        return EventSourceResponse(create_stream_chat_completion(request, data_handler,
-                                                                 success_last_handler=success_last_handler,
-                                                                 ))
-    else:
-        res = await create_not_stream_chat_completion(request)
-        if isinstance(res, ChatCompletionResponse):
-            answer = res.choices[0].message.content
-            return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
-        else:
-            return res
+    # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
+    #
+    # request = ChatCompletionRequest(model=model_name,
+    #                                 messages=history,
+    #                                 temperature=file_chat_default_temperature(),
+    #                                 max_tokens=max_tokens,
+    #                                 stream=stream,
+    #                                 )
+    # def data_handler(ctx) -> str:
+    #     return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
+    #
+    # def success_last_handler():
+    #     print("-------------------------------------: success_last_handler")
+    #     return json.dumps({"docs": src_info}, ensure_ascii=False)
+    #
+    # if stream:
+    #     return EventSourceResponse(create_stream_chat_completion(request, data_handler,
+    #                                                              success_last_handler=success_last_handler,
+    #                                                              ))
+    # else:
+    #     res = await create_not_stream_chat_completion(request)
+    #     if isinstance(res, ChatCompletionResponse):
+    #         answer = res.choices[0].message.content
+    #         return JSONResponse({"answer": answer, "docs": src_info}, status_code=200)
+    #     else:
+    #         return res
 
 
 async def gen_relate_qa(doc: str = Body(..., description="文档内容"),
