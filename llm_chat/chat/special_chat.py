@@ -26,11 +26,12 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
         max_tokens = -1
     if not temperature:
         temperature = file_chat_default_temperature()
-    if not prompt_name:
-        if len(query) > 800:
-            prompt_name = "summary5"
-        else:
-            prompt_name = "summary3"
+    prompt_name = "summary5"
+    # if not prompt_name:
+    #     if len(query) > 800:
+    #         prompt_name = "summary5"
+    #     else:
+    #         prompt_name = "summary3"
 
     # return EventSourceResponse(summary_doc(query, model_name=model_name,
     #                                        prompt_name=prompt_name,
