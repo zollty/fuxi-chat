@@ -26,7 +26,7 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
         max_tokens = -1
     if not temperature:
         temperature = file_chat_default_temperature()
-    prompt_name = "summary5"
+    prompt_name = "summary6"
     # if not prompt_name:
     #     if len(query) > 800:
     #         prompt_name = "summary5"

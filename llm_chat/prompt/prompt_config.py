@@ -165,7 +165,14 @@ PROMPT_TEMPLATES = {
 <文档>"{{text}}"</文档>
 
 
-以上文档总结为：（注意不要提文档总结、概述等字，直接跟总结后的内容）\n""",
+以上文档总结为：\n""",
+
+        "summary6": """<指令>请总结下面文档，然后将它以简洁的方式重写。</指令>
+
+<文档>"{{text}}"</文档>
+
+
+文档重写为：\n""",
 
         "summary_lc":
             """Write a concise summary of the following:
