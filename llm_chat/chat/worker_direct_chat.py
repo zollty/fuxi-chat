@@ -172,14 +172,16 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
     try:
         all_tasks = await asyncio.gather(*chat_completions)
     except Exception as e:
-        return ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict()
+        yield ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict()
+        return
     usage = UsageInfo()
     for i, content in enumerate(all_tasks):
         if isinstance(content, str):
             content = json.loads(content)
 
         if content["error_code"] != 0:
-            return ErrorResponse(message=content["text"], code=content["error_code"]).dict()
+            yield ErrorResponse(message=content["text"], code=content["error_code"]).dict()
+            return
 
         choices.append(
             ChatCompletionResponseStreamChoice(
@@ -193,7 +195,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
             for usage_key, usage_value in task_usage.dict().items():
                 setattr(usage, usage_key, getattr(usage, usage_key) + usage_value)
 
-    return ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
+    yield ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
         exclude_unset=True)
 
 
