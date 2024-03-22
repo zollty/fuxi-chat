@@ -56,7 +56,7 @@ async def summary_doc(doc: str,
                                     )
 
     print("start" + "-" * 20)
-    async for chunk in chat_iter(request):
+    for chunk in chat_iter(request):
         # handle the chunk data here
         print(chunk)
         print(type(chunk))
