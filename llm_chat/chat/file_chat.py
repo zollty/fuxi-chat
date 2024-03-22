@@ -189,9 +189,9 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     if not org_docs:
         return BaseResponse(code=400, msg=f"未找到临时文档 {doc_id}，请检查或重试")
 
-    model_name = file_chat_summary_model()
+    # model_name = file_chat_summary_model()
     prompt_name = "summary2"
-    max_tokens = MAX_LENGTH
+    # max_tokens = MAX_LENGTH
 
     doc = org_docs[0].page_content
     # 计算总长度
@@ -215,8 +215,7 @@ async def summary_docs(kid: str = Body(..., description="临时知识库ID"),
     print("==================")
     print(src_info)
 
-    return EventSourceResponse(summary_doc(doc, model_name=model_name,
-                                           prompt_name=prompt_name,
+    return EventSourceResponse(summary_doc(doc, prompt_name=prompt_name,
                                            stream=stream,
                                            src_info=src_info,
                                            ))

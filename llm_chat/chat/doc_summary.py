@@ -9,18 +9,20 @@ MAX_LENGTH = summary_max_length()
 
 async def summary_doc(doc: str,
                       stream: bool = False,
-                      model_name: str = file_chat_summary_model,
+                      model_name: str = None,
                       max_tokens: int = 0,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
                       ) -> AsyncIterable[str]:
+    if not model_name:
+        model_name = file_chat_summary_model()
+    if not temperature:
+        temperature = file_chat_default_temperature()
     if max_tokens > 0:
         use_max_tokens = max_tokens
     else:
         use_max_tokens = MAX_LENGTH
-    if not temperature:
-        temperature = file_chat_default_temperature()
 
     if len(doc) > MAX_LENGTH:
         doc = doc[:MAX_LENGTH]
