@@ -20,12 +20,12 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
                        prompt_name: Optional[str] = Body(None,
                                                          description="使用的prompt模板名称(在configs/prompt_config.py中配置)")
                        ):
-    # if not model_name:
-    #     model_name = file_chat_summary_model()
-    # if not max_tokens:
-    #     max_tokens = -1
-    # if not temperature:
-    #     temperature = file_chat_default_temperature()
+    if not model_name:
+        model_name = file_chat_summary_model()
+    if not max_tokens:
+        max_tokens = -1
+    if not temperature:
+        temperature = file_chat_default_temperature()
     if not prompt_name:
         if len(query) > 800:
             prompt_name = "summary5"
