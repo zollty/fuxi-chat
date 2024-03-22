@@ -130,7 +130,7 @@ def stream_chat_completion(
         yield chunk.model_dump(exclude_unset=True)
 
         previous_text = ""
-        async for content in generate_completion_stream(gen_params, worker_addr):
+        for content in generate_completion_stream(gen_params, worker_addr):
             if content["error_code"] != 0:
                 yield content
                 return
