@@ -160,7 +160,7 @@ async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n:
         yield finish_chunk.model_dump(exclude_none=True)
 
 
-async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> AsyncGenerator[dict]:
+async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> AsyncGenerator[dict, None]:
     """Creates a completion for the chat message"""
     choices = []
     chat_completions = []
@@ -261,7 +261,7 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None
     #     return not_stream_chat_completion_special2(request, worker_addr, gen_params)
 
 
-async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict]:
+async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict, None]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
