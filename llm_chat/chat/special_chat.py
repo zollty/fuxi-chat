@@ -1,13 +1,13 @@
 from fastapi import Body
 from sse_starlette.sse import EventSourceResponse
 from typing import List, Optional, Union
-# import json
-# from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
-# from fastapi.responses import StreamingResponse, JSONResponse
-# from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
-# from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
-# from jian.llm_chat.chat.worker_direct_chat import ChatCompletionRequest, \
-#     create_stream_chat_completion, create_not_stream_chat_completion
+import json
+from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
+from fastapi.responses import StreamingResponse, JSONResponse
+from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
+from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from jian.llm_chat.chat.worker_direct_chat import ChatCompletionRequest, \
+    create_stream_chat_completion, create_not_stream_chat_completion
 from jian.llm_chat.chat.doc_summary import summary_doc
 
 
@@ -32,31 +32,31 @@ async def summary_chat(query: str = Body(..., description="用户输入", exampl
         else:
             prompt_name = "summary3"
 
-    return EventSourceResponse(summary_doc(query, model_name=model_name,
-                                           prompt_name=prompt_name,
-                                           max_tokens=max_tokens,
-                                           temperature=temperature,
-                                           stream=stream,
-                                           ))
+    # return EventSourceResponse(summary_doc(query, model_name=model_name,
+    #                                        prompt_name=prompt_name,
+    #                                        max_tokens=max_tokens,
+    #                                        temperature=temperature,
+    #                                        stream=stream,
+    #                                        ))
 
-    # history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=query)]
-    #
-    # request = ChatCompletionRequest(model=model_name,
-    #                                 messages=history,
-    #                                 temperature=temperature,
-    #                                 max_tokens=max_tokens,
-    #                                 stream=stream,
-    #                                 )
-    #
-    # def data_handler(ctx) -> str:
-    #     return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
-    #
-    # if stream:
-    #     return EventSourceResponse(create_stream_chat_completion(request, data_handler))
-    # else:
-    #     res = await create_not_stream_chat_completion(request)
-    #     if isinstance(res, ChatCompletionResponse):
-    #         answer = res.choices[0].message.content
-    #         return JSONResponse({"answer": answer}, status_code=200)
-    #     else:
-    #         return res
+    history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=query)]
+
+    request = ChatCompletionRequest(model=model_name,
+                                    messages=history,
+                                    temperature=temperature,
+                                    max_tokens=max_tokens,
+                                    stream=stream,
+                                    )
+
+    def data_handler(ctx) -> str:
+        return json.dumps({"answer": ctx["text"]}, ensure_ascii=False)
+
+    if stream:
+        return EventSourceResponse(create_stream_chat_completion(request, data_handler))
+    else:
+        res = await create_not_stream_chat_completion(request)
+        if isinstance(res, ChatCompletionResponse):
+            answer = res.choices[0].message.content
+            return JSONResponse({"answer": answer}, status_code=200)
+        else:
+            return res
