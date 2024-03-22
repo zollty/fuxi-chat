@@ -234,7 +234,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         exclude_unset=True)
 
 
-async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None, Any]:
+async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
