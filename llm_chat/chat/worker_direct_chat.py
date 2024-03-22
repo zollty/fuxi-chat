@@ -108,7 +108,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
 #     message: str = None
 #     logprobs: bool = False
 
-async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> AsyncGenerator:
+async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> AsyncGenerator[dict, None]:
     """
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
@@ -234,7 +234,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         exclude_unset=True)
 
 
-async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator:
+async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
