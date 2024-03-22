@@ -7,6 +7,25 @@ from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temp
 MAX_LENGTH = summary_max_length()
 
 
+import datetime, decimal
+class MyEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime.datetime):
+            print("MyEncoder-datetime.datetime")
+            return obj.strftime("%Y-%m-%d %H:%M:%S")
+        if isinstance(obj, bytes):
+            return str(obj, encoding='utf-8')
+        if isinstance(obj, int):
+            return int(obj)
+        elif isinstance(obj, float):
+            return float(obj)
+        # elif isinstance(obj, array):
+        #    return obj.tolist()
+        if isinstance(obj, decimal.Decimal):
+            return float(obj)
+        else:
+            return super(MyEncoder, self).default(obj)
+
 async def summary_doc(doc: str,
                       stream: bool = False,
                       model_name: str = None,
@@ -39,12 +58,12 @@ async def summary_doc(doc: str,
     print("start" + "-" * 20)
     for chunk in chat_iter(request):
         # handle the chunk data here
-        print(json.dumps(chunk, ensure_ascii=False))
+        print(json.dumps(chunk, cls=MyEncoder, ensure_ascii=False))
         if chunk.get("choices") is not None:
             # res.choices[0].delta.content
             json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
         else:
-            yield json.dumps(chunk, ensure_ascii=False)
+            yield json.dumps(chunk, cls=MyEncoder, ensure_ascii=False)
 
     if not src_info:
         yield json.dumps({"docs": src_info}, ensure_ascii=False)
