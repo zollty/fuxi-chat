@@ -200,7 +200,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         exclude_unset=True)
 
 
-def chat_iter(request: ChatCompletionRequest) -> AsyncIterable[dict]:
+async def chat_iter(request: ChatCompletionRequest) -> AsyncIterable[dict]:
     """Creates a completion for the chat message"""
     worker_addr = get_worker_address(request.model)
 
