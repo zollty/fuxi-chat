@@ -108,7 +108,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
 #     message: str = None
 #     logprobs: bool = False
 
-def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str):
+def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> AsyncGenerator[dict, None, Any]:
     """
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
@@ -160,7 +160,7 @@ def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, 
         yield finish_chunk.model_dump(exclude_none=True)
 
 
-async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params):
+async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> AsyncGenerator[dict]:
     """Creates a completion for the chat message"""
     choices = []
     chat_completions = []
@@ -234,7 +234,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         exclude_unset=True)
 
 
-async def chat_iter(request: ChatCompletionRequest):
+async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None, Any]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 
@@ -257,8 +257,33 @@ async def chat_iter(request: ChatCompletionRequest):
 
     if request.stream:
         return stream_chat_completion(request.model, gen_params, request.n, worker_addr)
-    else:
-        return not_stream_chat_completion_special2(request, worker_addr, gen_params)
+    # else:
+    #     return not_stream_chat_completion_special2(request, worker_addr, gen_params)
+
+
+async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict]:
+    """Creates a completion for the chat message"""
+    worker_addr = await get_worker_address(request.model)
+
+    # print("---------------start get_gen_params-----------------")
+    gen_params = get_gen_params(
+        request.model,
+        worker_addr,
+        request.messages,
+        temperature=request.temperature,
+        top_p=request.top_p,
+        top_k=request.top_k,
+        presence_penalty=request.presence_penalty,
+        frequency_penalty=request.frequency_penalty,
+        max_tokens=request.max_tokens,
+        echo=False,
+        stop=request.stop,
+    )
+    # print("---------------end get_gen_params-----------------")
+    # print(gen_params)
+
+    yield not_stream_chat_completion_special2(request, worker_addr, gen_params)
+
 
 
 async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr, gen_params) -> Dict:

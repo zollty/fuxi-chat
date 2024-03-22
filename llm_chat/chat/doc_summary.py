@@ -1,7 +1,7 @@
 from typing import AsyncIterable, Optional, Generator
 import json
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
-from jian.llm_chat.chat.worker_direct_chat import chat_iter, ChatCompletionRequest
+from jian.llm_chat.chat.worker_direct_chat import chat_iter33, ChatCompletionRequest
 from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temperature, summary_max_length
 
 MAX_LENGTH = summary_max_length()
@@ -33,7 +33,7 @@ async def summary_doc(doc: str,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
-                      ) :
+                      ) -> Generator[str]:
     if not model_name:
         model_name = file_chat_summary_model()
     if not temperature:
@@ -56,7 +56,7 @@ async def summary_doc(doc: str,
                                     )
 
     print("start" + "-" * 20)
-    async for chunk in chat_iter(request):
+    async for chunk in chat_iter33(request):
         # handle the chunk data here
         print(chunk)
         print(type(chunk))
