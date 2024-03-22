@@ -108,9 +108,9 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
 #     message: str = None
 #     logprobs: bool = False
 
-async def stream_chat_completion(
+def stream_chat_completion(
         model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str
-) -> Iterator[dict]:
+) -> Generator[dict]:
     """
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
@@ -162,7 +162,7 @@ async def stream_chat_completion(
         yield finish_chunk.model_dump(exclude_none=True)
 
 
-async def not_stream_chat_completion_special(request: ChatCompletionRequest, worker_addr, gen_params) -> Iterator[dict]:
+async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> Generator[dict]:
     """Creates a completion for the chat message"""
     choices = []
     chat_completions = []
@@ -200,9 +200,45 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         exclude_unset=True)
 
 
-async def chat_iter(request: ChatCompletionRequest) -> Iterator[dict]:
+async def not_stream_chat_completion_special(request: ChatCompletionRequest, worker_addr, gen_params) -> dict:
     """Creates a completion for the chat message"""
-    worker_addr = get_worker_address(request.model)
+    choices = []
+    chat_completions = []
+    for i in range(request.n):
+        content = asyncio.create_task(generate_completion(gen_params, worker_addr))
+        chat_completions.append(content)
+    try:
+        all_tasks = await asyncio.gather(*chat_completions)
+    except Exception as e:
+        logger.exception(e)
+        return ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict()
+    usage = UsageInfo()
+    for i, content in enumerate(all_tasks):
+        if isinstance(content, str):
+            content = json.loads(content)
+
+        if content["error_code"] != 0:
+            return ErrorResponse(message=content["text"], code=content["error_code"]).dict()
+
+        choices.append(
+            ChatCompletionResponseStreamChoice(
+                index=i,
+                delta=ChatMessage(role="assistant", content=content["text"]),
+                finish_reason=content.get("finish_reason", "stop"),
+            )
+        )
+        if "usage" in content:
+            task_usage = UsageInfo.parse_obj(content["usage"])
+            for usage_key, usage_value in task_usage.dict().items():
+                setattr(usage, usage_key, getattr(usage, usage_key) + usage_value)
+
+    return ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
+        exclude_unset=True)
+
+
+async def chat_iter(request: ChatCompletionRequest) -> Generator[dict]:
+    """Creates a completion for the chat message"""
+    worker_addr = await get_worker_address(request.model)
 
     # print("---------------start get_gen_params-----------------")
     gen_params = get_gen_params(
@@ -222,9 +258,9 @@ async def chat_iter(request: ChatCompletionRequest) -> Iterator[dict]:
     # print(gen_params)
 
     if request.stream:
-        return stream_chat_completion(request.model, gen_params, request.n, worker_addr)
+        yield stream_chat_completion(request.model, gen_params, request.n, worker_addr)
     else:
-        return not_stream_chat_completion_special(request, worker_addr, gen_params)
+        yield not_stream_chat_completion_special(request, worker_addr, gen_params)
 
 
 async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr, gen_params) -> Dict:
