@@ -58,6 +58,8 @@ async def summary_doc(doc: str,
     print("start" + "-" * 20)
     for chunk in chat_iter(request):
         # handle the chunk data here
+        print(chunk)
+        print(type(chunk))
         print(json.dumps(chunk, cls=MyEncoder, ensure_ascii=False))
         if chunk.get("choices") is not None:
             # res.choices[0].delta.content
