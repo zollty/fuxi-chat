@@ -55,7 +55,7 @@ def base_init_0(cfg: Dynaconf, log_level):
     logger.setLevel(log_level.upper())
 
     app_settings.controller_address = cfg.get("agent.controller.address")
-    app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "")
+    app_settings.api_keys = cfg.get("llm.openai_api_server.api_keys", "EMPTY")
 
     app = base_init_1(cfg)
     call_controller_to_init(cfg, app)

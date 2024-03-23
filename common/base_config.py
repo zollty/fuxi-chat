@@ -20,12 +20,17 @@ def openai_api_cfg():
     # port = FSCHAT_OPENAI_API["port"]
     # return f"http://{host}:{port}/v1"
     # address, api_key
-    return controller_address() + "/v1", "EMPTY"
+    return controller_address() + "/v1", api_keys()
 
 
 def controller_address():
     from fastchat.serve.openai_api_server import app_settings
     return app_settings.controller_address
+
+
+def api_keys():
+    from fastchat.serve.openai_api_server import app_settings
+    return app_settings.api_keys
 
 
 config_llm_models = None
