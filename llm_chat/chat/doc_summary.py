@@ -46,6 +46,7 @@ async def summary_doc(doc: str,
     if len(doc) > MAX_LENGTH:
         doc = doc[:MAX_LENGTH]
 
+    src_info = doc
     history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
 
     request = ChatCompletionRequest(model=model_name,
@@ -56,8 +57,8 @@ async def summary_doc(doc: str,
                                     )
 
     print("start" + "-" * 20)
-    async for chunk in chat_iter33(request):
-        # handle the chunk data here
+    if not stream:
+        chunk = await anext(chat_iter33(request))
         print(chunk)
         print(type(chunk))
         print(json.dumps(chunk, ensure_ascii=False))
@@ -66,9 +67,20 @@ async def summary_doc(doc: str,
             yield json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
         else:
             yield json.dumps(chunk, ensure_ascii=False)
+    else:
+        async for chunk in chat_iter33(request):
+            # handle the chunk data here
+            print(chunk)
+            print(type(chunk))
+            print(json.dumps(chunk, ensure_ascii=False))
+            if chunk.get("choices") is not None:
+                # res.choices[0].delta.content
+                yield json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
+            else:
+                yield json.dumps(chunk, ensure_ascii=False)
 
-    if src_info:
-        yield json.dumps({"docs": src_info}, ensure_ascii=False)
+        if src_info:
+            yield json.dumps({"docs": src_info}, ensure_ascii=False)
     print("end" + "-" * 20)
 
     # if stream:

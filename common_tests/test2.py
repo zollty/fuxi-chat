@@ -45,7 +45,7 @@ def props_with_(obj):
 
 
 import asyncio, json
-from typing import AsyncGenerator
+from typing import AsyncGenerator, AsyncIterator
 
 
 async def fetch_remote(worker_addr: str):
@@ -54,6 +54,7 @@ async def fetch_remote(worker_addr: str):
 
 async def fetch_remote222(worker_addr: str):
     return {"error_code": 21, "content": "23dsds87"}
+
 
 async def generate_completion(payload: Dict[str, Any], worker_addr: str):
     return await fetch_remote222(worker_addr + "/worker_generate")
@@ -128,11 +129,32 @@ async def chat_iter33() -> AsyncGenerator[dict, None]:
     yield res
 
 
+async def chat_iter333() -> AsyncIterator[dict]:
+    """Creates a completion for the chat message"""
+    worker_addr = await get_worker_address("ds9843984398")
+
+    res = await not_stream_chat_completion_special(worker_addr, {})
+
+    yield res
+
+
 async def sdsd(src_info: str = None):
     print("start" + "-" * 20)
+    if src_info is None:
+        aaa = chat_iter333()
+        chunk = await anext(aaa)
+        # chunk = await chat_iter33().__anext__()
+        yield json.dumps(chunk, ensure_ascii=False)
+        # Task was destroyed but it is pending!
+        # chunk = await anext(aaa)
+        # print("--------------------", chunk)
+        # chunk = await anext(aaa)
+        # print("--------------------222", chunk)
+        return
+
     async for chunk in chat_iter33():
         # handle the chunk data here
-        #chunk = await chunk
+        # chunk = await chunk
         print(chunk)
         print(type(chunk))
         print(json.dumps(chunk, ensure_ascii=False))
@@ -152,6 +174,10 @@ async def coroutine_wrapper(async_gen, args):
         print(tuple([i async for i in async_gen(args)]))
     except ValueError:
         print(tuple([(i, j) async for i, j in async_gen(args)]))
+
+
+import signal
+
 
 
 if __name__ == "__main__":
@@ -185,6 +211,8 @@ if __name__ == "__main__":
     # loop.close()
 
     # asyncio.run(sdsd())
+
+
     loop = asyncio.new_event_loop()
     asyncio.set_event_loop(loop)
     xrange_iterator_task = loop.create_task(coroutine_wrapper(sdsd, None))
@@ -194,3 +222,4 @@ if __name__ == "__main__":
         loop.stop()
     finally:
         loop.close()
+
