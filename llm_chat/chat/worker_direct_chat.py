@@ -185,7 +185,7 @@ async def not_stream_chat_completion_special2(request: ChatCompletionRequest, wo
         choices.append(
             ChatCompletionResponseStreamChoice(
                 index=i,
-                delta=ChatMessage(role="assistant", content=content["text"]),
+                delta=DeltaMessage(role="assistant", content=content["text"]),
                 finish_reason=content.get("finish_reason", "stop"),
             )
         )
@@ -221,7 +221,7 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         choices.append(
             ChatCompletionResponseStreamChoice(
                 index=i,
-                delta=ChatMessage(role="assistant", content=content["text"]),
+                delta=DeltaMessage(role="assistant", content=content["text"]),
                 finish_reason=content.get("finish_reason", "stop"),
             )
         )
