@@ -282,8 +282,8 @@ async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict, No
     # print("---------------end get_gen_params-----------------")
     # print(gen_params)
 
-    yield not_stream_chat_completion_special(request, worker_addr, gen_params)
-
+    res = await not_stream_chat_completion_special(request, worker_addr, gen_params)
+    yield res
 
 
 async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr, gen_params) -> Dict:
