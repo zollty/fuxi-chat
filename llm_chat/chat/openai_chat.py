@@ -1,6 +1,7 @@
 from sse_starlette.sse import EventSourceResponse
 from typing import List, Optional
-import openai
+# import openai
+from openai import OpenAI
 from pydantic import BaseModel
 from fuxi.utils.runtime_conf import get_log_verbose, logger
 from jian.llm_chat.config import openai_api_cfg
@@ -24,10 +25,12 @@ class OpenAiChatMsgIn(BaseModel):
 
 async def openai_chat(msg: OpenAiChatMsgIn):
     api_base_url, api_key = openai_api_cfg()
-    openai.api_key = api_key
-    print(f"{openai.api_key=}")
-    openai.api_base = api_base_url
-    print(f"{openai.api_base=}")
+    # openai.api_key = api_key
+    print(f"{api_key=}")
+    # openai.api_base = api_base_url
+    print(f"{api_base_url=}")
+
+    client = OpenAI(api_key=api_key, base_url=api_base_url)
 
     if isinstance(msg.max_tokens, int) and msg.max_tokens <= 0:
         msg.max_tokens = None
@@ -37,7 +40,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
         data = msg.dict()
 
         try:
-            response = await openai.chat.completions.create(**data)
+            response = await client.chat.completions.create(**data)
             if msg.stream:
                 async for data in response:
                     if choices := data.choices:
