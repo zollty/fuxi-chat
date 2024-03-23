@@ -266,7 +266,7 @@ async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict, No
     worker_addr = await get_worker_address(request.model)
 
     # print("---------------start get_gen_params-----------------")
-    gen_params = get_gen_params(
+    gen_params = await get_gen_params(
         request.model,
         worker_addr,
         request.messages,
