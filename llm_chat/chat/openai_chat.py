@@ -37,7 +37,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
         data = msg.dict()
 
         try:
-            response = await openai.ChatCompletion.acreate(**data)
+            response = await openai.chat.completions.create(**data)
             if msg.stream:
                 async for data in response:
                     if choices := data.choices:
@@ -48,7 +48,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
                 if response.choices:
                     answer = response.choices[0].message.content
                     print(answer)
-                    yield (answer)
+                    yield answer
         except Exception as e:
             msg = f"获取ChatCompletion时出错：{e}"
             logger.error(f'{e.__class__.__name__}: {msg}',
