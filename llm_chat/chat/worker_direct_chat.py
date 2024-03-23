@@ -239,7 +239,7 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None
     worker_addr = await get_worker_address(request.model)
 
     # print("---------------start get_gen_params-----------------")
-    gen_params = get_gen_params(
+    gen_params = await get_gen_params(
         request.model,
         worker_addr,
         request.messages,
@@ -256,7 +256,8 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None
     # print(gen_params)
 
     if request.stream:
-        yield stream_chat_completion(request.model, gen_params, request.n, worker_addr)
+        async for j in stream_chat_completion(request.model, gen_params, request.n, worker_addr):
+            yield j
     else:
         res = await not_stream_chat_completion_special(request, worker_addr, gen_params)
         yield res
