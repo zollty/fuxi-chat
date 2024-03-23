@@ -43,6 +43,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
             response = client.chat.completions.create(**data)
             if msg.stream:
                 for data in response:
+                    print(data, end="", flush=True)
                     if choices := data.choices:
                         if chunk := choices[0].get("delta", {}).get("content"):
                             print(chunk, end="", flush=True)
