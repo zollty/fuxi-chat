@@ -90,7 +90,8 @@ def init_api_server():
         root_path=get_runtime_root_dir(),
         settings_files=['conf/llm_model.yml', 'conf/settings.yaml'],
     )
-    sys.modules["jian.common.base_config"].cfg = cfg
+    import jian.common.base_config as bc
+    bc.cfg = cfg
 
     log_level = cfg.get("llm.openai_api_server.log_level", "info")
     host = cfg.get("llm.openai_api_server.host", "0.0.0.0")
