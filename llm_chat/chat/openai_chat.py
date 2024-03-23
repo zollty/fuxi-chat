@@ -45,7 +45,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
                 for data in response:
                     print(data, end="", flush=True)
                     if choices := data.choices:
-                        if chunk := choices[0].get("delta", {}).get("content"):
+                        if chunk := choices[0].delta.content:
                             print(chunk, end="", flush=True)
                             yield chunk
             else:
