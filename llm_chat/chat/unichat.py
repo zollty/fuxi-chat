@@ -59,16 +59,14 @@ async def unichat(request: ChatCompletionRequest):
                     print(f"-------------------------\n{msg}")
                     request.messages.append(msg)
 
-                if not ret_text:
+                if ret_text:
                     async def coro_chat_iter1() -> AsyncGenerator[str, None]:
                         async for item in chat_iter_given_txt(ret_text, stream=stream, model_name=model_name):
                             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
 
                     return EventSourceResponse(coro_chat_iter1())
 
-    print("6666"*20)
     async def coro_chat_iter2() -> AsyncGenerator[str, None]:
-        print(f"-------------------------+++++++++++++++++")
         async for item in chat_iter(request):
             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
 
