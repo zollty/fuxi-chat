@@ -196,7 +196,7 @@ async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr
 async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[ChatCompletionResult, None]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
-    print(json.dumps(request.model_dump(), ensure_ascii=False))
+    # print(json.dumps(request.model_dump(), ensure_ascii=False))
 
     # print("---------------start get_gen_params-----------------")
     gen_params = await get_gen_params(

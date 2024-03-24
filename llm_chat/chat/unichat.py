@@ -5,6 +5,7 @@ from typing import Dict, List, Optional, Union, AsyncGenerator
 from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, chat_iter, chat_iter_given_txt
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
+from cachetools import cached, TTLCache
 
 help_doc = """**帮助文档（cmd指令）**
 （输入--help查看帮助）
@@ -14,14 +15,18 @@ help_doc = """**帮助文档（cmd指令）**
 """
 
 
-async def load_webpage(url: str) -> str:
+@cached(TTLCache(100, 600))
+async def load_webpage(url: str, max_len: int = 30000) -> str:
     from langchain.document_loaders import WebBaseLoader
     # 创建webLoader
     loader = WebBaseLoader(url)
     # 获取文档
     docs = loader.load()
     # 查看文档内容
-    return docs[0].page_content
+    context = docs[0].page_content
+    if len(context) > max_len:
+        context = context[:max_len]
+    return context
 
 
 async def unichat(request: ChatCompletionRequest):
@@ -48,15 +53,13 @@ async def unichat(request: ChatCompletionRequest):
                 elif content.startswith("--url"):
                     arr = content.split(" ")
                     url = arr[1]
-                    context = await load_webpage(url)
-                    if len(context) > 30000:
-                        content = context[:30000]
+                    context = await load_webpage(url, 30000)
                     prompt_name = "default"
                     query = content[content.find(arr[1]) + len(arr[1]) + 1:]
                     msg = format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name,
                                                     question=query,
                                                     context=context)
-                    print(f"-------------------------\n{msg}")
+                    # print(f"-------------------------\n{msg}")
                     request.messages.append(msg)
 
                 if ret_text:
