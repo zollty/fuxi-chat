@@ -4,6 +4,7 @@ from typing import Dict, List, Optional, Union, AsyncGenerator
 
 from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, chat_iter, chat_iter_given_txt
+from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 help_doc = """**帮助文档（cmd指令）**
 （输入--help查看帮助）
@@ -11,6 +12,16 @@ help_doc = """**帮助文档（cmd指令）**
 2、--search [搜索提问] （联网搜索再回答）
 3、--kb [知识库名，例如：数地、园博园] （搜索知识库再回答）
 """
+
+
+async def load_webpage(url: str) -> str:
+    from langchain.document_loaders import WebBaseLoader
+    # 创建webLoader
+    loader = WebBaseLoader(url)
+    # 获取文档
+    docs = loader.load()
+    # 查看文档内容
+    return docs[0].page_content
 
 
 async def unichat(request: ChatCompletionRequest):
@@ -26,13 +37,26 @@ async def unichat(request: ChatCompletionRequest):
         return error_check_ret
 
     if type(request.messages) is list:
-        messages = request.messages
-        for message in messages:
-            print(message)
-            if message.get("role") == "user":
-                content = message.get("content")
-                if content is not None and content.strip() == "--help":
+        message = request.messages.pop()
+        print(message)
+        if message.get("role") == "user":
+            if content := message.get("content"):
+                content = content.strip()
+                if content == "--help":
                     ret_text = help_doc
+                elif content.startswith("--url"):
+                    arr = content.split(" ")
+                    url = arr[1]
+                    context = await load_webpage(url)
+                    if len(context) > 30000:
+                        content = context[:30000]
+                    prompt_name = "default"
+                    query = content[content.find(arr[1]) + len(arr[1]) + 1:]
+                    msg = format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name,
+                                                    question=query,
+                                                    context=context)
+                    print(f"-------------------------\n{msg}")
+                    request.messages.append(msg)
 
                     async def coro_chat_iter1() -> AsyncGenerator[str, None]:
                         async for item in chat_iter_given_txt(ret_text, stream=stream, model_name=model_name):
