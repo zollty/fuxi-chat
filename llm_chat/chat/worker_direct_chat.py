@@ -46,23 +46,25 @@ class ChatCompletionResult:
         self.normal_response = normal_response
         self.error_response = error_response
 
-    def to_stream_json(self, text_key: str = "answer") -> str:
-        if not self.stream_response:
+    def to_stream_json(self, text_key: str = "answer") -> Union[str, None]:
+        if self.stream_response:
             print(self.stream_response.model_dump())
             if choices := self.stream_response.choices:
                 if text := choices[0].delta.content:
                     return json.dumps({text_key: text}, ensure_ascii=False)
-        if not self.error_response:
+            return None
+        if self.error_response:
             return json.dumps(self.error_response, ensure_ascii=False)
 
-    def to_normal_json(self, text_key: str = "answer", append_info: dict = None) -> str:
-        if not self.normal_response:
+    def to_normal_json(self, text_key: str = "answer", append_info: dict = None) -> Union[str, None]:
+        if self.normal_response:
             if self.normal_response.choices:
                 answer = self.normal_response.choices[0].message.content
                 if append_info:
                     return json.dumps({text_key: answer} | append_info, ensure_ascii=False)
                 return json.dumps({text_key: answer}, ensure_ascii=False)
-        if not self.error_response:
+            return None
+        if self.error_response:
             return json.dumps(self.error_response, ensure_ascii=False)
 
     def to_openai_dict(self) -> dict:
