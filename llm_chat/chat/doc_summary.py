@@ -73,11 +73,12 @@ async def summary_doc(doc: str,
             print(chunk)
             print(type(chunk))
             print(json.dumps(chunk, ensure_ascii=False))
-            if chunk.get("choices") is not None:
+            if choices := chunk.get("choices"):
                 # res.choices[0].delta.content
-                yield json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
-            else:
-                yield json.dumps(chunk, ensure_ascii=False)
+                if text := choices[0].get("delta", {}).get("content"):
+                    yield json.dumps({"answer": text}, ensure_ascii=False)
+                    continue
+            yield json.dumps(chunk, ensure_ascii=False)
 
         if src_info:
             yield json.dumps({"docs": src_info}, ensure_ascii=False)

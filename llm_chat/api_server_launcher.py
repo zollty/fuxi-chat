@@ -42,6 +42,7 @@ def base_init_1(cfg: Dynaconf):
             allow_headers=["*"],
         )
 
+    os.environ["no_proxy"] = "http://192.168.33.104,http://172.16.8.91"
     set_httpx_config()
 
     MakeFastAPIOffline(app)
