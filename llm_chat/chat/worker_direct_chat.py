@@ -36,26 +36,30 @@ class ChatCompletionResponseSpecial(BaseModel):
 
 
 class ChatCompletionResult:
-    last: bool
     stream_response: ChatCompletionStreamResponse
     normal_response: ChatCompletionResponse
     error_response: Dict
 
-    def __init__(self, last: bool = False, stream_response: ChatCompletionStreamResponse = None,
+    def __init__(self, stream_response: ChatCompletionStreamResponse = None,
                  normal_response: ChatCompletionResponse = None, error_response: Dict = None):
-        self.last = last
         self.stream_response = stream_response
         self.normal_response = normal_response
         self.error_response = error_response
 
-    def to_text_dict(self, text_key: str = "answer") -> Dict:
+    def to_stream_dict(self, text_key: str = "answer") -> Dict:
         if not self.stream_response:
             if choices := self.stream_response.choices:
                 if text := choices[0].delta.content:
                     return {text_key: text}
+        if not self.error_response:
+            return self.error_response
+
+    def to_normal_dict(self, text_key: str = "answer", append_info: dict = None) -> Dict:
         if not self.normal_response:
             if self.normal_response.choices:
                 answer = self.normal_response.choices[0].message.content
+                if append_info:
+                    return {text_key: answer} | append_info
                 return {text_key: answer}
         if not self.error_response:
             return self.error_response
@@ -143,7 +147,7 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
 #     logprobs: bool = False
 
 async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> \
-        AsyncGenerator[dict, None]:
+        AsyncGenerator[ChatCompletionResult, None]:
     """
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
@@ -160,12 +164,15 @@ async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n:
         chunk = ChatCompletionStreamResponse(
             id=id, choices=[choice_data], model=model_name
         )
-        yield chunk.model_dump(exclude_unset=True)
+        yield ChatCompletionResult(stream_response=chunk)
 
         previous_text = ""
         async for content in generate_completion_stream(gen_params, worker_addr):
             if content["error_code"] != 0:
-                yield content
+                content["code"] = 500
+                if not content.get("message"):
+                    content["message"] = "llm return error"
+                yield ChatCompletionResult(error_response=content)
                 return
             decoded_unicode = content["text"].replace("\ufffd", "")
             delta_text = decoded_unicode[len(previous_text):]
@@ -189,10 +196,10 @@ async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n:
                 if content.get("finish_reason", None) is not None:
                     finish_stream_events.append(chunk)
                 continue
-            yield chunk.model_dump(exclude_unset=True)
+            yield ChatCompletionResult(stream_response=chunk)
     # There is not "content" field in the last delta message, so exclude_none to exclude field "content".
     for finish_chunk in finish_stream_events:
-        yield finish_chunk.model_dump(exclude_none=True)
+        yield ChatCompletionResult(stream_response=finish_chunk)
 
 
 async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> \
@@ -234,7 +241,8 @@ async def not_stream_chat_completion_special2(request: ChatCompletionRequest, wo
         exclude_unset=True)
 
 
-async def not_stream_chat_completion_special(request: ChatCompletionRequest, worker_addr, gen_params) -> dict:
+async def not_stream_chat_completion_special(request: ChatCompletionRequest, worker_addr,
+                                             gen_params) -> ChatCompletionResult:
     """Creates a completion for the chat message"""
     choices = []
     chat_completions = []
@@ -245,19 +253,20 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
         all_tasks = await asyncio.gather(*chat_completions)
     except Exception as e:
         logger.exception(e)
-        return ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict()
+        return ChatCompletionResult(error_response=ErrorResponse(message=str(e), code=ErrorCode.INTERNAL_ERROR).dict())
     usage = UsageInfo()
     for i, content in enumerate(all_tasks):
         if isinstance(content, str):
             content = json.loads(content)
 
         if content["error_code"] != 0:
-            return ErrorResponse(message=content["text"], code=content["error_code"]).dict()
+            return ChatCompletionResult(
+                error_response=ErrorResponse(message=content["text"], code=content["error_code"]).dict())
 
         choices.append(
-            ChatCompletionResponseStreamChoice(
+            ChatCompletionResponseChoice(
                 index=i,
-                delta=DeltaMessage(role="assistant", content=content["text"]),
+                message=ChatMessage(role="assistant", content=content["text"]),
                 finish_reason=content.get("finish_reason", "stop"),
             )
         )
@@ -266,13 +275,11 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
             for usage_key, usage_value in task_usage.dict().items():
                 setattr(usage, usage_key, getattr(usage, usage_key) + usage_value)
 
-    result = ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
-        exclude_unset=True)
-    result["last"] = True
-    return result
+    return ChatCompletionResult(
+        normal_response=ChatCompletionResponse(model=request.model, choices=choices, usage=usage))
 
 
-async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None]:
+async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[ChatCompletionResult, None]:
     """Creates a completion for the chat message"""
     worker_addr = await get_worker_address(request.model)
 

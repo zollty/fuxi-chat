@@ -6,8 +6,9 @@ from jian.llm_chat.config import file_chat_summary_model, file_chat_default_temp
 
 MAX_LENGTH = summary_max_length()
 
-
 import datetime, decimal
+
+
 class MyEncoder(json.JSONEncoder):
     def default(self, obj):
         if isinstance(obj, datetime.datetime):
@@ -25,6 +26,7 @@ class MyEncoder(json.JSONEncoder):
             return float(obj)
         else:
             return super(MyEncoder, self).default(obj)
+
 
 async def summary_doc(doc: str,
                       stream: bool = False,
@@ -56,15 +58,24 @@ async def summary_doc(doc: str,
                                     stream=stream,
                                     )
 
-    yield chat_iter(request)
-    # print("start" + "-" * 20)
-    # yield "---------------------------------SS"
-    # yield ""
-    # yield ""
-    # yield None
-    # yield None
-    # yield "---------------------------------EE"
-    # if not stream:
+    print("start" + "-" * 20)
+    async for chunk in chat_iter(request):
+        print(chunk)
+        print(type(chunk))
+        print(json.dumps(chunk, ensure_ascii=False))
+        if stream:
+            if ret := chunk.to_stream_dict():
+                yield ret
+        else:
+            if src_info:
+                yield chunk.to_normal_dict(append_info={"docs": src_info})
+            else:
+                yield chunk.to_normal_dict()
+
+    if stream and src_info:
+        yield {"docs": src_info}
+
+        # if not stream:
     #     chunk = await anext(chat_iter(request))
     #     print(chunk)
     #     print(type(chunk))
@@ -89,7 +100,7 @@ async def summary_doc(doc: str,
     #
     #     if src_info:
     #         yield json.dumps({"docs": src_info}, ensure_ascii=False)
-    # print("end" + "-" * 20)
+    print("end" + "-" * 20)
 
     # if stream:
     #     for chunk in chat_iter(request):

@@ -101,10 +101,4 @@ if __name__ == "__main__":
 
     xx({"aaa": 123, "bbb": 23453})
 
-
-    def xxxx(a: int) -> dict:
-        if a == 1:
-            return {"aaa": 123, "bbb": 23453}
-        return None
-
-    print(xxxx(2) is None)
+    print({"aaa": 123, "bbb": 23453} | {"xxxx": 1234124})
