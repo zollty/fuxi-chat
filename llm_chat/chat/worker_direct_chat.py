@@ -35,6 +35,40 @@ class ChatCompletionResponseSpecial(BaseModel):
     usage: UsageInfo
 
 
+class ChatCompletionResult:
+    last: bool
+    stream_response: ChatCompletionStreamResponse
+    normal_response: ChatCompletionResponse
+    error_response: Dict
+
+    def __init__(self, last: bool = False, stream_response: ChatCompletionStreamResponse = None,
+                 normal_response: ChatCompletionResponse = None, error_response: Dict = None):
+        self.last = last
+        self.stream_response = stream_response
+        self.normal_response = normal_response
+        self.error_response = error_response
+
+    def to_text_dict(self, text_key: str = "answer") -> Dict:
+        if not self.stream_response:
+            if choices := self.stream_response.choices:
+                if text := choices[0].delta.content:
+                    return {text_key: text}
+        if not self.normal_response:
+            if self.normal_response.choices:
+                answer = self.normal_response.choices[0].message.content
+                return {text_key: answer}
+        if not self.error_response:
+            return self.error_response
+
+    def to_openai_dict(self) -> dict:
+        if not self.stream_response:
+            return self.stream_response.model_dump(exclude_unset=True)
+        if not self.normal_response:
+            return self.normal_response.model_dump(exclude_unset=True)
+        if not self.error_response:
+            return self.error_response
+
+
 async def create_stream_chat_completion(request: ChatCompletionRequest, data_handler,
                                         err_handler=lambda e: json.dumps(e, ensure_ascii=False),
                                         success_last_handler=None, finish_handler=None):
@@ -108,7 +142,8 @@ async def create_stream_chat_completion(request: ChatCompletionRequest, data_han
 #     message: str = None
 #     logprobs: bool = False
 
-async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> AsyncGenerator[dict, None]:
+async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> \
+        AsyncGenerator[dict, None]:
     """
     Event stream format:
     https://developer.mozilla.org/en-US/docs/Web/API/Server-sent_events/Using_server-sent_events#event_stream_format
@@ -160,7 +195,8 @@ async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n:
         yield finish_chunk.model_dump(exclude_none=True)
 
 
-async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> AsyncGenerator[dict, None]:
+async def not_stream_chat_completion_special2(request: ChatCompletionRequest, worker_addr, gen_params) -> \
+        AsyncGenerator[dict, None]:
     """Creates a completion for the chat message"""
     choices = []
     chat_completions = []
@@ -230,8 +266,10 @@ async def not_stream_chat_completion_special(request: ChatCompletionRequest, wor
             for usage_key, usage_value in task_usage.dict().items():
                 setattr(usage, usage_key, getattr(usage, usage_key) + usage_value)
 
-    return ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
+    result = ChatCompletionResponseSpecial(model=request.model, choices=choices, usage=usage).model_dump(
         exclude_unset=True)
+    result["last"] = True
+    return result
 
 
 async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None]:
@@ -252,8 +290,8 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[dict, None
         echo=False,
         stop=request.stop,
     )
-    # print("---------------end get_gen_params-----------------")
     # print(gen_params)
+    # print("---------------end get_gen_params-----------------")
 
     if request.stream:
         async for j in stream_chat_completion(request.model, gen_params, request.n, worker_addr):

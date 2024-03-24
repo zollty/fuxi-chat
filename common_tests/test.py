@@ -4,8 +4,8 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-get_runtime_root_dir() = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(get_runtime_root_dir())
+get_runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(get_runtime_root_dir)
 
 from typing import (
     TYPE_CHECKING,
@@ -21,6 +21,7 @@ from typing import (
     Tuple
 )
 
+
 def string_args(args, args_list):
     args_str = ""
     for key, value in args._get_kwargs():
@@ -35,9 +36,9 @@ def string_args(args, args_list):
         elif isinstance(value, bool) and value == True:
             args_str += f" --{key} "
         elif (
-            isinstance(value, list)
-            or isinstance(value, tuple)
-            or isinstance(value, set)
+                isinstance(value, list)
+                or isinstance(value, tuple)
+                or isinstance(value, set)
         ):
             value = " ".join(value)
             args_str += f" --{key} {value} "
@@ -48,8 +49,6 @@ def string_args(args, args_list):
 
 
 if __name__ == "__main__":
-    from jian.common.conf import Cfg
-    from jian.common.utils import get_runtime_root_dir()
     import re
     import argparse
 
@@ -91,12 +90,21 @@ if __name__ == "__main__":
     ret = "xxxx@123".split("@2")
     print(len(ret))
 
+
     def xx(params: Dict = {}):
         print(params["bbb"])
         if "aaa" in params:
             for kwargs, c in params.items():
                 print(kwargs)
             print("-------------------------")
+
+
     xx({"aaa": 123, "bbb": 23453})
 
 
+    def xxxx(a: int) -> dict:
+        if a == 1:
+            return {"aaa": 123, "bbb": 23453}
+        return None
+
+    print(xxxx(2) is None)

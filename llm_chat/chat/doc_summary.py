@@ -57,6 +57,12 @@ async def summary_doc(doc: str,
                                     )
 
     print("start" + "-" * 20)
+    yield "---------------------------------SS"
+    yield ""
+    yield ""
+    yield None
+    yield None
+    yield "---------------------------------EE"
     if not stream:
         chunk = await anext(chat_iter(request))
         print(chunk)
