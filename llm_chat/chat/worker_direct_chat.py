@@ -232,6 +232,56 @@ async def coro_chat_iter(request: ChatCompletionRequest, text_key: str = "answer
             yield item.to_normal_json(text_key=text_key)
 
 
+async def chat_iter_given_txt(ret_text: str, stream: bool = True, model_name: str = None) \
+        -> AsyncGenerator[ChatCompletionResult, None]:
+    """Creates a completion for the given message"""
+    i = 0
+    if stream:
+        # First chunk with role
+        choice_data = ChatCompletionResponseStreamChoice(
+            index=i,
+            delta=DeltaMessage(role="assistant"),
+            finish_reason=None,
+        )
+        chunk = ChatCompletionStreamResponse(
+            id=id, choices=[choice_data], model=model_name
+        )
+        yield ChatCompletionResult(stream_response=chunk)
+
+        choice_data = ChatCompletionResponseStreamChoice(
+            index=i,
+            delta=DeltaMessage(content=ret_text),
+            finish_reason=None,
+        )
+        chunk = ChatCompletionStreamResponse(
+            id=id, choices=[choice_data], model=model_name
+        )
+        yield ChatCompletionResult(stream_response=chunk)
+
+        choice_data = ChatCompletionResponseStreamChoice(
+            index=i,
+            delta=DeltaMessage(),
+            finish_reason="stop",
+        )
+        chunk = ChatCompletionStreamResponse(
+            id=id, choices=[choice_data], model=model_name
+        )
+        yield ChatCompletionResult(stream_response=chunk)
+    else:
+        choices = [ChatCompletionResponseChoice(
+            index=i,
+            message=ChatMessage(role="assistant", content=ret_text),
+            finish_reason="stop",
+        )]
+        usage = UsageInfo()
+        usage.prompt_tokens = 10
+        usage.completion_tokens = len(ret_text)
+        usage.total_tokens = usage.prompt_tokens + usage.completion_tokens
+        res = ChatCompletionResult(
+            normal_response=ChatCompletionResponse(model=model_name, choices=choices, usage=usage))
+        yield res
+
+
 async def create_stream_chat_completion(request: ChatCompletionRequest, data_handler,
                                         err_handler=lambda e: json.dumps(e, ensure_ascii=False),
                                         success_last_handler=None, finish_handler=None):
