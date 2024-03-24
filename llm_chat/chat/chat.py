@@ -2,13 +2,13 @@ from fastapi import Body
 from sse_starlette.sse import EventSourceResponse
 from typing import Dict
 import json
-from typing import List, Optional, Union
+from typing import List, Optional, Union, AsyncGenerator
 from fastapi.responses import StreamingResponse, JSONResponse
 from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 
 from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
-    create_stream_chat_completion, create_not_stream_chat_completion, coro_chat_iter
+    create_stream_chat_completion, create_not_stream_chat_completion, coro_chat_iter, chat_iter
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 
 message_id_curr = {"id": 0}
@@ -59,7 +59,15 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
     if error_check_ret is not None:
         return error_check_ret
 
-    return EventSourceResponse(coro_chat_iter(request))
+    async def coro_chat_iter2(text_key: str) -> AsyncGenerator[str, None]:
+        async for item in chat_iter(request):
+            if stream:
+                if ret := item.to_stream_json_append({"message_id": message_id}, text_key=text_key):
+                    yield ret
+            else:
+                yield item.to_normal_json(text_key=text_key)
+
+    return EventSourceResponse(coro_chat_iter2("text"))
 
 
 async def chat2(query: str = Body(..., description="用户输入", examples=["恼羞成怒"]),
