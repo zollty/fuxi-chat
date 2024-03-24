@@ -45,7 +45,7 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
 
     chat_completions = []
     for li in links:
-        content = asyncio.create_task(load_webpage(li, 30000))
+        content = asyncio.create_task(load_webpage(li, 6000))
         chat_completions.append(content)
     try:
         all_tasks = await asyncio.gather(*chat_completions)
