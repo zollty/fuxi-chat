@@ -63,7 +63,6 @@ class ChatCompletionResult:
 
     def to_stream_json(self, text_key: str = "answer") -> Union[str, None]:
         if self.stream_response:
-            print(self.stream_response.model_dump())
             if choices := self.stream_response.choices:
                 if text := choices[0].delta.content:
                     return json.dumps({text_key: text}, ensure_ascii=False)
@@ -73,7 +72,6 @@ class ChatCompletionResult:
 
     def to_stream_json_append(self, append_info: dict, text_key: str = "answer") -> Union[str, None]:
         if self.stream_response:
-            print(self.stream_response.model_dump())
             if choices := self.stream_response.choices:
                 if text := choices[0].delta.content:
                     return json.dumps({text_key: text} | append_info, ensure_ascii=False)

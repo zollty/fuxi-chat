@@ -27,7 +27,6 @@ async def summary_doc(doc: str,
     if len(doc) > MAX_LENGTH:
         doc = doc[:MAX_LENGTH]
 
-    src_info = doc
     history = [format_jinja2_prompt_tmpl(tmpl_type="doc_chat", tmpl_name=prompt_name, text=doc)]
 
     request = ChatCompletionRequest(model=model_name,
@@ -37,7 +36,7 @@ async def summary_doc(doc: str,
                                     stream=stream,
                                     )
 
-    print("start" + "-" * 20)
+    # print("start" + "-" * 20)
     async for item in chat_iter(request):
         if stream:
             if ret := item.to_stream_json():
@@ -51,7 +50,7 @@ async def summary_doc(doc: str,
     if stream and src_info:
         yield json.dumps({"docs": src_info}, ensure_ascii=False)
 
-    print("end" + "-" * 20)
+    # print("end" + "-" * 20)
 
         # if not stream:
     #     chunk = await anext(chat_iter(request))
