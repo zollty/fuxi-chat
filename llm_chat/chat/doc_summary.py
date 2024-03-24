@@ -1,4 +1,4 @@
-from typing import AsyncIterable, Optional, Generator, Any
+from typing import AsyncIterable, Optional, Generator, Any, AsyncGenerator
 import json
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.llm_chat.chat.worker_direct_chat import chat_iter, ChatCompletionRequest
@@ -33,7 +33,7 @@ async def summary_doc(doc: str,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
-                      ) -> Generator[str,None,Any]:
+                      ) -> AsyncGenerator[dict, None]:
     if not model_name:
         model_name = file_chat_summary_model()
     if not temperature:
@@ -56,39 +56,40 @@ async def summary_doc(doc: str,
                                     stream=stream,
                                     )
 
-    print("start" + "-" * 20)
-    yield "---------------------------------SS"
-    yield ""
-    yield ""
-    yield None
-    yield None
-    yield "---------------------------------EE"
-    if not stream:
-        chunk = await anext(chat_iter(request))
-        print(chunk)
-        print(type(chunk))
-        print(json.dumps(chunk, ensure_ascii=False))
-        if chunk.get("choices") is not None:
-            # res.choices[0].delta.content
-            yield json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
-        else:
-            yield json.dumps(chunk, ensure_ascii=False)
-    else:
-        async for chunk in chat_iter(request):
-            # handle the chunk data here
-            print(chunk)
-            print(type(chunk))
-            print(json.dumps(chunk, ensure_ascii=False))
-            if choices := chunk.get("choices"):
-                # res.choices[0].delta.content
-                if text := choices[0].get("delta", {}).get("content"):
-                    yield json.dumps({"answer": text}, ensure_ascii=False)
-                    continue
-            yield json.dumps(chunk, ensure_ascii=False)
-
-        if src_info:
-            yield json.dumps({"docs": src_info}, ensure_ascii=False)
-    print("end" + "-" * 20)
+    return chat_iter(request)
+    # print("start" + "-" * 20)
+    # yield "---------------------------------SS"
+    # yield ""
+    # yield ""
+    # yield None
+    # yield None
+    # yield "---------------------------------EE"
+    # if not stream:
+    #     chunk = await anext(chat_iter(request))
+    #     print(chunk)
+    #     print(type(chunk))
+    #     print(json.dumps(chunk, ensure_ascii=False))
+    #     if chunk.get("choices") is not None:
+    #         # res.choices[0].delta.content
+    #         yield json.dumps({"answer": chunk["choices"][0]["delta"]["content"]}, ensure_ascii=False)
+    #     else:
+    #         yield json.dumps(chunk, ensure_ascii=False)
+    # else:
+    #     async for chunk in chat_iter(request):
+    #         # handle the chunk data here
+    #         print(chunk)
+    #         print(type(chunk))
+    #         print(json.dumps(chunk, ensure_ascii=False))
+    #         if choices := chunk.get("choices"):
+    #             # res.choices[0].delta.content
+    #             if text := choices[0].get("delta", {}).get("content"):
+    #                 yield json.dumps({"answer": text}, ensure_ascii=False)
+    #                 continue
+    #         yield json.dumps(chunk, ensure_ascii=False)
+    #
+    #     if src_info:
+    #         yield json.dumps({"docs": src_info}, ensure_ascii=False)
+    # print("end" + "-" * 20)
 
     # if stream:
     #     for chunk in chat_iter(request):
