@@ -103,7 +103,7 @@ if __name__ == "__main__":
 
     print({"aaa": 123, "bbb": 23453} | {"xxxx": 1234124})
 
-    strr = "--url https://xxxx.com 金黄色的几乎都是 收到可洁可净发多少"
+    strr = "--search https://xxxx.com 金黄色的几乎都是 收到可洁可净发多少"
     arr = strr.split(" ")
     print(arr[-1])
-    print(strr[strr.find(arr[1])+len(arr[1])+1:])
+    print(strr[9:])
