@@ -7,13 +7,25 @@ from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletion
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.tools.webpage_loader import load_webpage
 from jian.tools.search_free import do_search_engine
+from langchain.document_loaders import TextLoader
 
 help_doc = """**帮助文档（cmd指令）**
 （输入--help查看帮助）
 1、--url [url] [提问] （获取url网页内容并提问，限8千字）
 2、--search [搜索提问] （联网搜索再回答）
-3、--kb [知识库名，例如：数地、园博园] （搜索知识库再回答）
+3、--kb [知识库名，例如：数地手册、园博园] （搜索知识库再回答）
 """
+
+
+raw_documents_sanguo = TextLoader('/ai/apps/data/园博园参考资料.txt', encoding='utf-8').load()
+raw_documents_xiyou = TextLoader('/ai/apps/data/园博园介绍.txt', encoding='utf-8').load()
+raw_documents_fw = TextLoader('/ai/apps/data/园博园服务.txt', encoding='utf-8').load()
+yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
+yby_context = "\n".join([doc.page_content for doc in yby_src])
+
+
+raw_documents_sd = TextLoader('/ai/apps/sdmy.txt', encoding='utf-8').load()
+sd_context = "\n".join([doc.page_content for doc in raw_documents_sd])
 
 
 async def unichat(request: ChatCompletionRequest):
@@ -50,6 +62,26 @@ async def unichat(request: ChatCompletionRequest):
                         print(f"-------------------------\n{msg}")
                         request.messages.pop()
                         request.messages.append(msg)
+
+                elif content.startswith("--kb"):
+                    arr = content.split(" ")
+                    kb = arr[1]
+                    if kb == "数地手册" or kb == "园博园":
+                        query = content[content.find(arr[1]) + len(arr[1]) + 1:].strip()
+                        if query == "":
+                            ret_text = help_doc
+                        else:
+                            if kb == "数地手册":
+                                context = sd_context
+                            else:
+                                context = yby_context
+                            prompt_name = "default"
+                            msg = format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name,
+                                                            question=query,
+                                                            context=context)
+                            print(f"-------------------------\n{msg}")
+                            request.messages.pop()
+                            request.messages.append(msg)
 
                 elif content.startswith("--url"):
                     arr = content.split(" ")
