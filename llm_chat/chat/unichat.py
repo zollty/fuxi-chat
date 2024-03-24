@@ -42,6 +42,7 @@ async def unichat(request: ChatCompletionRequest):
         if message.get("role") == "user":
             if content := message.get("content"):
                 content = content.strip()
+                ret_text = None
                 if content == "--help":
                     ret_text = help_doc
                 elif content.startswith("--url"):
@@ -58,6 +59,7 @@ async def unichat(request: ChatCompletionRequest):
                     print(f"-------------------------\n{msg}")
                     request.messages.append(msg)
 
+                if not ret_text:
                     async def coro_chat_iter1() -> AsyncGenerator[str, None]:
                         async for item in chat_iter_given_txt(ret_text, stream=stream, model_name=model_name):
                             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
