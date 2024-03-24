@@ -1,6 +1,6 @@
 from sse_starlette.sse import EventSourceResponse
 from typing import List, Optional
-# import openai
+import json
 from openai import OpenAI
 from pydantic import BaseModel
 from fuxi.utils.runtime_conf import get_log_verbose, logger
@@ -48,11 +48,14 @@ async def openai_chat(msg: OpenAiChatMsgIn):
                         if chunk := choices[0].delta.content:
                             print(chunk, end="", flush=True)
                             yield chunk
+                            continue
+                    yield json.dumps(data.model_dump(), ensure_ascii=False)
             else:
                 if response.choices:
                     answer = response.choices[0].message.content
                     print(answer)
-                    yield answer
+                    # yield answer
+                    yield json.dumps(response.model_dump(), ensure_ascii=False)
         except Exception as e:
             msg = f"获取ChatCompletion时出错：{e}"
             logger.error(f'{e.__class__.__name__}: {msg}',
