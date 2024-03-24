@@ -35,7 +35,7 @@ async def summary_doc(doc: str,
                       temperature: Optional[float] = None,
                       prompt_name: str = "summary1",
                       src_info=None,
-                      ) -> AsyncGenerator[dict, None]:
+                      ) -> AsyncGenerator[str, None]:
     if not model_name:
         model_name = file_chat_summary_model()
     if not temperature:
