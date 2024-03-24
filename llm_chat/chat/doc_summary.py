@@ -56,7 +56,7 @@ async def summary_doc(doc: str,
                                     stream=stream,
                                     )
 
-    return chat_iter(request)
+    yield chat_iter(request)
     # print("start" + "-" * 20)
     # yield "---------------------------------SS"
     # yield ""
