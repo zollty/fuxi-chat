@@ -1,7 +1,7 @@
 from sse_starlette.sse import EventSourceResponse
 import json
 from typing import Dict, List, Optional, Union, AsyncGenerator
-
+from fastapi.responses import StreamingResponse, JSONResponse
 from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, chat_iter, chat_iter_given_txt
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
@@ -112,4 +112,8 @@ async def unichat(request: ChatCompletionRequest):
         async for item in chat_iter(request):
             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
 
-    return EventSourceResponse(coro_chat_iter2())
+    if stream:
+        return EventSourceResponse(coro_chat_iter2())
+    else:
+        item = await anext(chat_iter(request))
+        return JSONResponse(item.to_openai_dict(), status_code=200)
