@@ -65,7 +65,7 @@ async def chat(query: str = Body(..., description="用户输入", examples=["恼
                 if ret := item.to_stream_json_append({"message_id": message_id}, text_key=text_key):
                     yield ret
             else:
-                yield item.to_normal_json(text_key=text_key)
+                yield item.to_normal_json(text_key=text_key, append_info={"message_id": message_id})
 
     return EventSourceResponse(coro_chat_iter2("text"))
 
