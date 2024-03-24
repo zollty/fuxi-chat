@@ -106,7 +106,11 @@ async def unichat(request: ChatCompletionRequest):
                         async for item in chat_iter_given_txt(ret_text, stream=stream, model_name=model_name):
                             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
 
-                    return EventSourceResponse(coro_chat_iter1())
+                    if stream:
+                        return EventSourceResponse(coro_chat_iter1())
+                    else:
+                        item = await anext(chat_iter_given_txt(ret_text, stream=stream, model_name=model_name))
+                        return JSONResponse(item.to_openai_dict(), status_code=200)
 
     async def coro_chat_iter2() -> AsyncGenerator[str, None]:
         async for item in chat_iter(request):
