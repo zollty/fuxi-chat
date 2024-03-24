@@ -24,7 +24,7 @@ yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 yby_context = "\n".join([doc.page_content for doc in yby_src])
 
 
-raw_documents_sd = TextLoader('/ai/apps/sdmy.txt', encoding='utf-8').load()
+raw_documents_sd = TextLoader('/ai/apps/data/sdmy.txt', encoding='utf-8').load()
 sd_context = "\n".join([doc.page_content for doc in raw_documents_sd])
 
 
