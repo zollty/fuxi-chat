@@ -6,7 +6,7 @@ from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, chat_iter, chat_iter_given_txt
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.tools.webpage_loader import load_webpage
-from jian.tools.search_free import search_engine_iter
+from jian.tools.search_free import do_search_engine
 
 help_doc = """**帮助文档（cmd指令）**
 （输入--help查看帮助）
@@ -42,7 +42,7 @@ async def unichat(request: ChatCompletionRequest):
                     if query == "":
                         ret_text = help_doc
                     else:
-                        context = await search_engine_iter(query)
+                        context = await do_search_engine(query)
                         prompt_name = "default"
                         msg = format_jinja2_prompt_tmpl(tmpl_type="search_engine_chat", tmpl_name=prompt_name,
                                                         question=query,

@@ -7,6 +7,7 @@ from jian.tools.webpage_loader import load_webpage
 SEARCH_ENGINE_TOP_K = 5
 
 
+@cached(TTLCache(100, 600))
 async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
     from search_engines import Google
 
@@ -43,10 +44,11 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
     return info + "\n" + "\n".join(ctx)
 
 
-@cached(TTLCache(100, 600))
+# @cached(TTLCache(100, 600))
 async def search_engine_iter(query: str):
-    results = await run_in_threadpool(do_search_engine, query)
-    return results
+    # results = await run_in_threadpool(do_search_engine, query)
+    # return results
+    return ""
 
 
 def search_internet(query: str):
