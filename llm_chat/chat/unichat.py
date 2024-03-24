@@ -37,7 +37,7 @@ async def unichat(request: ChatCompletionRequest):
                 ret_text = None
                 if content == "--help":
                     ret_text = help_doc
-                elif content == "--search":
+                elif content.startswith("--search"):
                     query = content[9:].strip()
                     if query == "":
                         ret_text = help_doc
