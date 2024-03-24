@@ -17,7 +17,7 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
     info = ""
     ctx = []
     for row in results.results():
-        info += f"{row.title}\n{row.text}"
+        info += row.get("title") + "\n" + row.get("text")
         host = row.get('host')
         if ("youtube.com" in host
                 or "weibo.com" in host
