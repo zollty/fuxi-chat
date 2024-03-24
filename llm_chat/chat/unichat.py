@@ -18,6 +18,11 @@ async def unichat(request: ChatCompletionRequest):
     if error_check_ret is not None:
         return error_check_ret
 
+    if type(request.messages) is list:
+        messages = request.messages
+        for message in messages:
+            print(message)
+
     async def coro_chat_iter2() -> AsyncGenerator[str, None]:
         async for item in chat_iter(request):
             yield json.dumps(item.to_openai_dict(), ensure_ascii=False)
