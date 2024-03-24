@@ -68,11 +68,11 @@ class ChatCompletionResult:
             return json.dumps(self.error_response, ensure_ascii=False)
 
     def to_openai_dict(self) -> dict:
-        if not self.stream_response:
+        if self.stream_response:
             return self.stream_response.model_dump(exclude_unset=True)
-        if not self.normal_response:
+        if self.normal_response:
             return self.normal_response.model_dump(exclude_unset=True)
-        if not self.error_response:
+        if self.error_response:
             return self.error_response
 
 
