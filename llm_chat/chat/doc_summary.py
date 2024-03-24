@@ -59,18 +59,18 @@ async def summary_doc(doc: str,
                                     )
 
     print("start" + "-" * 20)
-    async for chunk in chat_iter(request):
-        print(chunk)
-        print(type(chunk))
-        print(json.dumps(chunk, ensure_ascii=False))
+    async for obj in chat_iter(request):
+        # print(chunk)
+        # print(type(chunk))
+        # print(json.dumps(chunk, ensure_ascii=False))
         if stream:
-            if ret := chunk.to_stream_dict():
+            if ret := obj.to_stream_dict():
                 yield ret
         else:
             if src_info:
-                yield chunk.to_normal_dict(append_info={"docs": src_info})
+                yield obj.to_normal_dict(append_info={"docs": src_info})
             else:
-                yield chunk.to_normal_dict()
+                yield obj.to_normal_dict()
 
     if stream and src_info:
         yield {"docs": src_info}
