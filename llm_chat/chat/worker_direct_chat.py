@@ -46,6 +46,21 @@ class ChatCompletionResult:
         self.normal_response = normal_response
         self.error_response = error_response
 
+    def to_json(self, text_key: str = "answer") -> Union[str, None]:
+        if self.stream_response:
+            print(self.stream_response.model_dump())
+            if choices := self.stream_response.choices:
+                if text := choices[0].delta.content:
+                    return json.dumps({text_key: text}, ensure_ascii=False)
+            return None
+        if self.normal_response:
+            if self.normal_response.choices:
+                answer = self.normal_response.choices[0].message.content
+                return json.dumps({text_key: answer}, ensure_ascii=False)
+            return None
+        if self.error_response:
+            return json.dumps(self.error_response, ensure_ascii=False)
+
     def to_stream_json(self, text_key: str = "answer") -> Union[str, None]:
         if self.stream_response:
             print(self.stream_response.model_dump())
@@ -309,6 +324,16 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[ChatComple
     else:
         res = await not_stream_chat_completion_special(request, worker_addr, gen_params)
         yield res
+
+
+async def coro_chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[str, None]:
+    stream = request.stream
+    async for item in chat_iter(request):
+        if stream:
+            if ret := item.to_stream_json():
+                yield ret
+        else:
+            yield item.to_normal_json()
 
 
 async def chat_iter33(request: ChatCompletionRequest) -> AsyncGenerator[dict, None]:
