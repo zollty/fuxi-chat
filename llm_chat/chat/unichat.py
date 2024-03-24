@@ -42,7 +42,7 @@ async def unichat(request: ChatCompletionRequest):
                     if query == "":
                         ret_text = help_doc
                     else:
-                        context = search_engine_iter(query)
+                        context = await search_engine_iter(query)
                         prompt_name = "default"
                         msg = format_jinja2_prompt_tmpl(tmpl_type="search_engine_chat", tmpl_name=prompt_name,
                                                         question=query,
