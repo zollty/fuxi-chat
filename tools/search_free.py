@@ -16,6 +16,7 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
 
     info = ""
     ctx = []
+    links = []
     for row in results.results():
         info += row.get("title") + "\n" + row.get("text")
         host = row.get('host')
@@ -36,10 +37,24 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
             continue
         if row.get('link').endswith('.pdf'):
             continue
-        context = await load_webpage(row.get('link'), 30000)
-        ctx.append(context)
-        if len(ctx) >= result_len:
+        # context = await load_webpage(row.get('link'), 30000)
+        # ctx.append(context)
+        links.append(row.get('link'))
+        if len(links) >= result_len:
             break
+
+    chat_completions = []
+    for li in links:
+        content = asyncio.create_task(load_webpage(li, 30000))
+        chat_completions.append(content)
+    try:
+        all_tasks = await asyncio.gather(*chat_completions)
+    except Exception as e:
+        print(e)
+        return ""
+
+    for i, content in enumerate(all_tasks):
+        ctx.append(content)
 
     return info + "\n" + "\n".join(ctx)
 
