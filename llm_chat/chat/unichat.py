@@ -47,7 +47,7 @@ async def unichat(request: ChatCompletionRequest):
                         msg = format_jinja2_prompt_tmpl(tmpl_type="search_engine_chat", tmpl_name=prompt_name,
                                                         question=query,
                                                         context=context)
-                        # print(f"-------------------------\n{msg}")
+                        print(f"-------------------------\n{msg}")
                         request.messages.pop()
                         request.messages.append(msg)
 
