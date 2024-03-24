@@ -64,16 +64,16 @@ async def summary_doc(doc: str,
         # print(type(chunk))
         # print(json.dumps(chunk, ensure_ascii=False))
         if stream:
-            if ret := item.to_stream_dict():
+            if ret := item.to_stream_json():
                 yield ret
         else:
             if src_info:
-                yield item.to_normal_dict(append_info={"docs": src_info})
+                yield item.to_normal_json(append_info={"docs": src_info})
             else:
-                yield item.to_normal_dict()
+                yield item.to_normal_json()
 
     if stream and src_info:
-        yield json.dumps({"docs": src_info})
+        yield json.dumps({"docs": src_info}, ensure_ascii=False)
 
         # if not stream:
     #     chunk = await anext(chat_iter(request))
