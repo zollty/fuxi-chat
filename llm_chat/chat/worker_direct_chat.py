@@ -235,6 +235,7 @@ async def coro_chat_iter(request: ChatCompletionRequest, text_key: str = "answer
 async def chat_iter_given_txt(ret_text: str, stream: bool = True, model_name: str = None) \
         -> AsyncGenerator[ChatCompletionResult, None]:
     """Creates a completion for the given message"""
+    id = f"chatcmpl-{shortuuid.random()}"
     i = 0
     if stream:
         # First chunk with role
