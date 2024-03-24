@@ -30,7 +30,7 @@ async def openai_chat(msg: OpenAiChatMsgIn):
     # openai.api_base = api_base_url
     print(f"{api_base_url=}")
 
-    client = OpenAI(api_key=api_key, base_url="http://127.0.0.1:20000/v1", timeout=60)
+    client = OpenAI(api_key=api_key, base_url="http://localhost:20022/v1", timeout=60)
 
     if isinstance(msg.max_tokens, int) and msg.max_tokens <= 0:
         msg.max_tokens = None
