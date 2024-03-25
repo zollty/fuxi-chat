@@ -14,3 +14,4 @@ async def load_webpage(url: str, max_len: int = 30000) -> str:
     if len(context) > max_len:
         context = context[:max_len]
     return context
+

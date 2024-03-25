@@ -10,10 +10,10 @@ from jian.tools.search_free import do_search_engine
 from langchain.document_loaders import TextLoader
 
 help_doc = """**帮助文档（cmd指令）**
-（输入--help查看帮助）
-1、--url [url] [提问] （获取url网页内容并提问，限8千字）
-2、--search [搜索提问] （联网搜索再回答）
-3、--kb [知识库名，例如：数地手册、园博园] （搜索知识库再回答）
+（输入help查看帮助）
+1、url [url] [提问] （获取url网页内容并提问，限8千字）
+2、kb [知识库名，支持：数地手册、园博园]  [提问]
+3、search [搜索提问] （联网搜索再回答）
 """
 
 
