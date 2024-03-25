@@ -51,7 +51,7 @@ async def unichat(request: ChatCompletionRequest):
                     ret_text = help_doc
                 elif content.startswith("search") or content.startswith("so"):
                     if content.startswith("search"):
-                        query = content[9:].strip()
+                        query = content[7:].strip()
                     else:
                         query = content[3:].strip()
                     if query == "":
