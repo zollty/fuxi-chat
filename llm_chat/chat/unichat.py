@@ -47,10 +47,13 @@ async def unichat(request: ChatCompletionRequest):
             if content := message.get("content"):
                 content = content.strip()
                 ret_text = None
-                if content == "--help":
+                if content == "help":
                     ret_text = help_doc
-                elif content.startswith("--search"):
-                    query = content[9:].strip()
+                elif content.startswith("search") or content.startswith("so"):
+                    if content.startswith("search"):
+                        query = content[9:].strip()
+                    else:
+                        query = content[3:].strip()
                     if query == "":
                         ret_text = help_doc
                     else:
@@ -63,7 +66,7 @@ async def unichat(request: ChatCompletionRequest):
                         request.messages.pop()
                         request.messages.append(msg)
 
-                elif content.startswith("--kb"):
+                elif content.startswith("kb"):
                     arr = content.split(" ")
                     kb = arr[1]
                     if kb == "数地手册" or kb == "园博园":
@@ -83,7 +86,7 @@ async def unichat(request: ChatCompletionRequest):
                             request.messages.pop()
                             request.messages.append(msg)
 
-                elif content.startswith("--url"):
+                elif content.startswith("url"):
                     arr = content.split(" ")
                     url = arr[1]
                     if url.startswith("http://") or url.startswith("https://"):
