@@ -69,82 +69,33 @@ class History(BaseModel):
         return h
 
 
-from langchain.chat_models import ChatOpenAI
-from jian.llm_chat.chat.minx_chat_openai import MinxChatOpenAI
-from jian.llm_chat import config
-
-
-def get_ChatOpenAI(
-        model_name: str,
-        temperature: float,
-        max_tokens: int = None,
-        streaming: bool = True,
-        callbacks: List[Callable] = [],
-        verbose: bool = True,
-        **kwargs: Any,
-) -> ChatOpenAI:
-    # 非Langchain原生支持的模型，走Fschat封装
-    if model_name == "openai-api":
-        model_name = config.default_openai_model()
-    ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
-    api_base_url, api_key = config.openai_api_cfg()
-    model = ChatOpenAI(
-        streaming=streaming,
-        verbose=verbose,
-        callbacks=callbacks,
-        openai_api_key=api_key,
-        openai_api_base=api_base_url,
-        model_name=model_name,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        openai_proxy=config.openai_proxy(),
-        **kwargs
-    )
-    return model
-
-
-def get_ChatOpenAI_temp(
-        model_name: str,
-        temperature: float,
-        max_tokens: int = None,
-        streaming: bool = True,
-        callbacks: List[Callable] = [],
-        verbose: bool = True,
-        **kwargs: Any,
-) -> ChatOpenAI:
-    # 非Langchain原生支持的模型，走Fschat封装
-    if model_name == "openai-api":
-        model_name = config.default_openai_model()
-    ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
-    api_base_url, api_key = config.openai_api_cfg()
-    model = ChatOpenAI(
-        streaming=streaming,
-        verbose=verbose,
-        callbacks=callbacks,
-        openai_api_key=api_key,
-        openai_api_base="http://127.0.0.1:23333/v1",
-        model_name=model_name,
-        temperature=temperature,
-        max_tokens=max_tokens,
-        openai_proxy=config.openai_proxy(),
-        **kwargs
-    )
-    return model
-
-
-import asyncio
-import logging
-
-
-async def wrap_done(fn: Awaitable, event: asyncio.Event):
-    """Wrap an awaitable with a event to signal when it's done or an exception is raised."""
-    try:
-        await fn
-    except Exception as e:
-        logging.exception(e)
-        msg = f"Caught exception: {e}"
-        logger.error(f'{e.__class__.__name__}: {msg}',
-                     exc_info=e if get_log_verbose() else None)
-    finally:
-        # Signal the aiter to stop.
-        event.set()
+# from langchain.chat_models import ChatOpenAI
+# from jian.llm_chat.chat.minx_chat_openai import MinxChatOpenAI
+# from jian.llm_chat import config
+# def get_ChatOpenAI(
+#         model_name: str,
+#         temperature: float,
+#         max_tokens: int = None,
+#         streaming: bool = True,
+#         callbacks: List[Callable] = [],
+#         verbose: bool = True,
+#         **kwargs: Any,
+# ) -> ChatOpenAI:
+#     # 非Langchain原生支持的模型，走Fschat封装
+#     if model_name == "openai-api":
+#         model_name = config.default_openai_model()
+#     ChatOpenAI._get_encoding_model = MinxChatOpenAI.get_encoding_model
+#     api_base_url, api_key = config.openai_api_cfg()
+#     model = ChatOpenAI(
+#         streaming=streaming,
+#         verbose=verbose,
+#         callbacks=callbacks,
+#         openai_api_key=api_key,
+#         openai_api_base=api_base_url,
+#         model_name=model_name,
+#         temperature=temperature,
+#         max_tokens=max_tokens,
+#         openai_proxy=config.openai_proxy(),
+#         **kwargs
+#     )
+#     return model

@@ -32,7 +32,7 @@ def base_init_1(cfg: Dynaconf):
     app.title = "风后AI-Chat API Server (兼容OpenAI API)"
     app.version = fastchat.__version__
 
-    cross_domain = cfg.get("llm.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
+    cross_domain = cfg.get("agent.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))
     if cross_domain:
         app.add_middleware(
             CORSMiddleware,
@@ -56,17 +56,14 @@ def base_init_0(cfg: Dynaconf, log_level):
     logger.setLevel(log_level.upper())
 
     app_settings.controller_address = cfg.get("agent.controller.address")
-    app_settings.api_keys = cfg.get("llm.controller.api_keys", "EMPTY")
+    app_settings.api_keys = cfg.get("agent.controller.api_keys", "EMPTY")
 
     app = base_init_1(cfg)
     call_controller_to_init(cfg, app)
     mount_more_routes(app)
 
-    # with open(get_runtime_root_dir() + '/logs/start_info.txt', 'a') as f:
-    #     f.write(f"    FenghouAI OpeanAI API Server (fastchat): http://{host}:{port}\n")
-
-    host = cfg.get("llm.openai_api_server.host")
-    port = cfg.get("llm.openai_api_server.port")
+    host = cfg.get("agent.openai_api_server.host")
+    port = cfg.get("agent.openai_api_server.port")
     if host == "localhost" or host == "127.0.0.1":
         host = "0.0.0.0"
 
@@ -76,8 +73,8 @@ def base_init_0(cfg: Dynaconf, log_level):
         host=host,
         port=port,
         log_level=log_level,
-        ssl_keyfile=cfg.get("llm.openai_api_server.ssl_keyfile"),
-        ssl_certfile=cfg.get("llm.openai_api_server.ssl_certfile"),
+        ssl_keyfile=cfg.get("agent.openai_api_server.ssl_keyfile"),
+        ssl_certfile=cfg.get("agent.openai_api_server.ssl_certfile"),
     )
 
 
@@ -94,21 +91,33 @@ def init_api_server():
     import jian.common.base_config as bc
     bc.cfg = cfg
 
-    log_level = cfg.get("llm.openai_api_server.log_level", "info")
-    host = cfg.get("llm.openai_api_server.host", "0.0.0.0")
-    port = cfg.get("llm.openai_api_server.port", 8000)
+    log_level = cfg.get("agent.openai_api_server.log_level", "info")
+    verbose = True if log_level == "debug" else False
+    host = cfg.get("agent.openai_api_server.host", "0.0.0.0")
+    port = cfg.get("agent.openai_api_server.port", 8000)
 
     parser = argparse.ArgumentParser(prog='FenghouAI',
                                      description='About FenghouAI-Chat API')
     parser.add_argument("--host", type=str, default=host)
     parser.add_argument("--port", type=int, default=port)
+    parser.add_argument(
+        "-v",
+        "--verbose",
+        help="增加log信息",
+        dest="verbose",
+        type=bool,
+        default=verbose,
+    )
     # 初始化消息
     args = parser.parse_args()
     host = args.host
     port = args.port
+    if args.verbose:
+        log_level = "debug"
+        cfg["agent.openai_api_server.log_level"] = "debug"
 
-    cfg["llm.openai_api_server.host"] = host
-    cfg["llm.openai_api_server.port"] = port
+    cfg["agent.openai_api_server.host"] = host
+    cfg["agent.openai_api_server.port"] = port
 
     import fastchat.constants
     fastchat.constants.LOGDIR = get_default_log_path()
