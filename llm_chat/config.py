@@ -1,4 +1,5 @@
 from jian.common.base_config import *
+from typing import Optional
 
 # DEFAULT_LLM = "Qwen-1.8B-Chat"
 # LONG_CONTEXT_MODEL = "chatglm3-6b-32k"
