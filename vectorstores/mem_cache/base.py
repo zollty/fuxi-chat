@@ -1,4 +1,3 @@
-from langchain.vectorstores.faiss import FAISS
 import threading
 from contextlib import contextmanager
 from collections import OrderedDict
@@ -22,7 +21,7 @@ class ThreadSafeObject:
         return self._key
 
     @contextmanager
-    def acquire(self, owner: str = "", msg: str = "") -> FAISS:
+    def acquire(self, owner: str = "", msg: str = ""):
         owner = owner or f"thread {threading.get_native_id()}"
         try:
             self._lock.acquire()

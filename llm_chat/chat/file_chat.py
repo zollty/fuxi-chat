@@ -3,20 +3,20 @@ from sse_starlette.sse import EventSourceResponse
 from typing import Dict, List, Optional, Union
 import json
 import threading
+from langchain.docstore.document import Document
+from fastapi.responses import StreamingResponse, JSONResponse
+from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
+
+from fuxi.utils.runtime_conf import get_temp_dir
+from fuxi.utils.torch_helper import torch_gc
 from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from jian.llm_chat.config import get_prompt_template, default_model, file_chat_relate_qa_model, file_chat_summary_model, \
     file_chat_default_temperature, summary_max_length
 from jian.tools.file_upload_parse import parse_files_in_thread
-
-from langchain.docstore.document import Document
-from fuxi.utils.runtime_conf import get_temp_dir
-from fuxi.utils.torch_helper import torch_gc
 from jian.tools.text_splitter_helper import do_split_docs
 # 使用默认的 vectorstore及默认的 embedding
-from vectorstores.mem_cache.faiss_cache import memo_cache_faiss_pool
+from jian.vectorstores.mem_cache.faiss_cache import memo_cache_faiss_pool
 from jian.tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
-from fastapi.responses import StreamingResponse, JSONResponse
-from fastchat.protocol.openai_api_protocol import ChatCompletionResponse
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, \
     create_stream_chat_completion, create_not_stream_chat_completion

@@ -73,8 +73,8 @@ def base_init_0(cfg: Dynaconf, log_level):
         host=host,
         port=port,
         log_level=log_level,
-        ssl_keyfile=cfg.get("agent.openai_api_server.ssl_keyfile"),
-        ssl_certfile=cfg.get("agent.openai_api_server.ssl_certfile"),
+        ssl_keyfile=cfg.get("agent.openai_api_server.ssl_keyfile", cfg.get("root.ssl_keyfile", None)),
+        ssl_certfile=cfg.get("agent.openai_api_server.ssl_certfile", cfg.get("root.ssl_certfile", None)),
     )
 
 

@@ -8,17 +8,18 @@ from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from fuxi.utils.runtime_conf import get_log_verbose, logger
 from jian.embeddings.config import EMBEDDING_MODEL, OPENAI_EMBEDDINGS_CHUNK_SIZE, embedding_device, config_embed_models, \
     online_embed_models, get_embed_model_path
-from jian.vectorstores.mem_cache.base import ThreadSafeObject, CachePool
+from fuxi.utils.thread_cache_pool import ThreadSafeObject, CachePool
 
 
 class EmbeddingsPool(CachePool):
     def load_embeddings(self, model: str = EMBEDDING_MODEL, device: str = embedding_device()) -> Embeddings:
         self.atomic.acquire()
-        key = (model, device)
+        key = model
         if not self.get(key):
             item = ThreadSafeObject(key, pool=self)
             self.set(key, item)
-            with item.acquire(msg="初始化"):
+            with item.acquire(msg="初始化"):  # for: _pool._cache.move_to_end(self.key)
+                item.start_loading()
                 self.atomic.release()
                 if model == "text-embedding-ada-002":  # openai text-embedding-ada-002
                     from langchain.embeddings.openai import OpenAIEmbeddings
@@ -52,7 +53,7 @@ class EmbeddingsPool(CachePool):
         return self.get(key).obj
 
 
-embeddings_pool = EmbeddingsPool(cache_num=1)
+embeddings_pool = EmbeddingsPool(cache_num=5)
 
 
 def load_local_embeddings(model: str = None, device: str = embedding_device()):
