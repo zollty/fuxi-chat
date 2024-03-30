@@ -70,7 +70,7 @@ async def unichat(request: ChatCompletionRequest):
                 elif content.startswith("kb"):
                     arr = content.split(" ")
                     kb = arr[1]
-                    if kb == "数地手册" or kb == "园博园":
+                    if kb == "数地手册" or kb == "园博园" or kb == "取名":
                         query = content[content.find(arr[1]) + len(arr[1]) + 1:].strip()
                         if query == "":
                             ret_text = help_doc
