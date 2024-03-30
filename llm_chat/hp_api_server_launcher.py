@@ -29,7 +29,7 @@ def base_init_1(cfg: Dynaconf):
     from fastchat.serve.openai_api_server import app
     from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
 
-    app.title = "风后AI-Chat API Server (兼容OpenAI API)"
+    app.title = "伏羲AI-Chat API Server (兼容OpenAI API)"
     app.version = fastchat.__version__
 
     cross_domain = cfg.get("agent.openai_api_server.cross_domain", cfg.get("root.cross_domain", True))

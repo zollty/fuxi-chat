@@ -16,16 +16,17 @@ help_doc = """**帮助文档（cmd指令）**
 3、search/so [搜索提问] （联网搜索再回答）
 """
 
-
 raw_documents_sanguo = TextLoader('/ai/apps/data/园博园参考资料.txt', encoding='utf-8').load()
 raw_documents_xiyou = TextLoader('/ai/apps/data/园博园介绍.txt', encoding='utf-8').load()
 raw_documents_fw = TextLoader('/ai/apps/data/园博园服务.txt', encoding='utf-8').load()
 yby_src = raw_documents_sanguo + raw_documents_xiyou + raw_documents_fw
 yby_context = "\n".join([doc.page_content for doc in yby_src])
 
-
 raw_documents_sd = TextLoader('/ai/apps/data/sdmy.txt', encoding='utf-8').load()
 sd_context = "\n".join([doc.page_content for doc in raw_documents_sd])
+
+raw_documents_qm = TextLoader('/ai/apps/data/quming.txt', encoding='utf-8').load()
+qm_context = "\n".join([doc.page_content for doc in raw_documents_qm])
 
 
 async def unichat(request: ChatCompletionRequest):
@@ -76,12 +77,16 @@ async def unichat(request: ChatCompletionRequest):
                         else:
                             if kb == "数地手册":
                                 context = sd_context
+                            elif kb == "取名":
+                                context = qm_context
                             else:
                                 context = yby_context
                             prompt_name = "default"
+                            if kb == "取名":
+                                prompt_name = "quming"
                             msg = format_jinja2_prompt_tmpl(tmpl_type="knowledge_base_chat", tmpl_name=prompt_name,
-                                                            question=query,
-                                                            context=context)
+                                                                question=query,
+                                                                context=context)
                             print(f"-------------------------\n{msg}")
                             request.messages.pop()
                             request.messages.append(msg)
