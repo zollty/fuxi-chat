@@ -13,7 +13,7 @@ async def keyword_extraction(sentence: str,
     if not model_name:
         model_name = default_model()
 
-    history = [format_jinja2_prompt_tmpl(tmpl_type="llm_chat", tmpl_name="关键词提取", text=sentence)]
+    history = [format_jinja2_prompt_tmpl(tmpl_type="llm_chat", tmpl_name="关键词提取", input=sentence)]
     print("---------------------------", history)
 
     request = ChatCompletionRequest(model=model_name,
