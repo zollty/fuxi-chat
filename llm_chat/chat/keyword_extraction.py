@@ -5,7 +5,7 @@ from jian.llm_chat.chat.worker_direct_chat import chat_iter, ChatCompletionReque
 from jian.llm_chat.config import default_model
 
 
-async def keyword_extraction(doc: str,
+async def keyword_extraction(sentence: str,
                              model_name: str = None,
                              max_tokens: Optional[int] = 2000,
                              temperature: Optional[float] = 0.1,
@@ -13,7 +13,7 @@ async def keyword_extraction(doc: str,
     if not model_name:
         model_name = default_model()
 
-    history = [format_jinja2_prompt_tmpl(tmpl_type="llm_chat", tmpl_name="关键词提取", text=doc)]
+    history = [format_jinja2_prompt_tmpl(tmpl_type="llm_chat", tmpl_name="关键词提取", text=sentence)]
 
     request = ChatCompletionRequest(model=model_name,
                                     messages=history,
