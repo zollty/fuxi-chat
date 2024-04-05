@@ -98,6 +98,9 @@ class ChatCompletionResult:
         if self.error_response:
             return self.error_response
 
+    def to_message_text(self) -> str:
+        return self.normal_response.choices[0].message.content
+
 
 async def stream_chat_completion(model_name: str, gen_params: Dict[str, Any], n: int, worker_addr: str) -> \
         AsyncGenerator[ChatCompletionResult, None]:

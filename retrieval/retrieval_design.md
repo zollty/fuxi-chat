@@ -56,6 +56,10 @@ def create_schema(kb_name: str, dims: int = DEFAULT_EMBED_DIMS):
 
 
 ### 3、全文检索及文本存储
+文本存储，支持全文关键字检索和语义检索两种检索方式。
+
+##### 关键字检索技术
+
 
 
 

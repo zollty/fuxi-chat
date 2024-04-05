@@ -21,6 +21,18 @@ PROMPT_TEMPLATES = {
         "default":
             '{{ input }}',
 
+        "关键词提取": """你是一个关键词捕捉专家，请将用户每一个问题提取出1个最重要的关键词（只要名词，通常为2~4个字）。
+例如：
+问题：使用shell工具查询当前系统的磁盘情况
+关键词：磁盘、shell
+问题：照壁有什么用
+关键词：照壁
+问题：使用arxiv工具查询关于transformer的论文
+关键词：transformer、arxiv
+
+下面是用户的问题：
+{{ input }}""",
+
         "充当英语翻译和改进":
             '**替代**：语法，谷歌翻译\n\n> 我希望你能担任英语翻译、拼写校对和修辞改进的角色。我会用任何语言和你交流，你会识别语言，将其翻译并用更为优美和精炼的英语回答我。请将我简单的词汇和句子替换成更为优美和高雅的表达方式，确保意思不变，但使其更具文学性。请仅回答更正和改进的部分，不要写解释。第一个需要翻译的是：\n'
             '"{{ input }}"',
@@ -61,8 +73,8 @@ PROMPT_TEMPLATES = {
             '{{ history }}\n'
             'Human: {{ input }}\n'
             'AI:',
-        
-        "with_text":"""参考信息：
+
+        "with_text": """参考信息：
 已知（提供知识）xxxxxxxxxxxxxxxxxxxxxxxxxx
 ---
 我的问题或指令：
@@ -130,7 +142,7 @@ PROMPT_TEMPLATES = {
             '<已知信息>{{ context }}</已知信息>\n'
             '<问题>{{ question }}</问题>\n',
 
-        "youdao":"""参考信息：
+        "youdao": """参考信息：
 {{ context }}
 ---
 我的问题或指令：
@@ -236,7 +248,6 @@ If the context isn't useful, return the original summary.\
             '<已知信息>{{ context }}</已知信息>\n'
             '<问题>{{ question }}</问题>\n',
     },
-
 
     "agent_chat": {
         "default":

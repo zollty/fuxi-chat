@@ -8,16 +8,26 @@ get_runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
 sys.path.append(get_runtime_root_dir)
 
 if __name__ == "__main__":
-    from langchain.text_splitter import MarkdownHeaderTextSplitter
+    import jieba
 
-    headers_to_split_on = [
-        ("#", "Header 1"),
-        ("##", "Header 2"),
-        ("###", "Header 3"),
-    ]
-    text_splitter = MarkdownHeaderTextSplitter(
-        headers_to_split_on=headers_to_split_on
-    )
+    #jieba.enable_paddle()  # 启动paddle模式。 0.40版之后开始支持，早期版本不支持
+    strs = ["我来到北京清华大学", "乒乓球拍卖完了", "中国科学技术大学"]
+    for str in strs:
+        seg_list = jieba.cut(str, use_paddle=False)  # 使用paddle模式
+        print("Paddle Mode: " + '/'.join(list(seg_list)))
+
+    seg_list = jieba.cut("我来到北京清华大学", cut_all=True)
+    print("Full Mode: " + "/ ".join(seg_list))  # 全模式
+
+    seg_list = jieba.cut("我来到北京清华大学", cut_all=False)
+    print("Default Mode: " + "/ ".join(seg_list))  # 精确模式
+
+    seg_list = jieba.cut("他来到了网易杭研大厦")  # 默认是精确模式
+    print(", ".join(seg_list))
+
+    seg_list = jieba.cut_for_search("小明硕士毕业于中国科学院计算所，后在日本京都大学深造")  # 搜索引擎模式
+    print(", ".join(seg_list))
+
     ls = [
         """## 园博园建筑格局
 重庆园博园内设有入口主题展示区、传统园林集锦区、国际园林展示区、现代园林展示区、三峡生态展示区和景观生态体验区等六大展区，建了5.1万平方米景观建筑和26个景区景点，荟萃了国外21个国家和地区的30个城市以及国内80多个城市的经典园林景观。园博园按功能设立入口区、景园区、展园区和生态区四大部分。
@@ -46,6 +56,5 @@ if __name__ == "__main__":
     # text = """"""
     for inum, text in enumerate(ls):
         print(inum)
-        chunks = text_splitter.split_text(text)
-        for chunk in chunks:
-            print(f"--------------------------------------{len(chunk.page_content)}: \n{chunk}")
+        seg_list = jieba.cut(text, use_paddle=False)  # 使用paddle模式
+        print("Paddle Mode: " + '/'.join(list(seg_list)))

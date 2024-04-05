@@ -44,6 +44,7 @@ def mount_app_routes(app: FastAPI):
     from jian.llm_chat.chat.yby_chat import yby_chat
     from jian.llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
     from jian.llm_chat.chat.special_chat import summary_chat, summary_chat2
+    from jian.llm_chat.chat.keyword_extraction import keyword_extraction
     from fastchat.serve.openai_api_server import show_available_models
 
     from jian.tools.file_upload_parse import test_parse_docs
@@ -83,6 +84,11 @@ def mount_app_routes(app: FastAPI):
              tags=["Chat"],
              summary="与代理的openai api对话",
              )(openai_chat)
+
+    app.post("/spchat/keyword_extraction",
+             tags=["Special Chat"],
+             summary="关键词提取"
+             )(keyword_extraction)
 
     app.post("/v2/chat/completions",
              tags=["Chat_V2"],
