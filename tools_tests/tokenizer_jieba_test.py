@@ -130,9 +130,29 @@ if __name__ == "__main__":
         # seg_list = jieba.cut(text, use_paddle=False)  # 使用paddle模式
         # print("Paddle Mode: " + '/'.join(list(seg_list)))
         tags = jieba.analyse.extract_tags(text, topK=10, withWeight=True)
+        words = pseg.cut(text)
+        # for word, flag in words:
+        #     print('%s %s' % (word, flag))
 
         for tag in tags:
             print("tag: %s\t\t weight: %f" % (tag[0], tag[1]))
 
-        # for x, w in jieba.analyse.textrank(text, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v')):
-        #     print('%s %s' % (x, w))
+        for x, w in jieba.analyse.textrank(text, withWeight=True, allowPOS=('ns', 'n', 'vn', 'v', 'nr', 'nt', 'nw', 'f', 's')):
+            print('%s %s' % (x, w))
+
+    print('=' * 40)
+    print('6. Tokenize: 返回词语在原文的起止位置')
+    print('-' * 40)
+    print(' 默认模式')
+    print('-' * 40)
+    result = jieba.tokenize('永和服装饰品有限公司')
+    for tk in result:
+        print("word %s\t\t start: %d \t\t end:%d" % (tk[0], tk[1], tk[2]))
+
+    print('-' * 40)
+    print(' 搜索模式')
+    print('-' * 40)
+
+    result = jieba.tokenize('永和服装饰品有限公司', mode='search')
+    for tk in result:
+        print("word %s\t\t start: %d \t\t end:%d" % (tk[0], tk[1], tk[2]))
