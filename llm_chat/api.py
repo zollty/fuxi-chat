@@ -41,7 +41,7 @@ def mount_app_routes(app: FastAPI):
     from jian.llm_chat.chat.chat import chat
     from jian.llm_chat.chat.openai_chat import openai_chat
     from jian.llm_chat.chat.unichat import unichat
-    from jian.llm_chat.chat.yby_chat import yby_chat
+    from jian.llm_chat.chat.yby_chat2 import yby_chat
     from jian.llm_chat.chat.file_chat import file_chat, upload_temp_docs, summary_docs, gen_relate_qa
     from jian.llm_chat.chat.special_chat import summary_chat, summary_chat2
     from jian.llm_chat.chat.keyword_extraction import keyword_extraction
