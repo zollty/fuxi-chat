@@ -27,7 +27,7 @@ def base_init_1(cfg: Dynaconf):
     import fastchat
     from fastapi.middleware.cors import CORSMiddleware
     from fastchat.serve.openai_api_server import app
-    from fuxi.utils.fastapi_tool import set_httpx_config, MakeFastAPIOffline
+    from fuxi.utils.fastapi_tool import MakeFastAPIOffline
 
     app.title = "伏羲AI-Chat API Server (兼容OpenAI API)"
     app.version = fastchat.__version__
@@ -41,9 +41,6 @@ def base_init_1(cfg: Dynaconf):
             allow_methods=["*"],
             allow_headers=["*"],
         )
-
-    os.environ["no_proxy"] = "http://192.168.33.104,http://172.16.8.91"
-    set_httpx_config()
 
     MakeFastAPIOffline(app)
 
@@ -121,6 +118,9 @@ def init_api_server():
 
     import fastchat.constants
     fastchat.constants.LOGDIR = get_default_log_path()
+
+    from fuxi.utils.fastapi_tool import set_httpx_config
+    set_httpx_config()
 
     base_init_0(cfg, log_level)
 
