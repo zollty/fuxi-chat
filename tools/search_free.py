@@ -12,7 +12,7 @@ async def do_search_engine(text, result_len: int = SEARCH_ENGINE_TOP_K):
 
     engine = Google()
     import urllib.request
-    proxies = urllib.request.getproxies
+    proxies = urllib.request.getproxies()
     print(f"----------------------proxy: {proxies}--------------------")
     results = engine.search(text, pages=2)
 
