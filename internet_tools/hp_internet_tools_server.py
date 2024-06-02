@@ -71,8 +71,8 @@ def init_api_server():
     cfg["agent.internet_tools_server.host"] = host
     cfg["agent.internet_tools_server.port"] = port
 
-    from fuxi.utils.fastapi_tool import set_httpx_config
-    set_httpx_config()
+    # from fuxi.utils.fastapi_tool import set_httpx_config
+    # set_httpx_config()
 
     base_init_0(cfg, log_level)
 
