@@ -20,11 +20,11 @@ def mount_app_routes(app: FastAPI):
 
     from jian.tools.langchain_utils import test_parse_url
 
-    def  search_engine(
+    async def search_engine(
             query: str = Form("", description="查询语句"),
             engine: str = Form("google", description="搜索引擎")
     ) -> BaseResponse:
-        context = do_search_engine(query)
+        context = await do_search_engine(query)
         if context:
             return BaseResponse(code=200, msg="搜索成功", data=context)
         return BaseResponse(code=500, msg="搜索失败")
