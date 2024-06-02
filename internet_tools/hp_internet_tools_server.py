@@ -10,7 +10,7 @@ sys.path.append(runtime_root_dir)
 from dynaconf import Dynaconf
 
 def base_init_0(cfg: Dynaconf, log_level):
-    from fuxi.utils.fastapi_tool import run_api, create_app
+    from fuxi.utils.fastapi_tool import run_api, create_app_without_httpx
     from jian.internet_tools.api import mount_app_routes
 
     host = cfg.get("agent.internet_tools_server.host")
@@ -18,7 +18,7 @@ def base_init_0(cfg: Dynaconf, log_level):
     if host == "localhost" or host == "127.0.0.1":
         host = "0.0.0.0"
 
-    app = create_app([mount_app_routes], version="1.0.0", title="FenghouAI internet_tools API Server")
+    app = create_app_without_httpx([mount_app_routes], version="1.0.0", title="FenghouAI internet_tools API Server")
 
     run_api(
         app,
