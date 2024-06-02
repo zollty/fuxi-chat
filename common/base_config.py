@@ -13,6 +13,10 @@ def controller_address():
     from fastchat.serve.openai_api_server import app_settings
     return app_settings.controller_address
 
+def internet_tools_address():
+    host = cfg.get("agent.internet_tools_server.host")
+    port = cfg.get("agent.internet_tools_server.port")
+    return f"http://{host}:{port}"
 
 def controller_keys():
     from fastchat.serve.openai_api_server import app_settings
