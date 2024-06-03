@@ -42,8 +42,8 @@ def init_api_server():
 
     log_level = cfg.get("agent.openai_api_server.log_level", "info")
     verbose = True if log_level == "debug" else False
-    host = cfg.get("agent.openai_api_server.host", "0.0.0.0")
-    port = cfg.get("agent.openai_api_server.port", 8000)
+    host = cfg.get("agent.internet_tools_server.host", "0.0.0.0")
+    port = cfg.get("agent.internet_tools_server.port", 8111)
 
     parser = argparse.ArgumentParser(prog='FenghouAI',
                                      description='About FenghouAI-Chat API')
