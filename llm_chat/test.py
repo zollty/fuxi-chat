@@ -65,7 +65,7 @@ def init_api_server():
         log_level = "debug"
         cfg["agent.openai_api_server.log_level"] = "debug"
 
-    cfg["agent.openai_api_server.host"] = host
+    cfg["agent.internet_tools_server.host"] = "192.168.33.105"
     cfg["agent.openai_api_server.port"] = port
 
     # from fuxi.utils.fastapi_tool import set_httpx_config
