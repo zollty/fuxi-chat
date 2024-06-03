@@ -19,7 +19,7 @@ def base_init_0(cfg: Dynaconf, log_level):
 
     from jian.common.internet_tools_client import search_engine
 
-    ret = search_engine("text2json")
+    ret = search_engine("llm2json")
     print(f"----------------------------ret: {ret}")
 
     import urllib.request
