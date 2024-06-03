@@ -22,6 +22,10 @@ def base_init_0(cfg: Dynaconf, log_level):
     ret = search_engine("text2json")
     print(f"----------------------------ret: {ret}")
 
+    import urllib.request
+    proxies = urllib.request.getproxies
+    print(f"----------------------proxy: {proxies()}--------------------")
+
 
 def init_api_server():
     import argparse
