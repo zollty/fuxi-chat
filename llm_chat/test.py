@@ -67,8 +67,8 @@ def init_api_server():
     import fastchat.constants
     fastchat.constants.LOGDIR = get_default_log_path()
 
-    from fuxi.utils.fastapi_tool import set_httpx_config
-    set_httpx_config()
+    # from fuxi.utils.fastapi_tool import set_httpx_config
+    # set_httpx_config()
 
     base_init_0(cfg, log_level)
 
