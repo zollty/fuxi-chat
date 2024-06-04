@@ -16,6 +16,6 @@ def search_engine(
     print("start to query search_engine---------------------------------")
     response = api.post(
         "/internet/search_engine",
-        json=data
+        data=data
     )
     return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", ""))
