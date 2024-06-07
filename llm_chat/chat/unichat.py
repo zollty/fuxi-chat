@@ -94,7 +94,7 @@ async def unichat(request: ChatCompletionRequest):
                     arr = content.split(" ")
                     url = arr[1]
                     if url.startswith("http://") or url.startswith("https://"):
-                        context = await load_webpage(url, 30000)
+                        context = load_webpage(url, 30000)
                         prompt_name = "default"
                         query = content[content.find(arr[1]) + len(arr[1]) + 1:].strip()
                         if query == "":

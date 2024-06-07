@@ -30,8 +30,8 @@ def mount_app_routes(app: FastAPI):
         return BaseResponse(code=500, msg="搜索失败")
 
     async def load_webpage_req(
-            url: str = Form(..., description="查询语句"),
-            max_len: int = Form(30000, description="搜索引擎")
+            url: str = Form(..., description="网址"),
+            max_len: int = Form(30000, description="最大长度")
     ) -> BaseResponse:
         context = await load_webpage(url, max_len)
         if context:
@@ -48,7 +48,7 @@ def mount_app_routes(app: FastAPI):
              )(search_engine)
 
     app.post("/internet/load_webpage",
-             tags=["Tools"],
+             tags=["Internet"],
              summary="解析url网页内容"
              )(load_webpage_req)
 
