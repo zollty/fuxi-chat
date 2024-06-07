@@ -19,3 +19,18 @@ def search_engine(
         data=data
     )
     return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", ""))
+
+def load_webpage(
+        url: str,
+        max_len: int = 30000,
+) -> str:
+    data = {
+        "url": url,
+        "max_len": max_len,
+    }
+    print("start to parse_url---------------------------------")
+    response = api.post(
+        "/internet/load_webpage",
+        data=data
+    )
+    return api.get_response_value(response, as_json=True, value_func=lambda r: r.get("data", ""))

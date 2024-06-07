@@ -15,16 +15,25 @@ from fuxi.utils.api_base import (BaseResponse, ListResponse)
 async def document():
     return RedirectResponse(url="/docs")
 
+
 def mount_app_routes(app: FastAPI):
     from jian.tools.search_free import do_search_engine
-
-    from jian.tools.langchain_utils import test_parse_url
+    from jian.tools.webpage_loader import load_webpage
 
     async def search_engine(
             query: str = Form("", description="查询语句"),
             engine: str = Form("google", description="搜索引擎")
     ) -> BaseResponse:
         context = await do_search_engine(query)
+        if context:
+            return BaseResponse(code=200, msg="搜索成功", data=context)
+        return BaseResponse(code=500, msg="搜索失败")
+
+    async def load_webpage_req(
+            url: str = Form(..., description="查询语句"),
+            max_len: int = Form(30000, description="搜索引擎")
+    ) -> BaseResponse:
+        context = await load_webpage(url, max_len)
         if context:
             return BaseResponse(code=200, msg="搜索成功", data=context)
         return BaseResponse(code=500, msg="搜索失败")
@@ -38,10 +47,10 @@ def mount_app_routes(app: FastAPI):
              summary="使用互联网搜索引擎（默认Google）"
              )(search_engine)
 
-    app.post("/internet/test_parse_url",
+    app.post("/internet/load_webpage",
              tags=["Tools"],
-             summary="解析url并分段，返回分段文本内容"
-             )(test_parse_url)
+             summary="解析url网页内容"
+             )(load_webpage_req)
 
 
 if __name__ == "__main__":

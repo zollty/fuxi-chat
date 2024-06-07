@@ -5,8 +5,7 @@ from fastapi.responses import StreamingResponse, JSONResponse
 from jian.llm_chat.config import default_model, default_temperature
 from jian.llm_chat.chat.worker_direct_chat import check_requests, ChatCompletionRequest, chat_iter, chat_iter_given_txt
 from jian.llm_chat.chat.utils import format_jinja2_prompt_tmpl
-from jian.tools.webpage_loader import load_webpage
-from jian.common.internet_tools_client import search_engine
+from jian.common.internet_tools_client import search_engine, load_webpage
 from langchain.document_loaders import TextLoader
 
 help_doc = """**帮助文档（cmd指令）**
