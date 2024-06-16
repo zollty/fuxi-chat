@@ -198,6 +198,9 @@ async def not_stream_chat_completion(request: ChatCompletionRequest, worker_addr
 
 async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[ChatCompletionResult, None]:
     """Creates a completion for the chat message"""
+    if request.model == 'Qwen1.5-7B-Chat':
+        request.model = 'Qwen2-7B-Instruct'
+
     worker_addr = await get_worker_address(request.model)
     print(json.dumps(request.model_dump(), ensure_ascii=False))
 
