@@ -201,8 +201,8 @@ async def chat_iter(request: ChatCompletionRequest) -> AsyncGenerator[ChatComple
     if request.model == 'Qwen1.5-7B-Chat':
         request.model = 'Qwen2-7B-Instruct'
 
-    worker_addr = await get_worker_address(request.model)
     print(json.dumps(request.model_dump(), ensure_ascii=False))
+    worker_addr = await get_worker_address(request.model)
 
     # print("---------------start get_gen_params-----------------")
     gen_params = await get_gen_params(
