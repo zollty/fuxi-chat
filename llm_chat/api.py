@@ -47,6 +47,8 @@ def mount_app_routes(app: FastAPI):
     from jian.llm_chat.chat.keyword_extraction import keyword_extraction
     from fastchat.serve.openai_api_server import show_available_models
 
+    from jian.embeddings.embeddings_api import embed_texts, aembed_texts
+
     from jian.tools.file_upload_parse import test_parse_docs
     from jian.tools.langchain_utils import test_parse_url
 
@@ -99,6 +101,17 @@ def mount_app_routes(app: FastAPI):
              tags=["Chat_V2"],
              summary="综合Chat（兼容OpenAI API）"
              )(show_available_models)
+
+    # 向量化接口
+    app.post("/embed/embeddings",
+             tags=["Embeddings"],
+             summary="对文本进行向量化",
+             )(embed_texts)
+
+    app.post("/embed/async-embeddings",
+             tags=["Embeddings"],
+             summary="对文本进行向量化（异步）",
+             )(aembed_texts)
 
     # 内部接口
     app.post("/inner/file_chat/auto_summary_docs",

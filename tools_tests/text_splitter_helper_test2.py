@@ -4,15 +4,15 @@ import os
 # 获取当前脚本的绝对路径
 __current_script_path = os.path.abspath(__file__)
 # 将项目根目录添加到sys.path
-get_runtime_root_dir() = os.path.dirname(os.path.dirname(__current_script_path))
-sys.path.append(get_runtime_root_dir())
+get_runtime_root_dir = os.path.dirname(os.path.dirname(__current_script_path))
+sys.path.append(get_runtime_root_dir)
 
 
 if __name__ == "__main__":
     from pprint import pprint
     import importlib
 
-    from tools.text_splitter_helper import do_split_docs
+    from jian.tools.text_splitter_helper import do_split_docs
 
     from langchain.docstore.document import Document
 
@@ -27,9 +27,9 @@ if __name__ == "__main__":
 
     docs = do_split_docs(docs, text_splitter_name="ChineseRecursiveTextSplitter", chunk_size = 200,
         chunk_overlap = 0)
-    # for doc in docs:
-    #     print(doc.metadata)
-    #     pprint(doc)
+    for doc in docs:
+        print(doc.metadata)
+        pprint(doc)
     # pprint(docs[0])
     # pprint(docs[-1])
 
