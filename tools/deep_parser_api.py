@@ -33,7 +33,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
                              text_splitter_name=text_splitter_name, chunk_size=chunk_size,
                              chunk_overlap=chunk_overlap)
         return BaseResponse(code=200, msg="文件分段完成", data=
-        [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
+                         [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
 
     async def load_file_by_form_req(
             file: UploadFile = File(..., description="浏览器标准Form二进制文件对象"),
