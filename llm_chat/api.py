@@ -180,6 +180,9 @@ def mount_app_routes(app: FastAPI):
              summary="查询历史消息",
              )(query_message)
 
+    from jian.tools.deep_parser_api import mount_deep_parser_app_routes
+    mount_deep_parser_app_routes(app)
+
 
 if __name__ == "__main__":
     import argparse

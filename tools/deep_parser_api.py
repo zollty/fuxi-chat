@@ -16,7 +16,7 @@ async def document():
     return RedirectResponse(url="/docs")
 
 
-def mount_app_routes(app: FastAPI):
+def mount_deep_parser_app_routes(app: FastAPI):
     from fuxi.utils.runtime_conf import get_temp_dir
     from jian.tools.file_upload_parse import parse_files_in_thread, FileLoadReq, parse_files_by_url_in_thread
 
@@ -73,9 +73,9 @@ def mount_app_routes(app: FastAPI):
                                 data={"id": id, "docs": documents, "failed_files": failed_files})
         return BaseResponse(code=500, msg="解析文件失败", data={"failed_files": failed_files})
 
-    app.get("/",
-            response_model=BaseResponse,
-            summary="swagger 文档")(document)
+    # app.get("/",
+    #         response_model=BaseResponse,
+    #         summary="swagger 文档")(document)
 
     app.post("/doc/load-file-content-by-form",
              tags=["DeepParser"],
@@ -102,7 +102,7 @@ if __name__ == "__main__":
     args = parser.parse_args()
     args_dict = vars(args)
 
-    app = create_app([mount_app_routes], version="1.0.0", title="FenghouAI DeepParser API Server")
+    app = create_app([mount_deep_parser_app_routes], version="1.0.0", title="FenghouAI DeepParser API Server")
 
     run_api(app,
             host=args.host,
