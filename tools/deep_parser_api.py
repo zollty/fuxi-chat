@@ -21,7 +21,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
     from jian.tools.file_upload_parse import parse_files_in_thread, FileLoadReq, parse_files_by_url_in_thread
 
     async def load_file_by_form_req(
-            file: UploadFile = Form(..., description="浏览器标准Form二进制文件对象"),
+            file: UploadFile = File(..., description="浏览器标准Form二进制文件对象"),
             file_name: str = Form(None, description="名称"),
             file_format: str = Form(None, description="后缀")
     ) -> BaseResponse:
