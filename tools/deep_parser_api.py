@@ -29,11 +29,17 @@ def mount_deep_parser_app_routes(app: FastAPI):
             chunk_size: int = Form(CHUNK_SIZE, description="知识库中单段文本最大长度"),
             chunk_overlap: int = Form(OVERLAP_SIZE, description="知识库中相邻文本重合长度")
     ) -> BaseResponse:
+        if text_splitter_name is None or text_splitter_name.strip() == "":
+            text_splitter_name = TEXT_SPLITTER_NAME
+        if chunk_size <= 0:
+            chunk_size = CHUNK_SIZE
+        if chunk_overlap < 0:
+            chunk_overlap = 0
         docs = do_split_docs([Document(page_content=text, metadata={})],
                              text_splitter_name=text_splitter_name, chunk_size=chunk_size,
                              chunk_overlap=chunk_overlap)
         return BaseResponse(code=200, msg="文件分段完成", data=
-                         [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
+        [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
 
     async def load_file_by_form_req(
             file: UploadFile = File(..., description="浏览器标准Form二进制文件对象"),
@@ -63,8 +69,8 @@ def mount_deep_parser_app_routes(app: FastAPI):
 
     async def load_file_by_url_req(
             file_url: str = Form(..., description="文件URL"),
-            file_name: str = Form(None, description="名称"),
-            file_format: str = Form(None, description="后缀")
+            file_name: str = Form(..., description="名称"),
+            file_format: str = Form(..., description="后缀")
     ) -> BaseResponse:
         failed_files = []
         documents = []
@@ -96,6 +102,13 @@ def mount_deep_parser_app_routes(app: FastAPI):
             chunk_size: int = Form(CHUNK_SIZE, description="知识库中单段文本最大长度"),
             chunk_overlap: int = Form(OVERLAP_SIZE, description="知识库中相邻文本重合长度")
     ) -> BaseResponse:
+        if text_splitter_name is None or text_splitter_name.strip() == "":
+            text_splitter_name = TEXT_SPLITTER_NAME
+        if chunk_size <= 0:
+            chunk_size = CHUNK_SIZE
+        if chunk_overlap < 0:
+            chunk_overlap = 0
+
         docs = []
         res = await load_file_by_form_req(file, file_name, file_format)
         if res.code == 200:
@@ -106,7 +119,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
                              text_splitter_name=text_splitter_name, chunk_size=chunk_size,
                              chunk_overlap=chunk_overlap)
         return BaseResponse(code=200, msg="文件解析及分段完成", data=
-                            [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
+        [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
 
     async def load_file_and_split_by_url_req(
             file_url: str = Form(..., description="文件URL"),
@@ -116,6 +129,13 @@ def mount_deep_parser_app_routes(app: FastAPI):
             chunk_size: int = Form(CHUNK_SIZE, description="知识库中单段文本最大长度"),
             chunk_overlap: int = Form(OVERLAP_SIZE, description="知识库中相邻文本重合长度")
     ) -> BaseResponse:
+        if text_splitter_name is None or text_splitter_name.strip() == "":
+            text_splitter_name = TEXT_SPLITTER_NAME
+        if chunk_size <= 0:
+            chunk_size = CHUNK_SIZE
+        if chunk_overlap < 0:
+            chunk_overlap = 0
+
         docs = []
         res = await load_file_by_url_req(file_url, file_name, file_format)
         if res.code == 200:
@@ -126,7 +146,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
                              text_splitter_name=text_splitter_name, chunk_size=chunk_size,
                              chunk_overlap=chunk_overlap)
         return BaseResponse(code=200, msg="文件解析及分段完成", data=
-                            [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
+        [{"page_content": x.page_content, "metadata": x.metadata, "type": x.type} for x in docs])
 
     # app.get("/",
     #         response_model=BaseResponse,

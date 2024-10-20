@@ -75,6 +75,8 @@ def embed_texts(
     对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     TODO: 也许需要加入缓存机制，减少 token 消耗
     """
+    if embed_model is None or embed_model.strip() == "":
+        embed_model = EMBEDDING_MODEL
     try:
         if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
@@ -104,6 +106,8 @@ async def aembed_texts(
     对文本进行向量化。返回数据格式：BaseResponse(data=List[List[float]])
     see: embed_texts，如果是online模型则使用异步线程
     """
+    if embed_model is None or embed_model.strip() == "":
+        embed_model = EMBEDDING_MODEL
     try:
         if embed_model in config_embed_models:  # 使用本地Embeddings模型
             embeddings = load_local_embeddings(model=embed_model, device=device)
@@ -128,6 +132,8 @@ def embed_documents(
     """
     将 List[Document] 向量化，转化为 VectorStore.add_embeddings 可以接受的参数
     """
+    if embed_model is None or embed_model.strip() == "":
+        embed_model = EMBEDDING_MODEL
     texts = [x.page_content for x in docs]
     metadatas = [x.metadata for x in docs]
     embeddings = embed_texts(texts=texts, embed_model=embed_model, to_query=to_query, device=device).data
