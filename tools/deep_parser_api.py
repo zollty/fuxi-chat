@@ -99,7 +99,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
         docs = []
         res = await load_file_by_form_req(file, file_name, file_format)
         if res.code == 200:
-            docs.append(Document(page_content=res.data.content, metadata=res.data.metadata))
+            docs.append(Document(page_content=res.data["content"], metadata=res.data["metadata"]))
         else:
             return res
         docs = do_split_docs(docs,
@@ -119,7 +119,7 @@ def mount_deep_parser_app_routes(app: FastAPI):
         docs = []
         res = await load_file_by_url_req(file_url, file_name, file_format)
         if res.code == 200:
-            docs.append(Document(page_content=res.data.content, metadata=res.data.metadata))
+            docs.append(Document(page_content=res.data["content"], metadata=res.data["metadata"]))
         else:
             return res
         docs = do_split_docs(docs,
