@@ -8,7 +8,7 @@ from jian.tools.document_loaders_helper import load_file_docs
 from jian.tools.text_splitter_helper import do_split_docs
 from fuxi.utils.api_base import (BaseResponse, ListResponse)
 from jian.tools.config import TEXT_SPLITTER_NAME, CHUNK_SIZE, OVERLAP_SIZE, ZH_TITLE_ENHANCE
-
+import requests
 
 def parse_files_in_thread(
         files: List[UploadFile],
@@ -33,6 +33,62 @@ def parse_files_in_thread(
                 os.makedirs(os.path.dirname(file_path))
             with open(file_path, "wb") as f:
                 f.write(file_content)
+
+            print(f"do load_file_docs--------------------------file_path: {file_path}")
+            docs = load_file_docs(
+                file_path,
+                filename=filename,
+                start_length=start_length
+            )
+            print(f"load_file_docs--------------------------ret: {docs}")
+
+            split_docs = None
+            if split_docs_fn:
+                split_docs = split_docs_fn(docs)
+            print(f"split_docs--------------------------ret: {split_docs}")
+            return True, filename, f"成功上传文件 {filename}", docs, split_docs
+        except Exception as e:
+            msg = f"{filename} 文件上传失败，报错信息为: {e}"
+            return False, filename, msg, [], []
+
+    params = [{"file": file} for file in files]
+    for result in run_in_thread_pool(parse_file, params=params):
+        yield result
+
+class FileLoadReq():
+    def __init__(self, file_url, file_name, file_format):  # 构造函数
+        self.file_format = file_format
+        self.file_name = file_name
+        self.file_url = file_url
+
+def parse_files_by_url_in_thread(
+        files: List[FileLoadReq],
+        dir: str,
+        start_length: int = -1,
+        split_docs_fn=None
+):
+    """
+    通过多线程将上传的文件保存到对应目录内。
+    生成器返回保存结果：[success or error, filename, msg, docs]
+    """
+
+    def parse_file(file_req: FileLoadReq) -> dict:
+        """
+        保存单个文件。
+        """
+        filename = file_req.file_name
+        try:
+            file_path = os.path.join(dir, filename)
+
+            res = requests.get(file_req.file_url, stream=True)
+            print(res.status_code, res.headers)
+
+            if not os.path.isdir(os.path.dirname(file_path)):
+                os.makedirs(os.path.dirname(file_path))
+            with open(file_path, "wb") as pypkg:
+                for chunk in res.iter_content(chunk_size=1024):
+                    if chunk:
+                        pypkg.write(chunk)
 
             print(f"do load_file_docs--------------------------file_path: {file_path}")
             docs = load_file_docs(
