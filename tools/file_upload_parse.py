@@ -107,7 +107,7 @@ def parse_files_by_url_in_thread(
             msg = f"{filename} 文件上传失败，报错信息为: {e}"
             return False, filename, msg, [], []
 
-    params = [{"file": file} for file in files]
+    params = [{"file_req": file} for file in files]
     for result in run_in_thread_pool(parse_file, params=params):
         yield result
 
