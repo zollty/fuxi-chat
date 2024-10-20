@@ -43,8 +43,8 @@ def mount_deep_parser_app_routes(app: FastAPI):
                 print(msg)
         if rt_success:
             return BaseResponse(code=200, msg="文件上传与解析完成",
-                                data={"id": id, "docs": [{"content": x.page_content, "metadata": x.metadata} for x in documents], "failed_files": failed_files})
-        return BaseResponse(code=500, msg="解析文件失败", data={"failed_files": failed_files})
+                                data={"content": documents[0].page_content, "metadata": documents[0].metadata})
+        return BaseResponse(code=500, msg="解析文件失败")
 
     async def load_file_by_url_req(
             file_url: str = Form(..., description="文件URL"),
@@ -70,8 +70,8 @@ def mount_deep_parser_app_routes(app: FastAPI):
                 print(msg)
         if rt_success:
             return BaseResponse(code=200, msg="文件上传与解析完成",
-                                data={"id": id, "docs": [{"content": x.page_content, "metadata": x.metadata} for x in documents], "failed_files": failed_files})
-        return BaseResponse(code=500, msg="解析文件失败", data={"failed_files": failed_files})
+                                data={"content": documents[0].page_content, "metadata": documents[0].metadata})
+        return BaseResponse(code=500, msg="解析文件失败")
 
     # app.get("/",
     #         response_model=BaseResponse,
